@@ -24,8 +24,8 @@ run the following command: `php composer.phar require bitmovin/bitmovin-php:1.0.
 
 Example
 -----
+The following example creates a simple transcoding job and transfers it to a GCS output location ([CreateSimpleEncoding.php](https://github.com/bitmovin/bitmovin-php/tree/master/examples/CreateSimpleEncoding.php)):
 ```php
-
 <?php
 use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\BitmovinClient;
@@ -96,5 +96,6 @@ $jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
 $client->runJobAndWaitForCompletion($jobConfig);
-
 ```
+
+For more examples goto our [example page](([CreateSimpleEncoding.php](https://github.com/bitmovin/bitmovin-php/tree/master/examples/)).
