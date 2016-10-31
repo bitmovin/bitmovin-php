@@ -1,0 +1,28 @@
+{
+  "name": "bitmovin/bitmovin-php",
+  "description": "PHP API Client for seamless integration of the whole Bitmovin API in your existing projects",
+  "minimum-stability": "stable",
+  "license": "none",
+  "authors": [
+    {
+      "name": "Gernot Zwantschko",
+      "email": "support@bitmovin.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6",
+    "guzzlehttp/guzzle": "6.2.x",
+    "jms/serializer": "^1.3",
+    "icecave/parity": "1.0.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.8",
+    "ramsey/uuid": "3.5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bitmovin\\": "src/Bitmovin",
+      "Bitmovin\\test\\": "test/"
+    }
+  }
+}
