@@ -1,14 +1,25 @@
 {
   "name": "bitmovin/bitmovin-php",
   "description": "PHP API Client for seamless integration of the whole Bitmovin API in your existing projects",
-  "minimum-stability": "stable",
-  "license": "none",
-  "authors": [
-    {
-      "name": "Gernot Zwantschko",
-      "email": "support@bitmovin.com"
-    }
+  "version": "v1.0.0",
+  "homepage": "https://bitmovin.com/support",
+  "license": "Unlicense",
+  "keywords": [
+    "bitmovin",
+    "api",
+    "encoding",
+    "mpeg-dash",
+    "hls",
+    "dash",
+    "MPD",
+    "M3U8",
+    "mp4",
+    "DRM"
   ],
+  "support": {
+    "email": "support@bitmovin.com",
+    "docs": "https://bitmovin.com/encoding-documentation/"
+  },
   "require": {
     "php": ">=5.6",
     "guzzlehttp/guzzle": "6.2.x",
