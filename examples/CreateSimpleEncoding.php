@@ -1,32 +1,5 @@
-# [![bitmovin](https://cloudfront-prod.bitmovin.com/wp-content/themes/Bitmovin-V-0.1/images/logo3.png)](http://www.bitmovin.com)
-PHP-Client which enables you to seamlessly integrate the all new Bitmovin API into your existing projects
-
-Installation 
-------------
-
-### Composer ###
- 
-  
-To install the api-client with composer, add the following to your `composer.json` file:  
-```json
-{
-"require": 
-  {
-    "bitmovin/bitmovin-php": "1.0.*"
-  }
-}
-```
-Then run `php composer.phar install`
-
-OR
-
-run the following command: `php composer.phar require bitmovin/bitmovin-php:1.0.*`
-
-Example
------
-The following example creates a simple transcoding job and transfers it to a GCS output location ([CreateSimpleEncoding.php](https://github.com/bitmovin/bitmovin-php/tree/master/examples/CreateSimpleEncoding.php)):
-```php
 <?php
+
 use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
@@ -96,6 +69,3 @@ $jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
 $client->runJobAndWaitForCompletion($jobConfig);
-```
-
-For more examples goto our [example page](([CreateSimpleEncoding.php](https://github.com/bitmovin/bitmovin-php/tree/master/examples/)).
