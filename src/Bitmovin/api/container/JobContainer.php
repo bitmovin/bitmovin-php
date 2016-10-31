@@ -26,12 +26,43 @@ class JobContainer
      */
     public $apiOutput;
 
+    /**
+     * @param $prefix
+     * @return string
+     */
+    private function addTrailingSlash($prefix)
+    {
+        if (substr($prefix, -1) != '/')
+        {
+            $prefix .= '/';
+        }
+        return $prefix;
+    }
+
+    /**
+     * @param $prefix
+     * @return string
+     */
+    private function stripSlashes($prefix)
+    {
+        if (substr($prefix, 0, 1) == '/')
+        {
+            $prefix = substr($prefix, 1);
+        }
+        if (substr($prefix, -1) == '/')
+        {
+            $prefix = substr($prefix, 0, -1);
+        }
+        return $prefix;
+    }
+
     public function getOutputPath()
     {
         $output = $this->job->output;
         if ($output instanceof GcsOutput)
         {
-            return $output->prefix;
+            $prefix = $this->stripSlashes($output->prefix);
+            return $this->addTrailingSlash($prefix);
         }
         throw new \InvalidArgumentException();
     }
