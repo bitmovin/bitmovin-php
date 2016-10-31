@@ -1,5 +1,5 @@
 # [![bitmovin](https://cloudfront-prod.bitmovin.com/wp-content/themes/Bitmovin-V-0.1/images/logo3.png)](http://www.bitmovin.com)
-PHP-Client which enables you to seamlessly integrate the all new Bitmovin API into your existing projects
+PHP-Client which enables you to seamlessly integrate the Bitmovin API into your existing projects
 
 Installation 
 ------------
