@@ -98,4 +98,4 @@ $jobConfig->outputFormat[] = new HlsOutputFormat();
 $client->runJobAndWaitForCompletion($jobConfig);
 ```
 
-For more examples goto our [example page](https://github.com/bitmovin/bitmovin-php/tree/master/examples/).
+For more examples go to our [example page](https://github.com/bitmovin/bitmovin-php/tree/master/examples/).
