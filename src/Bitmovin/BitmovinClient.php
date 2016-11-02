@@ -32,10 +32,12 @@ use Bitmovin\api\model\outputs\OutputConverterFactory;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\JobConfig;
+use Bitmovin\configs\LiveStreamJobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
+use Bitmovin\input\RtmpInput;
 use Bitmovin\output\GcsOutput;
 use Icecave\Parity\Parity;
 
@@ -73,10 +75,17 @@ class BitmovinClient
         /** @var AbstractStreamConfig $stream */
         foreach ($streams as $stream)
         {
+            if ($jobContainer->job instanceof LiveStreamJobConfig && $stream->input == null)
+                $stream->input = new RtmpInput();
+
             $convertedInput = null;
             if ($stream->input instanceof HttpInput)
             {
                 $convertedInput = InputConverterFactory::createFromHttpInput($stream->input);
+            }
+            else if ($stream->input instanceof RtmpInput)
+            {
+                $convertedInput = InputConverterFactory::createRtmpInput();
             }
             if ($convertedInput == null)
             {
@@ -275,7 +284,10 @@ class BitmovinClient
     {
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            $this->apiClient->encodings()->start($encodingContainer->encoding);
+            if ($jobContainer->job instanceof LiveStreamJobConfig)
+                $this->apiClient->encodings()->startLivestream($encodingContainer->encoding, $jobContainer->job->streamKey);
+            else
+                $this->apiClient->encodings()->start($encodingContainer->encoding);
         }
     }
 

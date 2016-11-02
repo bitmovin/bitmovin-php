@@ -38,4 +38,9 @@ class InputConverterFactory
         throw new \InvalidArgumentException();
     }
 
+    public static function createRtmpInput()
+    {
+        return new \Bitmovin\api\model\inputs\RtmpInput();
+    }
+
 }
