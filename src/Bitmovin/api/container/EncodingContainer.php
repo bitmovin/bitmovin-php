@@ -6,6 +6,7 @@ use Bitmovin\api\enum\Status;
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\input\AbstractInput;
+use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
 
 class EncodingContainer
@@ -50,7 +51,7 @@ class EncodingContainer
 
     public function getInputPath()
     {
-        if ($this->input instanceof HttpInput)
+        if ($this->input instanceof HttpInput || $this->input instanceof FtpInput)
         {
             $url = parse_url($this->input->url);
             $path = '';
@@ -60,7 +61,7 @@ class EncodingContainer
             }
             if (key_exists('query', $url))
             {
-                $path .= $url['query'];
+                $path .= '?' . $url['query'];
             }
             if (key_exists('fragment', $url))
             {
@@ -70,6 +71,5 @@ class EncodingContainer
         }
         throw new \InvalidArgumentException();
     }
-
 
 }

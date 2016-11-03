@@ -8,7 +8,7 @@ use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
-use Bitmovin\input\HttpInput;
+use Bitmovin\input\FtpInput;
 use Bitmovin\output\GcsOutput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -17,7 +17,8 @@ $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
 // CONFIGURATION
 $config = array();
-$config['videoInputPath'] = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
+// for example "ftp://username:password@host:port/path/to/file"
+$config['videoInputPath'] = 'YOUR FTP INPUT HERE';
 $config['accessKey'] = 'YOUR GCS ACCESS KEY';
 $config['secretKey'] = 'YOUR GCS SECRET KEY';
 $config['bucketName'] = 'YOUR GCS BUCKET NAME';
@@ -30,7 +31,7 @@ $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
 $videoStreamConfig_1080 = new H264VideoStreamConfig();
-$videoStreamConfig_1080->input = new HttpInput($config['videoInputPath']);
+$videoStreamConfig_1080->input = new FtpInput($config['videoInputPath']);
 $videoStreamConfig_1080->width = 1920;
 $videoStreamConfig_1080->height = 1080;
 $videoStreamConfig_1080->bitrate = 4800000;
@@ -39,7 +40,7 @@ $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
 
 // CREATE VIDEO STREAM CONFIG FOR 720p
 $videoStreamConfig_720 = new H264VideoStreamConfig();
-$videoStreamConfig_720->input = new HttpInput($config['videoInputPath']);
+$videoStreamConfig_720->input = new FtpInput($config['videoInputPath']);
 $videoStreamConfig_720->width = 1280;
 $videoStreamConfig_720->height = 720;
 $videoStreamConfig_720->bitrate = 2400000;
@@ -48,7 +49,7 @@ $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
 
 // CREATE AUDIO STREAM CONFIG
 $audioConfig = new AudioStreamConfig();
-$audioConfig->input = new HttpInput($config['videoInputPath']);
+$audioConfig->input = new FtpInput($config['videoInputPath']);
 $audioConfig->bitrate = 128000;
 $audioConfig->rate = 48000;
 $audioConfig->name = 'English';

@@ -1,6 +1,7 @@
 <?php
 
 use Bitmovin\api\enum\CloudRegion;
+use Bitmovin\api\enum\Status;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
@@ -25,7 +26,7 @@ $config['prefix'] = 'path/to/your/output/destination/';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
-$encodingProfile->name = 'Test Encoding';
+$encodingProfile->name = 'Test Encoding Async';
 $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
@@ -68,4 +69,23 @@ $jobConfig->outputFormat[] = new DashOutputFormat();
 $jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
-$client->runJobAndWaitForCompletion($jobConfig);
+$jobContainer = $client->startJob($jobConfig);
+
+// JOB IS STARTED - WAIT FOR IT TO FINISH
+do
+{
+    $allFinished = true;
+    $client->updateEncodingJobStatus($jobContainer);
+    foreach ($jobContainer->encodingContainers as $encodingContainer)
+    {
+        if ($encodingContainer->status != Status::FINISHED && $encodingContainer->status != Status::ERROR)
+        {
+            $allFinished = false;
+        }
+    }
+    sleep(1);
+} while (!$allFinished);
+
+// CREATE MANIFESTS
+$client->createDashManifest($jobContainer);
+$client->createHlsManifest($jobContainer);
