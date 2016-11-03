@@ -208,6 +208,11 @@ while (true)
     sleep(1);
 }
 
+// TODO: WAIT UNTIL LIVE STREAM DATA ARE AVAILABLE
+
+$liveEncodingDetails = $apiClient->encodings()->getLivestreamDetails($encoding);
+print 'Live stream is running with IP ' . $liveEncodingDetails->getEncoderIp();
+
 // STOP LIVE STREAM
 if ($status == Status::RUNNING)
     $apiClient->encodings()->stopLivestream($encoding);
