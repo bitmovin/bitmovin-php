@@ -35,6 +35,7 @@ use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
+use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\GcsOutput;
 use Icecave\Parity\Parity;
@@ -60,6 +61,23 @@ class BitmovinClient
     }
 
     /**
+     * @param $stream
+     * @return Input|null
+     */
+    private function convertToApiInput($stream)
+    {
+        if ($stream->input instanceof HttpInput)
+        {
+            return InputConverterFactory::createFromHttpInput($stream->input);
+        }
+        else if ($stream->input instanceof FtpInput)
+        {
+            return InputConverterFactory::createFromFtpInput($stream->input);
+        }
+        return null;
+    }
+
+    /**
      * @param JobContainer $jobContainer
      *
      */
@@ -73,11 +91,7 @@ class BitmovinClient
         /** @var AbstractStreamConfig $stream */
         foreach ($streams as $stream)
         {
-            $convertedInput = null;
-            if ($stream->input instanceof HttpInput)
-            {
-                $convertedInput = InputConverterFactory::createFromHttpInput($stream->input);
-            }
+            $convertedInput = $this->convertToApiInput($stream);
             if ($convertedInput == null)
             {
                 continue;
@@ -87,8 +101,7 @@ class BitmovinClient
             foreach ($jobContainer->encodingContainers as $encodingContainer)
             {
                 if ($encodingContainer->input instanceof $stream->input &&
-                    Parity::isEqualTo($encodingContainer->input, $stream->input)
-                )
+                    Parity::isEqualTo($encodingContainer->input, $stream->input))
                 {
                     $item = $encodingContainer;
                     break;
