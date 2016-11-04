@@ -6,6 +6,7 @@ use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\enum\codecConfigurations\H264Profile;
 use Bitmovin\api\enum\SelectionMode;
+use Bitmovin\api\exceptions\BitmovinException;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
 use Bitmovin\api\model\encodings\Encoding;
@@ -208,10 +209,26 @@ while (true)
     sleep(1);
 }
 
-// TODO: WAIT UNTIL LIVE STREAM DATA ARE AVAILABLE
-
-$liveEncodingDetails = $apiClient->encodings()->getLivestreamDetails($encoding);
-print 'Live stream is running with IP ' . $liveEncodingDetails->getEncoderIp();
+// WAIT UNTIL LIVE STREAM DATA ARE AVAILABLE
+$liveEncodingDetails = null;
+while (true)
+{
+    try
+    {
+        $liveEncodingDetails = $apiClient->encodings()->getLivestreamDetails($encoding);
+        break;
+    }
+    catch(BitmovinException $exception)
+    {
+        if ($exception->getCode() != 400)
+        {
+            print 'Got unexpected exception with code ' . strval($exception->getCode()) . ': ' . $exception->getMessage();
+            throw $exception;
+        }
+    }
+    sleep(1);
+}
+print 'Live stream ' . $liveEncodingDetails->getStreamKey() . ' is running with IP ' . $liveEncodingDetails->getEncoderIp();
 
 // STOP LIVE STREAM
 if ($status == Status::RUNNING)
