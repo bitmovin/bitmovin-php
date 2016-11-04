@@ -11,6 +11,7 @@ use Bitmovin\api\container\JobContainer;
 use Bitmovin\api\enum\AclPermission;
 use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\api\enum\Status;
+use Bitmovin\api\exceptions\BitmovinException;
 use Bitmovin\api\factories\manifest\DashManifestFactory;
 use Bitmovin\api\factories\manifest\DashProtectedManifestFactory;
 use Bitmovin\api\factories\manifest\HlsManifestFactory;
@@ -22,6 +23,7 @@ use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\helper\Acl;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
+use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\api\model\inputs\InputConverterFactory;
@@ -515,4 +517,49 @@ class BitmovinClient
         return $jobContainer;
     }
 
+    /**
+     * @param JobContainer $jobContainer
+     * @return array(LiveEncodingDetails)
+     * @throws BitmovinException
+     */
+    public function getLiveStreamDataWhenAvailable(JobContainer $jobContainer)
+    {
+        $liveEncodingDetailsArray = array();
+
+        foreach ($jobContainer->encodingContainers as $encodingContainer)
+        {
+            array_push($liveEncodingDetailsArray, $this->getLiveStreamDataForEncodingWhenAvailable($encodingContainer->encoding));
+        }
+
+        return $liveEncodingDetailsArray;
+    }
+
+    /**
+     * @param Encoding $encoding
+     * @return LiveEncodingDetails|null
+     * @throws BitmovinException
+     */
+    private function getLiveStreamDataForEncodingWhenAvailable(Encoding $encoding)
+    {
+        $liveEncodingDetails = null;
+
+        while (true)
+        {
+            try
+            {
+                $liveEncodingDetails = $this->apiClient->encodings()->getLivestreamDetails($encoding);
+                break;
+            }
+            catch(BitmovinException $exception)
+            {
+                if ($exception->getCode() != 400)
+                {
+                    throw $exception;
+                }
+            }
+            sleep(1);
+        }
+
+        return $liveEncodingDetails;
+    }
 }
