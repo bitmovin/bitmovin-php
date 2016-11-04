@@ -109,7 +109,7 @@ class EncodingResource extends AbstractResource
         $routeReplacementMap = array(ApiUrls::PH_ENCODING_ID => $encoding->getId());
         $baseUriEncoding = RouteHelper::buildURI(ApiUrls::ENCODING_DETAILS_LIVE, $routeReplacementMap);
 
-        return parent::getResourceObject(parent::getRequest($baseUriEncoding), LiveEncodingDetails::class);
+        return parent::getResourceObject($baseUriEncoding, LiveEncodingDetails::class);
     }
 
     /**

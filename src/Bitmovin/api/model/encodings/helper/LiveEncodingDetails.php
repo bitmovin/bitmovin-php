@@ -2,9 +2,10 @@
 
 namespace Bitmovin\api\model\encodings\helper;
 
+use Bitmovin\api\model\AbstractModel;
 use JMS\Serializer\Annotation as JMS;
 
-class LiveEncodingDetails
+class LiveEncodingDetails extends AbstractModel
 {
     /**
      * @JMS\Type("string")
