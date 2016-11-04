@@ -37,6 +37,7 @@ use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
+use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Icecave\Parity\Parity;
 
@@ -154,6 +155,10 @@ class BitmovinClient
         if ($output instanceof GcsOutput)
         {
             $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromGcsOutput($output));
+        }
+        else if ($output instanceof FtpOutput)
+        {
+            $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromFtpOutput($output));
         }
     }
 

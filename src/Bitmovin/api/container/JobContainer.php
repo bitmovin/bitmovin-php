@@ -6,6 +6,7 @@ namespace Bitmovin\api\container;
 
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\JobConfig;
+use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 
 class JobContainer
@@ -43,6 +44,19 @@ class JobContainer
      * @param $prefix
      * @return string
      */
+    private function addLeadingSlash($prefix)
+    {
+        if (substr($prefix, 1) != '/')
+        {
+            $prefix = '/' . $prefix;
+        }
+        return $prefix;
+    }
+
+    /**
+     * @param $prefix
+     * @return string
+     */
     private function stripSlashes($prefix)
     {
         if (substr($prefix, 0, 1) == '/')
@@ -64,8 +78,13 @@ class JobContainer
             $prefix = $this->stripSlashes($output->prefix);
             return $this->addTrailingSlash($prefix);
         }
+        else if ($output instanceof FtpOutput)
+        {
+            $prefix = $this->stripSlashes($output->prefix);
+            $prefix = $this->addLeadingSlash($prefix);
+            return $this->addTrailingSlash($prefix);
+        }
         throw new \InvalidArgumentException();
     }
-
 
 }
