@@ -1,6 +1,7 @@
 <?php
 
 use Bitmovin\api\enum\CloudRegion;
+use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
@@ -75,6 +76,13 @@ $jobContainer = $client->startJob($jobConfig);
 // WAIT UNTIL LIVE STREAM IS RUNNING
 $client->waitForJobsToStart($jobContainer);
 
-// TODO: RETRIEVE LIVE STREAM DATA WHEN AVAILABLE
+// RETRIEVE LIVE STREAM DATA WHEN AVAILABLE
+$liveEncodingDetailsArray = $client->getLiveStreamDataWhenAvailable($jobContainer);
+foreach ($liveEncodingDetailsArray as $liveEncodingDetails)
+{
+    if ($liveEncodingDetails instanceof LiveEncodingDetails)
+        print 'Live stream ' . $liveEncodingDetails->getStreamKey() . ' is running with IP ' . $liveEncodingDetails->getEncoderIp();
+}
 
-// TODO: STOP LIVE STREAM
+// STOP LIVE STREAM
+$client->stopEncodings($jobContainer);
