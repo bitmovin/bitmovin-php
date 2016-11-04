@@ -109,7 +109,7 @@ class HlsManifestResourceTest extends AbstractBitmovinApiTest
         $hls = $this->create();
         $createdHls = $this->getResource()->create($hls);
 
-        $listResults = $this->getResource()->listAll();
+        $listResults = $this->getResource()->listPage();
         $this->assertTrue(is_array($listResults));
         $this->assertTrue(sizeof($listResults) > 0);
 
@@ -129,7 +129,7 @@ class HlsManifestResourceTest extends AbstractBitmovinApiTest
         $hls = $this->create();
         $createdHls = $this->getResource()->create($hls);
         /** @var HlsManifest[] $listResults */
-        $listResults = $this->getResource()->listAll();
+        $listResults = $this->getResource()->listPage();
         $id = $listResults[0]->getId();
 
         /** @var HlsManifest $hls */

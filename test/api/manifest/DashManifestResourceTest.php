@@ -238,7 +238,7 @@ class DashManifestResourceTest extends AbstractBitmovinApiTest
         $dash = $this->create();
         $createdDash = $this->getResource()->create($dash);
 
-        $listResults = $this->getResource()->listAll();
+        $listResults = $this->getResource()->listPage();
         $this->assertTrue(is_array($listResults));
         $this->assertTrue(sizeof($listResults) > 0);
 
@@ -258,7 +258,7 @@ class DashManifestResourceTest extends AbstractBitmovinApiTest
         $dash = $this->create();
         $createdDash = $this->getResource()->create($dash);
         /** @var DashManifest[] $listResults */
-        $listResults = $this->getResource()->listAll();
+        $listResults = $this->getResource()->listPage();
         $id = $listResults[0]->getId();
 
         /** @var DashManifest $input */
