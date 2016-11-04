@@ -30,7 +30,6 @@ abstract class AbstractEnum
     /**
      * @param ResponseEnvelope $responseEnvelope
      *
-     * @return self
      */
     public function setResponseEnvelope(ResponseEnvelope $responseEnvelope)
     {

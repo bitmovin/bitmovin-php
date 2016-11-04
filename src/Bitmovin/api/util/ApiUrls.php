@@ -83,5 +83,5 @@ final class ApiUrls
     const MANIFEST_HLS_STOP = "encoding/manifests/hls/{manifest_id}/stop";
     const MANIFEST_HLS_RESTART = "encoding/manifests/hls/{manifest_id}/restart";
     const MANIFEST_HLS_STATUS = "encoding/manifests/hls/{manifest_id}/status";
-    
+
 }

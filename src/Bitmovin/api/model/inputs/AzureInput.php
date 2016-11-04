@@ -27,7 +27,6 @@ class AzureInput extends Input
      * AzureInput constructor.
      * @param string $accountName
      * @param string $accountKey
-     * @param string $container
      */
     public function __construct($accountName, $accountKey)
     {

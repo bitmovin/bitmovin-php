@@ -2,6 +2,7 @@
 
 namespace Bitmovin\api\model\encodings\helper;
 
+use Bitmovin\api\model\outputs\Output;
 use JMS\Serializer\Annotation as JMS;
 
 class EncodingOutput
@@ -26,9 +27,9 @@ class EncodingOutput
     /**
      * Output constructor.
      *
-     * @param \Bitmovin\api\model\outputs\Output $output
+     * @param Output $output
      */
-    public function __construct(\Bitmovin\api\model\outputs\Output $output)
+    public function __construct(Output $output)
     {
         $this->outputId = $output->getId();
     }
