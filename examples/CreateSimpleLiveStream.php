@@ -26,7 +26,7 @@ $config['streamKey']  = 'YOUR STREAM KEY';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
-$encodingProfile->name = 'Test Encoding';
+$encodingProfile->name = 'LIVE-ENCODING-DEMO-SIMPLE';
 $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
@@ -86,3 +86,6 @@ foreach ($liveEncodingDetailsArray as $liveEncodingDetails)
 
 // STOP LIVE STREAM
 $client->stopEncodings($jobContainer);
+
+// WAIT UNTIL THE LIVE STREAM IS FINISHED
+$client->waitForJobsToFinish($jobContainer);
