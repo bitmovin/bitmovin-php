@@ -293,6 +293,17 @@ class BitmovinClient
         }
     }
 
+    public function stopEncodings(JobContainer $jobContainer)
+    {
+        foreach ($jobContainer->encodingContainers as &$encodingContainer)
+        {
+            if ($jobContainer->job instanceof LiveStreamJobConfig)
+                $this->apiClient->encodings()->stopLivestream($encodingContainer->encoding);
+            else
+                $this->apiClient->encodings()->stop($encodingContainer->encoding);
+        }
+    }
+
     public function updateEncodingJobStatus(JobContainer $jobContainer)
     {
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
