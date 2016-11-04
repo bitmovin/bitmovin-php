@@ -38,9 +38,9 @@ $encoding->setCloudRegion(CloudRegion::GOOGLE_EUROPE_WEST_1);
 $encoding->setDescription('LIVE-ENCODING-DEMO');
 $encoding = $apiClient->encodings()->create($encoding);
 
-// CREATE RTMP INPUT
+// GET RTMP INPUT
 $input = new RtmpInput();
-$input = $apiClient->inputs()->rtmp()->create($input);
+$input = $apiClient->inputs()->rtmp()->listAll()[0];
 
 // CREATE OUTPUT
 $output = new GcsOutput($config['bucketName'], $config['accessKey'], $config['secretKey']);
@@ -232,4 +232,18 @@ print 'Live stream ' . $liveEncodingDetails->getStreamKey() . ' is running with 
 
 // STOP LIVE STREAM
 if ($status == Status::RUNNING)
+{
     $apiClient->encodings()->stopLivestream($encoding);
+
+    // WAIT UNTIL LIVE STREAM IS FINISHED
+    $status = Status::ERROR;
+    while (true)
+    {
+        $status = $apiClient->encodings()->status($encoding)->getStatus();
+        if ($status == Status::ERROR || $status == Status::FINISHED)
+        {
+            break;
+        }
+        sleep(1);
+    }
+}
