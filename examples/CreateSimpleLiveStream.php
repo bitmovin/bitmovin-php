@@ -7,7 +7,6 @@ use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\LiveStreamJobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
-use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\output\GcsOutput;
@@ -67,8 +66,6 @@ $jobConfig->output = new GcsOutput($config['accessKey'], $config['secretKey'], $
 $jobConfig->encodingProfile = $encodingProfile;
 // ENABLE DASH OUTPUT
 $jobConfig->outputFormat[] = new DashOutputFormat();
-// ENABLE HLS OUTPUT
-$jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // START LIVE STREAM
 $jobContainer = $client->startJob($jobConfig);
