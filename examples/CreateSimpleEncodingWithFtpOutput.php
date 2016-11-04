@@ -18,7 +18,6 @@ $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 // CONFIGURATION
 $videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
 $ftp_host = 'INSERT YOUR FTP HOST HERE';
-$ftp_port = 21;
 $ftp_username = 'INSERT YOUR FTP USERNAME HERE';
 $ftp_password = 'INSERT YOUR FTP PASSWORD HERE';
 $ftp_prefix = 'path/to/your/output/destination/';
@@ -60,7 +59,6 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
 $jobConfig->output = new FtpOutput($ftp_host, $ftp_username, $ftp_password, $ftp_prefix);
-$jobConfig->output->port = $ftp_port;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 // ENABLE DASH OUTPUT
