@@ -302,6 +302,20 @@ class BitmovinClient
 
     public function waitForJobsToFinish(JobContainer $jobContainer)
     {
+        return $this->waitForJobsToReachState($jobContainer, Status::FINISHED);
+    }
+
+    public function waitForJobsToStart(JobContainer $jobContainer)
+    {
+        return $this->waitForJobsToReachState($jobContainer, Status::RUNNING);
+    }
+
+    /**
+     * @param JobContainer $jobContainer
+     * @param string $expectedStatus
+     */
+    private function waitForJobsToReachState(JobContainer $jobContainer, $expectedStatus)
+    {
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
             $status = null;
@@ -309,7 +323,7 @@ class BitmovinClient
             {
                 $status = $this->apiClient->encodings()->status($encodingContainer->encoding);
                 $encodingContainer->status = $status->getStatus();
-                if ($status->getStatus() == Status::ERROR || $status->getStatus() == Status::FINISHED)
+                if ($status->getStatus() == Status::ERROR || $status->getStatus() == $expectedStatus)
                 {
                     break;
                 }
