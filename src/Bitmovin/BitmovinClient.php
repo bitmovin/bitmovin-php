@@ -87,7 +87,7 @@ class BitmovinClient
             }
             else if ($stream->input instanceof RtmpInput)
             {
-                $convertedInput = InputConverterFactory::createRtmpInput();
+                $convertedInput = InputConverterFactory::createRtmpInput($this->apiClient);
             }
             if ($convertedInput == null)
             {
@@ -121,6 +121,9 @@ class BitmovinClient
      */
     private function createInputs(JobContainer $jobContainer)
     {
+        if ($jobContainer->job instanceof LiveStreamJobConfig)
+            return;
+
         /** @var Input[] $inputs */
         $inputs = array();
         foreach ($jobContainer->encodingContainers as &$encodingContainer)

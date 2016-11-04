@@ -7,6 +7,7 @@ use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\input\AbstractInput;
 use Bitmovin\input\HttpInput;
+use Bitmovin\input\RtmpInput;
 
 class EncodingContainer
 {
@@ -67,6 +68,10 @@ class EncodingContainer
                 $path .= $url['fragment'];
             }
             return $path;
+        }
+        if ($this->input instanceof RtmpInput)
+        {
+            return 'live';
         }
         throw new \InvalidArgumentException();
     }
