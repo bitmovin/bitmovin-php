@@ -63,6 +63,17 @@ class TsMuxingResource extends MuxingResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return TSMuxing[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $tsMuxingId
      *
      * @return TSMuxing

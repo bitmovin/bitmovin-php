@@ -51,6 +51,17 @@ class FtpOutputResource extends OutputResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return FtpOutput[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $outputId
      *
      * @return FtpOutput

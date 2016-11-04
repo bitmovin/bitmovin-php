@@ -52,6 +52,17 @@ class AACAudioCodecConfigurationResource extends CodecConfigurationResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return AACAudioCodecConfiguration[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $codecConfigurationId
      *
      * @return AACAudioCodecConfiguration

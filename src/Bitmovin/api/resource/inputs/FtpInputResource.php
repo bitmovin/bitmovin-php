@@ -52,6 +52,17 @@ class FtpInputResource extends InputResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return FtpInput[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $inputId
      *
      * @return FtpInput

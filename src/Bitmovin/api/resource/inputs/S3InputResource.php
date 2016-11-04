@@ -51,6 +51,17 @@ class S3InputResource extends InputResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return S3Input[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $inputId
      *
      * @return S3Input

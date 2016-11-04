@@ -51,6 +51,17 @@ class HttpInputResource extends InputResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return HttpInput[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $inputId
      *
      * @return HttpInput

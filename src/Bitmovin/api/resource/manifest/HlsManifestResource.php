@@ -141,6 +141,17 @@ class HlsManifestResource extends AbstractResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return HlsManifest[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param string $manifestId
      *
      * @return HlsManifest

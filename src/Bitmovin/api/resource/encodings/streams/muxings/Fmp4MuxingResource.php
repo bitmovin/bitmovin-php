@@ -69,6 +69,17 @@ class Fmp4MuxingResource extends MuxingResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return FMP4Muxing[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $fmp4MuxingId
      *
      * @return FMP4Muxing

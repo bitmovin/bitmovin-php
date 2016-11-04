@@ -52,6 +52,17 @@ class SftpInputResource extends InputResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return SftpInput[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $inputId
      *
      * @return SftpInput

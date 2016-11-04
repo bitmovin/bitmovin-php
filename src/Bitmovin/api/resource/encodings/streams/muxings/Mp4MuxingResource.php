@@ -63,6 +63,17 @@ class Mp4MuxingResource extends MuxingResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return MP4Muxing[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $mp4MuxingId
      *
      * @return MP4Muxing

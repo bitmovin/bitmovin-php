@@ -52,6 +52,17 @@ class H265VideoCodecConfigurationResource extends CodecConfigurationResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
+     * @return H265VideoCodecConfiguration[]
+     */
+    public function listPage($offset = 0, $limit = 25)
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
+    }
+
+    /**
      * @param $codecConfigurationId
      *
      * @return H265VideoCodecConfiguration
