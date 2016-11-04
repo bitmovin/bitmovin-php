@@ -64,18 +64,6 @@ class StreamResource extends AbstractResource
     }
 
     /**
-     * @return Stream[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @var Stream[] $streams */
-        $streams = $this->listResource();
-
-        return $streams;
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return Stream[]

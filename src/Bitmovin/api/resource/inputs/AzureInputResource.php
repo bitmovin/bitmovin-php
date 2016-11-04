@@ -41,16 +41,6 @@ class AzureInputResource extends InputResource
     }
 
     /**
-     * @return AzureInput[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllInputs();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return AzureInput[]

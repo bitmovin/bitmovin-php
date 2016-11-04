@@ -53,16 +53,6 @@ class TsMuxingResource extends MuxingResource
     }
 
     /**
-     * @return TSMuxing[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllMuxings();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return TSMuxing[]

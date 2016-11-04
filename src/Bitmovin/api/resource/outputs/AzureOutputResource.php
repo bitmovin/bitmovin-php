@@ -41,16 +41,6 @@ class AzureOutputResource extends OutputResource
     }
 
     /**
-     * @return AzureOutput[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllOutputs();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return AzureOutput[]

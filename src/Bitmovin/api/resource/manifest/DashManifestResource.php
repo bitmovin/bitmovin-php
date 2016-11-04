@@ -243,16 +243,6 @@ class DashManifestResource extends AbstractResource
     }
 
     /**
-     * @return DashManifest[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listResource();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return DashManifest[]

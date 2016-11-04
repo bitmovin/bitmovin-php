@@ -55,18 +55,6 @@ abstract class MuxingResource extends AbstractResource
     }
 
     /**
-     * @return AbstractMuxing[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    protected function listAllMuxings()
-    {
-        /** @var AbstractMuxing[] $muxings */
-        $muxings = $this->listResource();
-
-        return $muxings;
-    }
-
-    /**
      * @param $muxingId
      *
      * @return AbstractMuxing

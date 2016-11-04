@@ -42,16 +42,6 @@ class AACAudioCodecConfigurationResource extends CodecConfigurationResource
     }
 
     /**
-     * @return AACAudioCodecConfiguration[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllCodecConfigurations();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return AACAudioCodecConfiguration[]

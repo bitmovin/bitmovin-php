@@ -55,18 +55,6 @@ abstract class OutputResource extends AbstractResource
     }
 
     /**
-     * @return Output[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    protected function listAllOutputs()
-    {
-        /** @var Output[] $outputs */
-        $outputs = $this->listResource();
-
-        return $outputs;
-    }
-
-    /**
      * @param $outputId
      *
      * @return Output

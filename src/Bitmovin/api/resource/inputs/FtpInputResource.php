@@ -42,16 +42,6 @@ class FtpInputResource extends InputResource
     }
 
     /**
-     * @return FtpInput[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllInputs();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return FtpInput[]

@@ -55,18 +55,6 @@ abstract class CodecConfigurationResource extends AbstractResource
     }
 
     /**
-     * @return CodecConfiguration[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    protected function listAllCodecConfigurations()
-    {
-        /** @var CodecConfiguration[] $codecConfigurations */
-        $codecConfigurations = $this->listResource();
-
-        return $codecConfigurations;
-    }
-
-    /**
      * @param $codecConfigurationId
      *
      * @return CodecConfiguration

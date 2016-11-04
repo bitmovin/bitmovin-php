@@ -185,37 +185,6 @@ abstract class AbstractResource extends AbstractHttpClient
     }
 
     /**
-     * @return \Bitmovin\api\model\AbstractModel[]
-     * @throws BitmovinException
-     */
-    protected function listResource()
-    {
-        try
-        {
-            $completeList = array();
-            $offset = 0;
-            $limit = 100;
-
-            do
-            {
-                $response = $this->listRequest($this->getBaseUri(), $offset, $limit);
-                $items = $this->buildResourcesFromArrayResponse($response);
-                $offset += sizeof($items);
-                foreach ($items as $item)
-                {
-                    $completeList[] = $item;
-                }
-            }
-            while(sizeof($items) >= $limit);
-            return $completeList;
-        }
-        catch (BitmovinException $e)
-        {
-            throw $this->updateException($e);
-        }
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return \Bitmovin\api\model\AbstractModel[]

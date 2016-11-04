@@ -41,16 +41,6 @@ class HttpsInputResource extends InputResource
     }
 
     /**
-     * @return HttpsInput[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllInputs();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return HttpsInput[]

@@ -41,16 +41,6 @@ class S3InputResource extends InputResource
     }
 
     /**
-     * @return S3Input[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllInputs();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return S3Input[]

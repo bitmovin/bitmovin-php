@@ -59,16 +59,6 @@ class Fmp4MuxingResource extends MuxingResource
     }
 
     /**
-     * @return FMP4Muxing[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllMuxings();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return FMP4Muxing[]

@@ -2,7 +2,6 @@
 
 namespace Bitmovin\api\model\encodings\muxing;
 
-use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use JMS\Serializer\Annotation as JMS;
 
 class MP4Muxing extends AbstractMuxing

@@ -131,16 +131,6 @@ class HlsManifestResource extends AbstractResource
     }
 
     /**
-     * @return HlsManifest[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listResource();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return HlsManifest[]

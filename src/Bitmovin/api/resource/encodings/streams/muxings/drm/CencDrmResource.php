@@ -42,16 +42,6 @@ class CencDrmResource extends DrmResource
     }
 
     /**
-     * @return CencDrm[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllDrms();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return CencDrm[]

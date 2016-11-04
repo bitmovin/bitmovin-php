@@ -41,16 +41,6 @@ class GcsOutputResource extends OutputResource
     }
 
     /**
-     * @return GcsOutput[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    public function listAll()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllOutputs();
-    }
-
-    /**
      * @param integer $offset
      * @param integer $limit
      * @return GcsOutput[]
