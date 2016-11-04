@@ -133,15 +133,14 @@ class EncodingResource extends AbstractResource
     }
 
     /**
-     * @return Encoding[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
+     * @param integer $offset
+     * @param integer $limit
+     * @return \Bitmovin\api\model\encodings\Encoding[]
      */
-    public function listAll()
+    public function listPage($offset = 0, $limit = 25)
     {
-        /** @var Encoding[] $encodings */
-        $encodings = $this->listResource();
-
-        return $encodings;
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
     }
 
     /**

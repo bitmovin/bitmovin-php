@@ -27,7 +27,6 @@ abstract class AbstractModel implements ModelInterface
     /**
      * @param string $id
      *
-     * @return self
      */
     protected function setId($id)
     {
@@ -42,7 +41,6 @@ abstract class AbstractModel implements ModelInterface
     /**
      * @param ResponseEnvelope $responseEnvelope
      *
-     * @return self
      */
     public function setResponseEnvelope(ResponseEnvelope $responseEnvelope)
     {

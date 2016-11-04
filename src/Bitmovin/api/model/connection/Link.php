@@ -30,8 +30,6 @@ class Link
 
     /**
      * @param string $href
-     *
-     * @return Link
      */
     public function setHref($href)
     {
@@ -48,8 +46,6 @@ class Link
 
     /**
      * @param string $title
-     *
-     * @return Link
      */
     public function setTitle($title)
     {

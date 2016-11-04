@@ -1,7 +1,6 @@
 <?php
 
 use Bitmovin\api\enum\CloudRegion;
-use Bitmovin\api\enum\Status;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
@@ -17,12 +16,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
 // CONFIGURATION
-$config = array();
-$config['videoInputPath'] = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
-$config['accessKey'] = 'YOUR GCS ACCESS KEY';
-$config['secretKey'] = 'YOUR GCS SECRET KEY';
-$config['bucketName'] = 'YOUR GCS BUCKET NAME';
-$config['prefix'] = 'path/to/your/output/destination/';
+$videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
+$gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
+$gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
+$gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
+$gcs_prefix = 'path/to/your/output/destination/';
 
 $jobContainers = array();
 for ($i = 0; $i < 3; $i++)
@@ -35,7 +33,7 @@ for ($i = 0; $i < 3; $i++)
 
     // CREATE VIDEO STREAM CONFIG FOR 1080p
     $videoStreamConfig_1080 = new H264VideoStreamConfig();
-    $videoStreamConfig_1080->input = new HttpInput($config['videoInputPath']);
+    $videoStreamConfig_1080->input = new HttpInput($videoInputPath);
     $videoStreamConfig_1080->width = 1920;
     $videoStreamConfig_1080->height = 1080;
     $videoStreamConfig_1080->bitrate = 4800000;
@@ -44,7 +42,7 @@ for ($i = 0; $i < 3; $i++)
 
     // CREATE VIDEO STREAM CONFIG FOR 720p
     $videoStreamConfig_720 = new H264VideoStreamConfig();
-    $videoStreamConfig_720->input = new HttpInput($config['videoInputPath']);
+    $videoStreamConfig_720->input = new HttpInput($videoInputPath);
     $videoStreamConfig_720->width = 1280;
     $videoStreamConfig_720->height = 720;
     $videoStreamConfig_720->bitrate = 2400000;
@@ -53,7 +51,7 @@ for ($i = 0; $i < 3; $i++)
 
     // CREATE AUDIO STREAM CONFIG
     $audioConfig = new AudioStreamConfig();
-    $audioConfig->input = new HttpInput($config['videoInputPath']);
+    $audioConfig->input = new HttpInput($videoInputPath);
     $audioConfig->bitrate = 128000;
     $audioConfig->rate = 48000;
     $audioConfig->name = 'English';
@@ -64,7 +62,7 @@ for ($i = 0; $i < 3; $i++)
     // CREATE JOB CONFIG
     $jobConfig = new JobConfig();
     // ASSIGN OUTPUT
-    $jobConfig->output = new GcsOutput($config['accessKey'], $config['secretKey'], $config['bucketName'], $config['prefix']);
+    $jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketName, $gcs_prefix);
     $jobConfig->output->prefix .= "TEST_$i/";
     // ASSIGN ENCODING PROFILES TO JOB
     $jobConfig->encodingProfile = $encodingProfile;
@@ -79,22 +77,10 @@ for ($i = 0; $i < 3; $i++)
 }
 
 // JOBS ARE STARTED - WAIT FOR IT TO FINISH
-do
+foreach ($jobContainers as $jobContainer)
 {
-    $allFinished = true;
-    foreach ($jobContainers as $jobContainer)
-    {
-        $client->updateEncodingJobStatus($jobContainer);
-        foreach ($jobContainer->encodingContainers as $encodingContainer)
-        {
-            if ($encodingContainer->status != Status::FINISHED && $encodingContainer->status != Status::ERROR)
-            {
-                $allFinished = false;
-            }
-        }
-    }
-    sleep(1);
-} while (!$allFinished);
+    $client->waitForJobsToFinish($jobContainer);
+}
 
 // CREATE MANIFESTS
 foreach ($jobContainers as $jobContainer)

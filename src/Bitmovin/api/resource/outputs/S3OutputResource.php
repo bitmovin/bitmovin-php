@@ -41,13 +41,14 @@ class S3OutputResource extends OutputResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
      * @return S3Output[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function listAll()
+    public function listPage($offset = 0, $limit = 25)
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllOutputs();
+        return $this->listResourcePage($offset, $limit);
     }
 
     /**

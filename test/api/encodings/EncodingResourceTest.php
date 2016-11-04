@@ -58,7 +58,7 @@ class EncodingResourceTest extends AbstractBitmovinApiTest
     {
         $apiClient = $this->getApiClient();
 
-        $listResults = $apiClient->encodings()->listAll();
+        $listResults = $apiClient->encodings()->listPage();
         $this->assertTrue(is_array($listResults));
 
         foreach ($listResults as $result)

@@ -33,8 +33,6 @@ class ResponseEnvelope implements IResponse
 
     /**
      * @param string $id
-     *
-     * @return ResponseEnvelope
      */
     public function setId($id)
     {
@@ -43,8 +41,6 @@ class ResponseEnvelope implements IResponse
 
     /**
      * @param string $requestId
-     *
-     * @return ResponseEnvelope
      */
     private function setRequestId($requestId)
     {
@@ -53,8 +49,6 @@ class ResponseEnvelope implements IResponse
 
     /**
      * @param string $status
-     *
-     * @return ResponseEnvelope
      */
     private function setStatus($status)
     {
@@ -63,8 +57,6 @@ class ResponseEnvelope implements IResponse
 
     /**
      * @param ResponseData $data
-     *
-     * @return ResponseEnvelope
      */
     private function setData($data = NULL)
     {
@@ -73,8 +65,6 @@ class ResponseEnvelope implements IResponse
 
     /**
      * @param \stdClass $more
-     *
-     * @return ResponseEnvelope
      */
     private function setMore(\stdClass $more = NULL)
     {

@@ -69,16 +69,6 @@ abstract class DrmResource extends AbstractResource
     }
 
     /**
-     * @return AbstractDrm[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    protected function listAllDrms()
-    {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->listResource();
-    }
-
-    /**
      * @param string $muxingId
      *
      * @return AbstractDrm

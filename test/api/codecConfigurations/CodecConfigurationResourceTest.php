@@ -67,7 +67,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
         $audioAacCodecConfig = new AACAudioCodecConfiguration($name, $bitrate, $rate);
         $createdAACAudioCodecConfig = $this->createAACAudioCodecConfiguration($audioAacCodecConfig);
 
-        $listResults = $apiClient->codecConfigurations()->audioAAC()->listAll();
+        $listResults = $apiClient->codecConfigurations()->audioAAC()->listPage();
         $this->assertTrue(is_array($listResults));
         $this->assertTrue(sizeof($listResults) > 0);
 
@@ -88,7 +88,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
 
         $audioAacCodecConfig = new AACAudioCodecConfiguration($name, $bitrate, $rate);
         $createdAACAudioCodecConfig = $this->createAACAudioCodecConfiguration($audioAacCodecConfig);
-        $resourceId = $apiClient->codecConfigurations()->audioAAC()->listAll()[0]->getId();
+        $resourceId = $apiClient->codecConfigurations()->audioAAC()->listPage()[0]->getId();
 
         $resource = $apiClient->codecConfigurations()->audioAAC()->getById($resourceId);
 
@@ -142,7 +142,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
         $h264VideoCodecConfig = new H264VideoCodecConfiguration($name, $profile, $bitrate, $rate);
         $createdH264VideoCodecConfig = $this->createH264VideoCodecConfiguration($h264VideoCodecConfig);
 
-        $listResults = $apiClient->codecConfigurations()->videoH264()->listAll();
+        $listResults = $apiClient->codecConfigurations()->videoH264()->listPage();
         $this->assertTrue(is_array($listResults));
 
         foreach ($listResults as $result)
@@ -163,7 +163,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
 
         $h264VideoCodecConfig = new H264VideoCodecConfiguration($name, $profile, $bitrate, $rate);
         $createdH264VideoCodecConfig = $this->createH264VideoCodecConfiguration($h264VideoCodecConfig);
-        $resourceId = $apiClient->codecConfigurations()->videoH264()->listAll()[0]->getId();
+        $resourceId = $apiClient->codecConfigurations()->videoH264()->listPage()[0]->getId();
 
         $resource = $apiClient->codecConfigurations()->videoH264()->getById($resourceId);
 
@@ -218,7 +218,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
         $h265VideoCodecConfig = new H265VideoCodecConfiguration($name, $profile, $bitrate, $rate);
         $createdH265VideoCodecConfig = $this->createH265VideoCodecConfiguration($h265VideoCodecConfig);
 
-        $listResults = $apiClient->codecConfigurations()->videoH265()->listAll();
+        $listResults = $apiClient->codecConfigurations()->videoH265()->listPage();
         $this->assertTrue(is_array($listResults));
 
         foreach ($listResults as $result)
@@ -239,7 +239,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
 
         $h265VideoCodecConfig = new H265VideoCodecConfiguration($name, $profile, $bitrate, $rate);
         $createdH265VideoCodecConfig = $this->createH265VideoCodecConfiguration($h265VideoCodecConfig);
-        $resourceId = $apiClient->codecConfigurations()->videoH265()->listAll()[0]->getId();
+        $resourceId = $apiClient->codecConfigurations()->videoH265()->listPage()[0]->getId();
 
         $resource = $apiClient->codecConfigurations()->videoH265()->getById($resourceId);
 

@@ -17,4 +17,16 @@ class OutputConverterFactory
         return $convertedOutput;
     }
 
+    /**
+     * @param \Bitmovin\output\FtpOutput $output
+     * @return FtpOutput
+     */
+    public static function createFromFtpOutput(\Bitmovin\output\FtpOutput $output)
+    {
+        $convertedOutput = new FtpOutput($output->host, $output->username, $output->password);
+        $convertedOutput->setPassive($output->passive);
+        $convertedOutput->setPort($output->port);
+        return $convertedOutput;
+    }
+
 }

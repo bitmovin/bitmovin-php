@@ -42,13 +42,14 @@ class H265VideoCodecConfigurationResource extends CodecConfigurationResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
      * @return H265VideoCodecConfiguration[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function listAll()
+    public function listPage($offset = 0, $limit = 25)
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllCodecConfigurations();
+        return $this->listResourcePage($offset, $limit);
     }
 
     /**

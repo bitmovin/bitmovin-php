@@ -55,18 +55,6 @@ abstract class InputResource extends AbstractResource
     }
 
     /**
-     * @return Input[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
-     */
-    protected function listAllInputs()
-    {
-        /** @var Input[] $inputs */
-        $inputs = $this->listResource();
-
-        return $inputs;
-    }
-
-    /**
      * @param $inputId
      *
      * @return Input

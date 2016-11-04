@@ -18,8 +18,6 @@ class ErrorResponseEnvelope extends ResponseEnvelope
 
     /**
      * @param ErrorResponseData|NULL $data
-     *
-     * @return $this
      */
     private function setData(ErrorResponseData $data = NULL)
     {

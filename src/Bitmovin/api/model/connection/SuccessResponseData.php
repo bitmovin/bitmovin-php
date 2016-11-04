@@ -24,8 +24,6 @@ class SuccessResponseData extends ResponseData
 
     /**
      * @param $result
-     *
-     * @return $this
      */
     public function setResult($result)
     {
@@ -34,8 +32,6 @@ class SuccessResponseData extends ResponseData
 
     /**
      * @param array $messages
-     *
-     * @return $this
      */
     public function setMessages(array $messages)
     {
