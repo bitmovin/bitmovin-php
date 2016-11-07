@@ -43,8 +43,6 @@ class ErrorResponseData extends ResponseData
 
     /**
      * @param int $code
-     *
-     * @return ErrorResponseData
      */
     public function setCode($code)
     {
@@ -61,8 +59,6 @@ class ErrorResponseData extends ResponseData
 
     /**
      * @param string $message
-     *
-     * @return ErrorResponseData
      */
     public function setMessage($message)
     {
@@ -79,8 +75,6 @@ class ErrorResponseData extends ResponseData
 
     /**
      * @param string $developerMessage
-     *
-     * @return ErrorResponseData
      */
     public function setDeveloperMessage($developerMessage)
     {
@@ -97,8 +91,6 @@ class ErrorResponseData extends ResponseData
 
     /**
      * @param Link[] $links
-     *
-     * @return ErrorResponseData
      */
     public function setLinks(array $links)
     {
@@ -115,8 +107,6 @@ class ErrorResponseData extends ResponseData
 
     /**
      * @param Message[] $details
-     *
-     * @return ErrorResponseData
      */
     public function setDetails(array $details)
     {

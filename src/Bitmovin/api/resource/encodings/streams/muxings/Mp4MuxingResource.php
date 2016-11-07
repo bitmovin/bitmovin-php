@@ -53,13 +53,14 @@ class Mp4MuxingResource extends MuxingResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
      * @return MP4Muxing[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function listAll()
+    public function listPage($offset = 0, $limit = 25)
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllMuxings();
+        return $this->listResourcePage($offset, $limit);
     }
 
     /**

@@ -64,15 +64,14 @@ class StreamResource extends AbstractResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
      * @return Stream[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function listAll()
+    public function listPage($offset = 0, $limit = 25)
     {
-        /** @var Stream[] $streams */
-        $streams = $this->listResource();
-
-        return $streams;
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->listResourcePage($offset, $limit);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace input;
+namespace Bitmovin\test\input;
 
 
 use Bitmovin\api\model\inputs\HttpsInput;

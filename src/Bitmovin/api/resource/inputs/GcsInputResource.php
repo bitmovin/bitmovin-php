@@ -41,13 +41,14 @@ class GcsInputResource extends InputResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
      * @return GcsInput[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function listAll()
+    public function listPage($offset = 0, $limit = 25)
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllInputs();
+        return $this->listResourcePage($offset, $limit);
     }
 
     /**

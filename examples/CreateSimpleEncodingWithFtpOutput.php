@@ -9,7 +9,7 @@ use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
-use Bitmovin\output\GcsOutput;
+use Bitmovin\output\FtpOutput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -17,10 +17,10 @@ $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
 // CONFIGURATION
 $videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
-$gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
-$gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
-$gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
-$gcs_prefix = 'path/to/your/output/destination/';
+$ftp_host = 'INSERT YOUR FTP HOST HERE';
+$ftp_username = 'INSERT YOUR FTP USERNAME HERE';
+$ftp_password = 'INSERT YOUR FTP PASSWORD HERE';
+$ftp_prefix = 'path/to/your/output/destination/';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
@@ -58,7 +58,7 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
-$jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketName, $gcs_prefix);
+$jobConfig->output = new FtpOutput($ftp_host, $ftp_username, $ftp_password, $ftp_prefix);
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 // ENABLE DASH OUTPUT

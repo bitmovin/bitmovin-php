@@ -42,13 +42,14 @@ class CencDrmResource extends DrmResource
     }
 
     /**
+     * @param integer $offset
+     * @param integer $limit
      * @return CencDrm[]
-     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function listAll()
+    public function listPage($offset = 0, $limit = 25)
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return parent::listAllDrms();
+        return $this->listResourcePage($offset, $limit);
     }
 
     /**
