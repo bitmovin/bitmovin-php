@@ -198,7 +198,7 @@ $fmp4MuxingAAC48000 = $apiClient->encodings()->muxings($encoding)->fmp4Muxing()-
 $apiClient->encodings()->startLivestream($encoding, $config['streamKey']);
 
 // WAIT UNTIL LIVE STREAM IS RUNNING
-$status = Status::ERROR;
+$status = '';
 while (true)
 {
     $status = $apiClient->encodings()->status($encoding)->getStatus();
@@ -236,7 +236,7 @@ if ($status == Status::RUNNING)
     $apiClient->encodings()->stopLivestream($encoding);
 
     // WAIT UNTIL LIVE STREAM IS FINISHED
-    $status = Status::ERROR;
+    $status = '';
     while (true)
     {
         $status = $apiClient->encodings()->status($encoding)->getStatus();
