@@ -3,6 +3,8 @@
 
 namespace Bitmovin\api\model\inputs;
 
+use Bitmovin\api\ApiClient;
+
 class InputConverterFactory
 {
 
@@ -66,6 +68,11 @@ class InputConverterFactory
             return $ftpInput;
         }
         throw new \InvalidArgumentException();
+    }
+
+    public static function createRtmpInput(ApiClient $client)
+    {
+        return $client->inputs()->rtmp()->listPage()[0];
     }
 
 }

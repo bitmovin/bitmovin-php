@@ -6,6 +6,7 @@ namespace Bitmovin\test\api\container;
 
 use Bitmovin\api\container\JobContainer;
 use Bitmovin\configs\JobConfig;
+use Bitmovin\configs\LiveStreamJobConfig;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\test\AbstractBitmovinApiTest;
 
@@ -48,4 +49,14 @@ class JobContainerTest extends AbstractBitmovinApiTest
         $this->assertEquals('test_prefix/test/', $jobContainer->getOutputPath());
     }
 
+    public function testLiveStreamJobConfig()
+    {
+        $jobContainer = new JobContainer();
+        $jobContainer->job = new LiveStreamJobConfig();
+
+        $this->assertEquals($jobContainer->job instanceof LiveStreamJobConfig, true);
+        $jobContainer->job->streamKey = 'SomeKey';
+
+        $this->assertEquals($jobContainer->job->streamKey, 'SomeKey');
+    }
 }

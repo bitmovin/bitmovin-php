@@ -17,6 +17,7 @@ final class ApiUrls
     const ENCODING_GET = "encoding/encodings/{encoding_id}";
     const ENCODING_START = "encoding/encodings/{encoding_id}/start";
     const ENCODING_STOP = "encoding/encodings/{encoding_id}/stop";
+    const ENCODING_DETAILS_LIVE = "encoding/encodings/{encoding_id}/live";
     const ENCODING_START_LIVE = "encoding/encodings/{encoding_id}/live/start";
     const ENCODING_STOP_LIVE = "encoding/encodings/{encoding_id}/live/stop";
     const ENCODING_STATUS = "encoding/encodings/{encoding_id}/status";
