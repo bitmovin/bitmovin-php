@@ -94,7 +94,7 @@ class InputContainer
         }
         if ($input instanceof RtmpInput)
         {
-            return $this->rtmp()->listAll()[0];
+            return $this->rtmp()->listPage()[0];
         }
         throw new \InvalidArgumentException();
     }

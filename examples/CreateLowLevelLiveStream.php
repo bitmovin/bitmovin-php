@@ -16,21 +16,19 @@ use Bitmovin\api\model\encodings\helper\InputStream;
 use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\model\encodings\muxing\MuxingStream;
 use Bitmovin\api\model\encodings\streams\Stream;
-use Bitmovin\api\model\inputs\RtmpInput;
 use Bitmovin\api\model\outputs\GcsOutput;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // CREATE API CLIENT
 $apiClient = new ApiClient('YOUR API KEY');
 
 // CONFIGURATION
-$config = array();
-$config['accessKey']  = 'YOUR GCS ACCESS KEY';
-$config['secretKey']  = 'YOUR GCS SECRET KEY';
-$config['bucketName'] = 'YOUR GCS BUCKET NAME';
-$config['prefix']     = 'path/to/your/output/destination/';
-$config['streamKey']  = 'YOUR STREAM KEY';
+$gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
+$gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
+$gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
+$gcs_prefix = 'path/to/your/output/destination/';
+$stream_key = 'INSERT YOUR STREAM KEY HERE';
 
 // CREATE ENCODING
 $encoding = new Encoding('LIVE-ENCODING-DEMO');
@@ -39,11 +37,10 @@ $encoding->setDescription('LIVE-ENCODING-DEMO');
 $encoding = $apiClient->encodings()->create($encoding);
 
 // GET RTMP INPUT
-$input = new RtmpInput();
-$input = $apiClient->inputs()->rtmp()->listAll()[0];
+$input = $apiClient->inputs()->rtmp()->listPage()[0];
 
 // CREATE OUTPUT
-$output = new GcsOutput($config['bucketName'], $config['accessKey'], $config['secretKey']);
+$output = new GcsOutput($gcs_bucketName, $gcs_accessKey, $gcs_secretKey);
 $output = $apiClient->outputs()->create($output);
 
 // CREATE VIDEO STREAM FOR 1080p
@@ -59,7 +56,7 @@ $stream1080p = $apiClient->encodings()->streams($encoding)->create($stream1080p)
 
 // CREATE MUXING FOR 1080p
 $encodingOutput1080p = new EncodingOutput($output);
-$encodingOutput1080p->setOutputPath($config['prefix'] . 'video/1080p');
+$encodingOutput1080p->setOutputPath($gcs_prefix . 'video/1080p');
 $encodingOutput1080p->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
 $muxingStream1080p = new MuxingStream();
 $muxingStream1080p->setStreamId($stream1080p->getId());
@@ -84,7 +81,7 @@ $stream720p = $apiClient->encodings()->streams($encoding)->create($stream720p);
 
 // CREATE MUXING FOR 720p
 $encodingOutput720p = new EncodingOutput($output);
-$encodingOutput720p->setOutputPath($config['prefix'] . 'video/720p');
+$encodingOutput720p->setOutputPath($gcs_prefix . 'video/720p');
 $encodingOutput720p->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
 $muxingStream720p = new MuxingStream();
 $muxingStream720p->setStreamId($stream720p->getId());
@@ -109,7 +106,7 @@ $stream480p = $apiClient->encodings()->streams($encoding)->create($stream480p);
 
 // CREATE MUXING FOR 480p
 $encodingOutput480p = new EncodingOutput($output);
-$encodingOutput480p->setOutputPath($config['prefix'] . 'video/480p');
+$encodingOutput480p->setOutputPath($gcs_prefix . 'video/480p');
 $encodingOutput480p->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
 $muxingStream480p = new MuxingStream();
 $muxingStream480p->setStreamId($stream480p->getId());
@@ -134,7 +131,7 @@ $stream360p = $apiClient->encodings()->streams($encoding)->create($stream360p);
 
 // CREATE MUXING FOR 360p
 $encodingOutput360p = new EncodingOutput($output);
-$encodingOutput360p->setOutputPath($config['prefix'] . 'video/360p');
+$encodingOutput360p->setOutputPath($gcs_prefix . 'video/360p');
 $encodingOutput360p->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
 $muxingStream360p = new MuxingStream();
 $muxingStream360p->setStreamId($stream360p->getId());
@@ -159,7 +156,7 @@ $stream240p = $apiClient->encodings()->streams($encoding)->create($stream240p);
 
 // CREATE MUXING FOR 240p
 $encodingOutput240p = new EncodingOutput($output);
-$encodingOutput240p->setOutputPath($config['prefix'] . 'video/240p');
+$encodingOutput240p->setOutputPath($gcs_prefix . 'video/240p');
 $encodingOutput240p->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
 $muxingStream240p = new MuxingStream();
 $muxingStream240p->setStreamId($stream240p->getId());
@@ -182,7 +179,7 @@ $streamAAC48000 = $apiClient->encodings()->streams($encoding)->create($streamAAC
 
 // CREATE MUXING FOR AUDIO
 $encodingOutputAAC48000 = new EncodingOutput($output);
-$encodingOutputAAC48000->setOutputPath($config['prefix'] . 'audio/128kbps');
+$encodingOutputAAC48000->setOutputPath($gcs_prefix . 'audio/128kbps');
 $encodingOutputAAC48000->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
 $muxingStreamAAC48000 = new MuxingStream();
 $muxingStreamAAC48000->setStreamId($streamAAC48000->getId());
@@ -195,7 +192,7 @@ $fmp4MuxingAAC48000->setStreams(array($muxingStreamAAC48000));
 $fmp4MuxingAAC48000 = $apiClient->encodings()->muxings($encoding)->fmp4Muxing()->create($fmp4MuxingAAC48000);
 
 // START LIVE STREAM
-$apiClient->encodings()->startLivestream($encoding, $config['streamKey']);
+$apiClient->encodings()->startLivestream($encoding, $stream_key);
 
 // WAIT UNTIL LIVE STREAM IS RUNNING
 $status = '';

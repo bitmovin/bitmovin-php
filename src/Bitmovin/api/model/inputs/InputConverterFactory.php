@@ -3,6 +3,8 @@
 
 namespace Bitmovin\api\model\inputs;
 
+use Bitmovin\api\ApiClient;
+
 class InputConverterFactory
 {
 
@@ -70,7 +72,7 @@ class InputConverterFactory
 
     public static function createRtmpInput(ApiClient $client)
     {
-        return $client->inputs()->rtmp()->listAll()[0];
+        return $client->inputs()->rtmp()->listPage()[0];
     }
 
 }
