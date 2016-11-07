@@ -196,24 +196,20 @@ $apiClient->encodings()->startLivestream($encoding, $stream_key);
 
 // WAIT UNTIL LIVE STREAM IS RUNNING
 $status = '';
-while (true)
+do
 {
-    $status = $apiClient->encodings()->status($encoding)->getStatus();
-    if ($status == Status::ERROR || $status == Status::RUNNING)
-    {
-        break;
-    }
     sleep(1);
+    $status = $apiClient->encodings()->status($encoding)->getStatus();
 }
+while ($status != Status::ERROR && $status != Status::RUNNING);
 
 // WAIT UNTIL LIVE STREAM DATA ARE AVAILABLE
 $liveEncodingDetails = null;
-while (true)
+do
 {
     try
     {
         $liveEncodingDetails = $apiClient->encodings()->getLivestreamDetails($encoding);
-        break;
     }
     catch(BitmovinException $exception)
     {
@@ -222,9 +218,11 @@ while (true)
             print 'Got unexpected exception with code ' . strval($exception->getCode()) . ': ' . $exception->getMessage();
             throw $exception;
         }
+        sleep(1);
     }
-    sleep(1);
 }
+while ($liveEncodingDetails == null);
+
 print 'Live stream ' . $liveEncodingDetails->getStreamKey() . ' is running with IP ' . $liveEncodingDetails->getEncoderIp();
 
 // STOP LIVE STREAM
@@ -234,13 +232,12 @@ if ($status == Status::RUNNING)
 
     // WAIT UNTIL LIVE STREAM IS FINISHED
     $status = '';
-    while (true)
+    do
     {
-        $status = $apiClient->encodings()->status($encoding)->getStatus();
-        if ($status == Status::ERROR || $status == Status::FINISHED)
-        {
-            break;
-        }
         sleep(1);
+        $status = $apiClient->encodings()->status($encoding)->getStatus();
     }
+    while($status != Status::ERROR && $status != Status::FINISHED);
 }
+
+print 'Live stream has reached final status ' . $status;
