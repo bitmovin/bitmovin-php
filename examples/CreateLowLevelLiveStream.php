@@ -176,7 +176,7 @@ $audioConfig48000 = new AACAudioCodecConfiguration('StreamDemoAAC48000', 128000,
 $audioConfig48000->setDescription('StreamDemoAAC48000');
 $audioConfig48000 = $apiClient->codecConfigurations()->audioAAC()->create($audioConfig48000);
 $inputStreamAAC48000 = new InputStream($input, 'live', SelectionMode::AUTO);
-$inputStreamAAC48000->setPosition(0);
+$inputStreamAAC48000->setPosition(1);
 $streamAAC48000 = new Stream($audioConfig48000, array($inputStreamAAC48000));
 $streamAAC48000 = $apiClient->encodings()->streams($encoding)->create($streamAAC48000);
 
