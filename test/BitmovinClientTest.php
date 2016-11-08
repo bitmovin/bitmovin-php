@@ -97,7 +97,7 @@ class BitmovinClientTest extends \Bitmovin\test\AbstractBitmovinApiTest
         /** @var EncodingContainer[] $encodingContainer */
         $jobContainer = new \Bitmovin\api\container\JobContainer();
         $jobContainer->encodingContainers = [];
-        $jobContainer->encodingContainers[] = new EncodingContainer(new \Bitmovin\api\model\inputs\HttpInput("www.test1.com"), new HttpInput("testurl"));
+        $jobContainer->encodingContainers[] = new EncodingContainer($apiClient, new \Bitmovin\api\model\inputs\HttpInput("www.test1.com"), new HttpInput("testurl"));
         self::callMethod($client, 'createInputs', array($jobContainer));
         $this->assertTrue(RegexpHelper::isUUID($jobContainer->encodingContainers[0]->apiInput->getId()), "Valid UUID expected");
 

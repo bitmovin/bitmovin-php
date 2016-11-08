@@ -92,6 +92,10 @@ class InputContainer
         {
             return $this->sftp()->create($input);
         }
+        if ($input instanceof RtmpInput)
+        {
+            return $this->rtmp()->listPage()[0];
+        }
         throw new \InvalidArgumentException();
     }
 

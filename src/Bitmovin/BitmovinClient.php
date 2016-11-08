@@ -11,6 +11,7 @@ use Bitmovin\api\container\JobContainer;
 use Bitmovin\api\enum\AclPermission;
 use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\api\enum\Status;
+use Bitmovin\api\exceptions\BitmovinException;
 use Bitmovin\api\factories\manifest\DashManifestFactory;
 use Bitmovin\api\factories\manifest\DashProtectedManifestFactory;
 use Bitmovin\api\factories\manifest\HlsManifestFactory;
@@ -22,6 +23,7 @@ use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\helper\Acl;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
+use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\api\model\inputs\InputConverterFactory;
@@ -32,12 +34,14 @@ use Bitmovin\api\model\outputs\OutputConverterFactory;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\JobConfig;
+use Bitmovin\configs\LiveStreamJobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
-use Bitmovin\input\HttpInput;
 use Bitmovin\output\FtpOutput;
+use Bitmovin\input\HttpInput;
+use Bitmovin\input\RtmpInput;
 use Bitmovin\output\GcsOutput;
 use Icecave\Parity\Parity;
 
@@ -75,6 +79,10 @@ class BitmovinClient
         {
             return InputConverterFactory::createFromFtpInput($stream->input);
         }
+        else if ($stream->input instanceof RtmpInput)
+        {
+            $convertedInput = InputConverterFactory::createRtmpInput($this->apiClient);
+        }
         return null;
     }
 
@@ -110,7 +118,7 @@ class BitmovinClient
             }
             if ($item == null)
             {
-                $item = new EncodingContainer($convertedInput, $stream->input);
+                $item = new EncodingContainer($this->apiClient, $convertedInput, $stream->input);
                 $jobContainer->encodingContainers[] = $item;
             }
             $codecConfigContainer = new CodecConfigContainer();
@@ -124,6 +132,9 @@ class BitmovinClient
      */
     private function createInputs(JobContainer $jobContainer)
     {
+        if ($jobContainer->job instanceof LiveStreamJobConfig)
+            return;
+
         /** @var Input[] $inputs */
         $inputs = array();
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
@@ -293,7 +304,21 @@ class BitmovinClient
     {
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            $this->apiClient->encodings()->start($encodingContainer->encoding);
+            if ($jobContainer->job instanceof LiveStreamJobConfig)
+                $this->apiClient->encodings()->startLivestream($encodingContainer->encoding, $jobContainer->job->streamKey);
+            else
+                $this->apiClient->encodings()->start($encodingContainer->encoding);
+        }
+    }
+
+    public function stopEncodings(JobContainer $jobContainer)
+    {
+        foreach ($jobContainer->encodingContainers as &$encodingContainer)
+        {
+            if ($jobContainer->job instanceof LiveStreamJobConfig)
+                $this->apiClient->encodings()->stopLivestream($encodingContainer->encoding);
+            else
+                $this->apiClient->encodings()->stop($encodingContainer->encoding);
         }
     }
 
@@ -308,6 +333,20 @@ class BitmovinClient
 
     public function waitForJobsToFinish(JobContainer $jobContainer)
     {
+        return $this->waitForJobsToReachState($jobContainer, Status::FINISHED);
+    }
+
+    public function waitForJobsToStart(JobContainer $jobContainer)
+    {
+        return $this->waitForJobsToReachState($jobContainer, Status::RUNNING);
+    }
+
+    /**
+     * @param JobContainer $jobContainer
+     * @param string $expectedStatus
+     */
+    private function waitForJobsToReachState(JobContainer $jobContainer, $expectedStatus)
+    {
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
             $status = null;
@@ -315,7 +354,7 @@ class BitmovinClient
             {
                 $status = $this->apiClient->encodings()->status($encodingContainer->encoding);
                 $encodingContainer->status = $status->getStatus();
-                if ($status->getStatus() == Status::ERROR || $status->getStatus() == Status::FINISHED)
+                if ($status->getStatus() == Status::ERROR || $status->getStatus() == $expectedStatus)
                 {
                     break;
                 }
@@ -463,7 +502,7 @@ class BitmovinClient
 
     /**
      * @param JobConfig $job
-     * @return string
+     * @return JobContainer
      */
     public function runJobAndWaitForCompletion(JobConfig $job)
     {
@@ -471,21 +510,7 @@ class BitmovinClient
         $this->waitForJobsToFinish($jobContainer);
         $this->createDashManifest($jobContainer);
         $this->createHlsManifest($jobContainer);
-        foreach ($jobContainer->encodingContainers as $encodingContainer)
-        {
-            if ($encodingContainer->status != Status::FINISHED)
-            {
-                return Status::ERROR;
-            }
-        }
-        foreach ($jobContainer->job->outputFormat as $outputFormat)
-        {
-            if ($outputFormat->status != Status::FINISHED)
-            {
-                return Status::ERROR;
-            }
-        }
-        return Status::FINISHED;
+        return $jobContainer;
     }
 
     /**
@@ -507,4 +532,49 @@ class BitmovinClient
         return $jobContainer;
     }
 
+    /**
+     * @param JobContainer $jobContainer
+     * @return array(LiveEncodingDetails)
+     * @throws BitmovinException
+     */
+    public function getLiveStreamDataWhenAvailable(JobContainer $jobContainer)
+    {
+        $liveEncodingDetailsArray = array();
+
+        foreach ($jobContainer->encodingContainers as $encodingContainer)
+        {
+            array_push($liveEncodingDetailsArray, $this->getLiveStreamDataForEncodingWhenAvailable($encodingContainer->encoding));
+        }
+
+        return $liveEncodingDetailsArray;
+    }
+
+    /**
+     * @param Encoding $encoding
+     * @return LiveEncodingDetails|null
+     * @throws BitmovinException
+     */
+    private function getLiveStreamDataForEncodingWhenAvailable(Encoding $encoding)
+    {
+        $liveEncodingDetails = null;
+
+        while (true)
+        {
+            try
+            {
+                $liveEncodingDetails = $this->apiClient->encodings()->getLivestreamDetails($encoding);
+                break;
+            }
+            catch(BitmovinException $exception)
+            {
+                if ($exception->getCode() != 400)
+                {
+                    throw $exception;
+                }
+            }
+            sleep(1);
+        }
+
+        return $liveEncodingDetails;
+    }
 }
