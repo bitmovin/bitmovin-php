@@ -4,6 +4,7 @@
 namespace Bitmovin\api\container;
 
 
+use Bitmovin\api\enum\Status;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\output\FtpOutput;
@@ -26,6 +27,17 @@ class JobContainer
      * @var Output
      */
     public $apiOutput;
+
+    public function deleteFinishedEncodings()
+    {
+        foreach ($this->encodingContainers as $encodingContainer)
+        {
+            if ($encodingContainer->status == Status::FINISHED)
+            {
+                $encodingContainer->deleteEncoding();
+            }
+        }
+    }
 
     /**
      * @param $prefix

@@ -118,7 +118,7 @@ class BitmovinClient
             }
             if ($item == null)
             {
-                $item = new EncodingContainer($convertedInput, $stream->input);
+                $item = new EncodingContainer($this->apiClient, $convertedInput, $stream->input);
                 $jobContainer->encodingContainers[] = $item;
             }
             $codecConfigContainer = new CodecConfigContainer();
