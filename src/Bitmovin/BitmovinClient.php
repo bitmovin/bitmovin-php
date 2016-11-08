@@ -502,7 +502,7 @@ class BitmovinClient
 
     /**
      * @param JobConfig $job
-     * @return string
+     * @return JobContainer
      */
     public function runJobAndWaitForCompletion(JobConfig $job)
     {
@@ -510,21 +510,7 @@ class BitmovinClient
         $this->waitForJobsToFinish($jobContainer);
         $this->createDashManifest($jobContainer);
         $this->createHlsManifest($jobContainer);
-        foreach ($jobContainer->encodingContainers as $encodingContainer)
-        {
-            if ($encodingContainer->status != Status::FINISHED)
-            {
-                return Status::ERROR;
-            }
-        }
-        foreach ($jobContainer->job->outputFormat as $outputFormat)
-        {
-            if ($outputFormat->status != Status::FINISHED)
-            {
-                return Status::ERROR;
-            }
-        }
-        return Status::FINISHED;
+        return $jobContainer;
     }
 
     /**
