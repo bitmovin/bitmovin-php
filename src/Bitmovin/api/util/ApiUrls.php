@@ -40,6 +40,8 @@ final class ApiUrls
     const ENCODING_MUXINGS_FMP4_DRM_CLEARKEY = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}/drm/clearkey";
     const ENCODING_MUXINGS_FMP4_DRM_CENC = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}/drm/cenc";
 
+    const ENCODING_MUXINGS_MP4_DRM_PLAYREADY = "encoding/encodings/{encoding_id}/muxings/mp4/{muxing_id}/drm/playready";
+
     const INPUTS = "encoding/inputs";
     const INPUT_RTMP = "encoding/inputs/rtmp";
     const INPUT_HTTP = "encoding/inputs/http";
@@ -84,5 +86,13 @@ final class ApiUrls
     const MANIFEST_HLS_STOP = "encoding/manifests/hls/{manifest_id}/stop";
     const MANIFEST_HLS_RESTART = "encoding/manifests/hls/{manifest_id}/restart";
     const MANIFEST_HLS_STATUS = "encoding/manifests/hls/{manifest_id}/status";
+
+    const MANIFEST_SMOOTH = "encoding/manifests/smooth";
+    const MANIFEST_SMOOTH_START = "encoding/manifests/smooth/{manifest_id}/start";
+    const MANIFEST_SMOOTH_STOP = "encoding/manifests/smooth/{manifest_id}/stop";
+    const MANIFEST_SMOOTH_RESTART = "encoding/manifests/smooth/{manifest_id}/restart";
+    const MANIFEST_SMOOTH_STATUS = "encoding/manifests/smooth/{manifest_id}/status";
+    const MANIFEST_SMOOTH_REPRESENTATION = "encoding/manifests/smooth/{manifest_id}/representations/mp4";
+    const MANIFEST_SMOOTH_CONTENT_PROTECTION = "encoding/manifests/smooth/{manifest_id}/contentprotection";
 
 }

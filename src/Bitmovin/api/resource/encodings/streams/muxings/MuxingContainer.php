@@ -33,7 +33,7 @@ class MuxingContainer
         $baseUriFmp4 = RouteHelper::buildURI(ApiUrls::ENCODING_MUXINGS_FMP4, $routeReplacementMap);
         $baseUriTs = RouteHelper::buildURI(ApiUrls::ENCODING_MUXINGS_TS, $routeReplacementMap);
 
-        $this->mp4Muxing = new Mp4MuxingResource($baseUriMp4, MP4Muxing::class, $apiKey);
+        $this->mp4Muxing = new Mp4MuxingResource($encoding, $baseUriMp4, MP4Muxing::class, $apiKey);
         $this->fmp4Muxing = new Fmp4MuxingResource($encoding, $baseUriFmp4, FMP4Muxing::class, $apiKey);
         $this->tsMuxing = new TsMuxingResource($baseUriTs, TSMuxing::class, $apiKey);
     }
