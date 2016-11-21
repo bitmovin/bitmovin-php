@@ -2,21 +2,27 @@
 
 namespace Bitmovin\api\resource\encodings\streams\muxings;
 
+use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\muxing\MP4Muxing;
+use Bitmovin\api\resource\encodings\streams\muxings\drm\MP4DrmContainer;
 
 class Mp4MuxingResource extends MuxingResource
 {
+    /** @var Encoding */
+    private $encoding;
 
     /**
      * Fmp4MuxingResource constructor.
      *
-     * @param string $baseUri
-     * @param string $modelClassName
-     * @param string $apiKey
+     * @param Encoding $encoding
+     * @param string   $baseUri
+     * @param string   $modelClassName
+     * @param string   $apiKey
      */
-    public function __construct($baseUri, $modelClassName, $apiKey)
+    public function __construct(Encoding $encoding, $baseUri, $modelClassName, $apiKey)
     {
         parent::__construct($baseUri, $modelClassName, $apiKey);
+        $this->encoding = $encoding;
     }
 
     /**
@@ -84,4 +90,14 @@ class Mp4MuxingResource extends MuxingResource
     {
         return parent::deleteMuxingById($mp4MuxingId);
     }
+
+    /**
+     * @param MP4Muxing $muxing
+     * @return MP4DrmContainer
+     */
+    public function drm(MP4Muxing $muxing)
+    {
+        return new MP4DrmContainer($this->encoding, $muxing, $this->getApiKey());
+    }
+
 }
