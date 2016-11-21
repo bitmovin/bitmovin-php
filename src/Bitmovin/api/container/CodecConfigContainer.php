@@ -76,6 +76,22 @@ class CodecConfigContainer
         return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/hls/');
     }
 
+    public function getSmoothStreamingVideoOutputPath(JobContainer $jobContainer)
+    {
+        /** @var AbstractVideoStreamConfig $codecConfigVideo */
+        $codecConfigVideo = $this->codecConfig;
+        $name = $codecConfigVideo->bitrate;
+        return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/smoothstreaming/');
+    }
+
+    public function getSmoothStreamingPlayReadyVideoOutputPath(JobContainer $jobContainer)
+    {
+        /** @var AbstractVideoStreamConfig $codecConfigVideo */
+        $codecConfigVideo = $this->codecConfig;
+        $name = $codecConfigVideo->bitrate;
+        return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/smoothstreaming_playready/');
+    }
+
     public function getDashCencAudioOutputPath(JobContainer $jobContainer)
     {
         /** @var AudioStreamConfig $codecConfigAudio */
@@ -98,6 +114,22 @@ class CodecConfigContainer
         $codecConfigAudio = $this->codecConfig;
         $name = $codecConfigAudio->bitrate . '_' . $codecConfigAudio->lang;
         return $this->combinePath($jobContainer->getOutputPath(), static::AUDIO, $name, '/hls/');
+    }
+
+    public function getSmoothStreamingAudioOutputPath(JobContainer $jobContainer)
+    {
+        /** @var AudioStreamConfig $codecConfigAudio */
+        $codecConfigAudio = $this->codecConfig;
+        $name = $codecConfigAudio->bitrate . '_' . $codecConfigAudio->lang;
+        return $this->combinePath($jobContainer->getOutputPath(), static::AUDIO, $name, '/smoothstreaming/');
+    }
+
+    public function getSmoothStreamingPlayReadyAudioOutputPath(JobContainer $jobContainer)
+    {
+        /** @var AudioStreamConfig $codecConfigAudio */
+        $codecConfigAudio = $this->codecConfig;
+        $name = $codecConfigAudio->bitrate . '_' . $codecConfigAudio->lang;
+        return $this->combinePath($jobContainer->getOutputPath(), static::AUDIO, $name, '/smoothstreaming_playready/');
     }
 
 }

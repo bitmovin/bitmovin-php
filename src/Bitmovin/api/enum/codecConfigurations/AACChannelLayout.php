@@ -26,7 +26,7 @@ class AACChannelLayout extends AbstractEnum
     const CL_6_0 = '6.0';
     const CL_6_0_FRONT = '6.0_FRONT';
     const CL_6_1 = '6.1';
-    const CL_6_1_BACK = '6.0_FRONT';
+    const CL_6_1_BACK = '6.1_BACK';
     const CL_6_1_FRONT = '6.1_FRONT';
     const CL_7_0 = '7.0';
     const CL_7_0_FRONT = '7.0_FRONT';

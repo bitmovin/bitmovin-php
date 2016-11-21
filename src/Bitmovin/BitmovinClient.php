@@ -15,6 +15,7 @@ use Bitmovin\api\exceptions\BitmovinException;
 use Bitmovin\api\factories\manifest\DashManifestFactory;
 use Bitmovin\api\factories\manifest\DashProtectedManifestFactory;
 use Bitmovin\api\factories\manifest\HlsManifestFactory;
+use Bitmovin\api\factories\manifest\SmoothStreamingManifestFactory;
 use Bitmovin\api\factories\muxing\MuxingFactory;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\CodecConfiguration;
@@ -30,6 +31,7 @@ use Bitmovin\api\model\inputs\InputConverterFactory;
 use Bitmovin\api\model\manifests\dash\DashManifest;
 use Bitmovin\api\model\manifests\dash\Period;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
+use Bitmovin\api\model\manifests\smoothstreaming\SmoothStreamingManifest;
 use Bitmovin\api\model\outputs\OutputConverterFactory;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
@@ -37,6 +39,7 @@ use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\LiveStreamJobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
+use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
 use Bitmovin\output\FtpOutput;
@@ -81,7 +84,7 @@ class BitmovinClient
         }
         else if ($stream->input instanceof RtmpInput)
         {
-            $convertedInput = InputConverterFactory::createRtmpInput($this->apiClient);
+            return InputConverterFactory::createRtmpInput($this->apiClient);
         }
         return null;
     }
@@ -278,25 +281,9 @@ class BitmovinClient
 
     private function createMuxings(JobContainer $jobContainer)
     {
-        /** @var DashOutputFormat $dashOutputFormat */
-        $dashOutputFormat = null;
-
-        /** @var HlsOutputFormat $hlsOutputFormat */
-        $hlsOutputFormat = null;
-        foreach ($jobContainer->job->outputFormat as $format)
-        {
-            if ($format instanceof DashOutputFormat)
-            {
-                $dashOutputFormat = $format;
-            }
-            if ($format instanceof HlsOutputFormat)
-            {
-                $hlsOutputFormat = $format;
-            }
-        }
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            MuxingFactory::createMuxingForEncoding($jobContainer, $encodingContainer, $dashOutputFormat, $hlsOutputFormat, $this->apiClient);
+            MuxingFactory::createMuxingForEncoding($jobContainer, $encodingContainer, $this->apiClient);
         }
     }
 
@@ -468,6 +455,54 @@ class BitmovinClient
         return $hlsFormat->status;
     }
 
+    private function createSmoothManifestItem($name, $serverManifestName, $clientManifestName, EncodingOutput $output)
+    {
+        $manifest = new SmoothStreamingManifest();
+        $manifest->setName($name);
+        $manifest->setClientManifestName($clientManifestName);
+        $manifest->setServerManifestName($serverManifestName);
+        $manifest->setOutputs([$output]);
+        return $this->apiClient->manifests()->smooth()->create($manifest);
+    }
+
+
+    /**
+     * @param JobContainer $jobContainer
+     * @return string
+     */
+    public function createSmoothStreamingManifest(JobContainer $jobContainer)
+    {
+        $smoothStreamingFormat = null;
+        foreach ($jobContainer->job->outputFormat as &$format)
+        {
+            if ($format instanceof SmoothStreamingOutputFormat)
+            {
+                $smoothStreamingFormat = $format;
+                break;
+            }
+        }
+        if ($smoothStreamingFormat == null)
+        {
+            return Status::ERROR;
+        }
+
+        $manifestOutput = new EncodingOutput($jobContainer->apiOutput);
+        $manifestOutput->setOutputPath($jobContainer->getOutputPath());
+        $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
+        $manifestOutput->setAcl([$acl]);
+
+        $manifest = $this->createSmoothManifestItem($smoothStreamingFormat->manifestName,
+            $smoothStreamingFormat->serverManifestName, $smoothStreamingFormat->clientManifestName, $manifestOutput);
+
+        foreach ($jobContainer->encodingContainers as &$encodingContainer)
+        {
+            SmoothStreamingManifestFactory::createSmoothStreamingManifestForEncoding($jobContainer, $smoothStreamingFormat, $encodingContainer, $manifest, $this->apiClient);
+        }
+
+        $this->runSmoothStreamingCreation($manifest, $smoothStreamingFormat);
+        return $smoothStreamingFormat->status;
+    }
+
     private function runDashCreation(DashManifest $manifest, DashOutputFormat $dashOutputFormat)
     {
         $status = null;
@@ -500,6 +535,22 @@ class BitmovinClient
         }
     }
 
+    private function runSmoothStreamingCreation(SmoothStreamingManifest $manifest, SmoothStreamingOutputFormat $outputFormat)
+    {
+        $status = null;
+        $this->apiClient->manifests()->smooth()->start($manifest);
+        while (true)
+        {
+            $status = $this->apiClient->manifests()->smooth()->status($manifest);
+            $outputFormat->status = $status->getStatus();
+            if ($status->getStatus() == Status::ERROR || $status->getStatus() == Status::FINISHED)
+            {
+                return;
+            }
+            sleep(1);
+        }
+    }
+
     /**
      * @param JobConfig $job
      * @return JobContainer
@@ -510,6 +561,7 @@ class BitmovinClient
         $this->waitForJobsToFinish($jobContainer);
         $this->createDashManifest($jobContainer);
         $this->createHlsManifest($jobContainer);
+        $this->createSmoothStreamingManifest($jobContainer);
         return $jobContainer;
     }
 
