@@ -8,6 +8,7 @@ use Bitmovin\input\AbstractInput;
 
 abstract class AbstractStreamConfig
 {
+    private $id;
 
     /**
      * @var AbstractInput
@@ -19,5 +20,12 @@ abstract class AbstractStreamConfig
      */
     public $position = 0;
 
+    public function __construct()
+    {
+        $this->id = uniqid("bitmovin_",true);
+    }
 
+    public function getId() {
+        return $this->id;
+    }
 }

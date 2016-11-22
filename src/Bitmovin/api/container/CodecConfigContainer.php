@@ -76,6 +76,11 @@ class CodecConfigContainer
         return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/hls/');
     }
 
+    public function getMp4OutputPath(JobContainer $jobContainer)
+    {
+        return $this->combinePath($jobContainer->getOutputPath(), 'mp4/');
+    }
+
     public function getSmoothStreamingVideoOutputPath(JobContainer $jobContainer)
     {
         /** @var AbstractVideoStreamConfig $codecConfigVideo */

@@ -103,8 +103,8 @@ class BitmovinClient
         /** @var AbstractStreamConfig $stream */
         foreach ($streams as $stream)
         {
-            $convertedInput = $this->convertToApiInput($stream);
-            if ($convertedInput == null)
+            $apiInput = $this->convertToApiInput($stream);
+            if ($apiInput == null)
             {
                 continue;
             }
@@ -121,7 +121,7 @@ class BitmovinClient
             }
             if ($item == null)
             {
-                $item = new EncodingContainer($this->apiClient, $convertedInput, $stream->input);
+                $item = new EncodingContainer($this->apiClient, $apiInput, $stream->input);
                 $jobContainer->encodingContainers[] = $item;
             }
             $codecConfigContainer = new CodecConfigContainer();
@@ -184,6 +184,7 @@ class BitmovinClient
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
             $encoding = new Encoding($jobContainer->job->encodingProfile->name);
+            $encoding->setEncoderVersion($jobContainer->job->encodingProfile->encoderVersion);
             $encoding->setCloudRegion($jobContainer->job->encodingProfile->cloudRegion);
             $encoding->setDescription($jobContainer->job->encodingProfile->name);
             $encodingContainer->encoding = $this->apiClient->encodings()->create($encoding);
@@ -566,13 +567,14 @@ class BitmovinClient
     }
 
     /**
-     * @param JobConfig $job
-     * @return JobContainer
+     * @param JobConfig $jobConfig
+     *
+*@return JobContainer
      */
-    public function startJob(JobConfig $job)
+    public function startJob(JobConfig $jobConfig)
     {
         $jobContainer = new JobContainer();
-        $jobContainer->job = $job;
+        $jobContainer->job = $jobConfig;
         $this->convertInputsToEncodingContainer($jobContainer);
         $this->createInputs($jobContainer);
         $this->createOutput($jobContainer);
