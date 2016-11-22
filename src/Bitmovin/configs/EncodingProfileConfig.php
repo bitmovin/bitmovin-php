@@ -15,6 +15,9 @@ class EncodingProfileConfig
      */
     public $name;
 
+    /** @var  string */
+    public $encoderVersion;
+
     /**
      * @var string Enum: \Bitmovin\api\enum\CloudRegion
      */
