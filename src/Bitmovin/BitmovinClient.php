@@ -586,6 +586,24 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
+     * @return string
+     */
+    public function serializeJobContainer(JobContainer $jobContainer)
+    {
+        return serialize($jobContainer);
+    }
+
+    /**
+     * @param string $serializedString
+     * @return JobContainer
+     */
+    public function deserializeJobContainer($serializedString)
+    {
+        return unserialize($serializedString);
+    }
+
+    /**
+     * @param JobContainer $jobContainer
      * @return array(LiveEncodingDetails)
      * @throws BitmovinException
      */
