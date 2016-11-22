@@ -78,7 +78,7 @@ class CodecConfigContainer
 
     public function getMp4OutputPath(JobContainer $jobContainer)
     {
-        return $this->combinePath($jobContainer->getOutputPath(), '/mp4/');
+        return $this->combinePath($jobContainer->getOutputPath(), 'mp4/');
     }
 
     public function getSmoothStreamingVideoOutputPath(JobContainer $jobContainer)
