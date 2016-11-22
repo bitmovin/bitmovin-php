@@ -184,6 +184,7 @@ class BitmovinClient
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
             $encoding = new Encoding($jobContainer->job->encodingProfile->name);
+            $encoding->setEncoderVersion($jobContainer->job->encodingProfile->encoderVersion);
             $encoding->setCloudRegion($jobContainer->job->encodingProfile->cloudRegion);
             $encoding->setDescription($jobContainer->job->encodingProfile->name);
             $encodingContainer->encoding = $this->apiClient->encodings()->create($encoding);
