@@ -29,4 +29,16 @@ abstract class AbstractVideoStreamConfig extends AbstractStreamConfig
      */
     public $rate;
 
+    /**
+     * AbstractVideoStreamConfig constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function getId()
+    {
+        return parent::getId();
+    }
 }
