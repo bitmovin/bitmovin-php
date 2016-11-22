@@ -6,6 +6,7 @@ use Bitmovin\configs\AbstractStreamConfig;
 
 class AudioStreamConfig extends AbstractStreamConfig
 {
+    private $id;
 
     /**
      * @var int
@@ -27,4 +28,12 @@ class AudioStreamConfig extends AbstractStreamConfig
      */
     public $name;
 
+    public function __construct()
+    {
+        $this->id = uniqid("bitmovin_",true);
+    }
+
+    public function getId() {
+        return $this->id;
+    }
 }
