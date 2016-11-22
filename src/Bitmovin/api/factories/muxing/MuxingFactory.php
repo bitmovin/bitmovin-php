@@ -3,6 +3,7 @@
 namespace Bitmovin\api\factories\muxing;
 
 use Bitmovin\api\ApiClient;
+use Bitmovin\api\container\CodecConfigContainer;
 use Bitmovin\api\container\EncodingContainer;
 use Bitmovin\api\container\JobContainer;
 use Bitmovin\api\enum\AclPermission;
@@ -105,7 +106,7 @@ class MuxingFactory
      * @param array                       $streams
      * @param                             $output
      * @param                             $outputPath
-     * @param SmoothStreamingOutputFormat $progressiveMp4OutputFormat
+     * @param ProgressiveMp4OutputFormat  $progressiveMp4OutputFormat
      * @param ApiClient                   $apiClient
      *
      * @return MP4Muxing
@@ -127,9 +128,10 @@ class MuxingFactory
         {
             $muxing->setOutputs([$encodingOutput]);
         }
-        $muxing->setName($progressiveMp4OutputFormat->mediaFileName);
+        $muxing->setName($progressiveMp4OutputFormat->fileName);
         $muxingStreams = array();
-        foreach($streams as $stream) {
+        foreach ($streams as $stream)
+        {
             $streamMuxing = new MuxingStream();
             $streamMuxing->setStreamId($stream->getId());
             $muxingStreams[] = $streamMuxing;
@@ -192,8 +194,8 @@ class MuxingFactory
         /** @var SmoothStreamingOutputFormat $smoothStreamingOutputFormat */
         $smoothStreamingOutputFormat = NULL;
 
-        /** @var ProgressiveMp4OutputFormat[] $progressiveMp4OutputFormat */
-        $progressiveMp4OutputFormat = NULL;
+        /** @var ProgressiveMp4OutputFormat[] $progressiveMp4OutputFormats */
+        $progressiveMp4OutputFormats = array();
 
         foreach ($jobContainer->job->outputFormat as $format)
         {
@@ -209,7 +211,14 @@ class MuxingFactory
             {
                 $smoothStreamingOutputFormat = $format;
             }
+            if ($format instanceof ProgressiveMp4OutputFormat)
+            {
+                $progressiveMp4OutputFormats[] = $format;
+            }
         }
+
+        static::createMP4MuxingsForEncoding($jobContainer, $encodingContainer, $progressiveMp4OutputFormats, $apiClient);
+
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
@@ -258,6 +267,7 @@ class MuxingFactory
                         $codecConfigContainer->muxings[] = $muxing;
                     }
                 }
+
             }
 
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
@@ -309,81 +319,49 @@ class MuxingFactory
         }
     }
 
-    public static function createMP4MuxingsForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, ApiClient $apiClient) {
-        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+    /**
+     * @param JobContainer                 $jobContainer
+     * @param EncodingContainer            $encodingContainer
+     * @param ProgressiveMp4OutputFormat[] $progressiveMp4OutputFormats
+     * @param ApiClient                    $apiClient
+     *
+     * @throws \Bitmovin\api\exceptions\BitmovinException
+     */
+    public static function createMP4MuxingsForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, array $progressiveMp4OutputFormats, ApiClient $apiClient)
+    {
+        foreach ($progressiveMp4OutputFormats as $progressiveMp4OutputFormat)
         {
-            // Create H264 configurations
-            if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
+            $streamsToMux = array();
+            $streamConfigIds = static::getStreamConfigIdsFromProgressiveMp4Format($progressiveMp4OutputFormat);
+
+            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
             {
-                /**
-                 * @var $stream Stream
-                 */
-                $stream = $codecConfigContainer->stream;
-                if ($smoothStreamingOutputFormat)
+                if (!in_array($codecConfigContainer->codecConfig->getId(), $streamConfigIds))
                 {
-                    if ($smoothStreamingOutputFormat->playReady == NULL)
-                    {
-                        $codecConfigContainer->muxings[] = static::createSmoothStreamingMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getSmoothStreamingVideoOutputPath($jobContainer),
-                            $smoothStreamingOutputFormat, $apiClient);
-                    } else
-                    {
-                        $muxing = static::createSmoothStreamingMP4Muxing($encodingContainer->encoding, $stream,
-                            NULL, NULL, $smoothStreamingOutputFormat, $apiClient);
-                        $muxing->addDrm(SmoothStreamingManifestFactory::addPlayReadyToMP4Muxing($encodingContainer->encoding, $muxing,
-                            $smoothStreamingOutputFormat->playReady, $jobContainer->apiOutput,
-                            $codecConfigContainer->getSmoothStreamingPlayReadyVideoOutputPath($jobContainer),
-                            $apiClient));
-                        $codecConfigContainer->muxings[] = $muxing;
-                    }
+                    continue;
                 }
+                $streamsToMux[] = $codecConfigContainer->stream;
             }
-            if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
-            {
-                /**
-                 * @var Stream
-                 */
-                $stream = $codecConfigContainer->stream;
-                if ($dashOutputFormat)
-                {
-                    if ($dashOutputFormat->cenc == NULL)
-                    {
-                        $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer), $apiClient);
-                    } else
-                    {
-                        $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                            NULL, NULL, $apiClient);
-                        $muxing->addDrm(DashProtectedManifestFactory::addCencDrmToFmp4Muxing($encodingContainer->encoding, $muxing,
-                            $dashOutputFormat->cenc, $jobContainer->apiOutput, $codecConfigContainer->getDashCencAudioOutputPath($jobContainer),
-                            $apiClient));
-                        $codecConfigContainer->muxings[] = $muxing;
-                    }
-                }
-                if ($hlsOutputFormat)
-                {
-                    $codecConfigContainer->muxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
-                        $jobContainer->apiOutput, $codecConfigContainer->getHlsAudioOutputPath($jobContainer), $apiClient);
-                }
-                if ($smoothStreamingOutputFormat)
-                {
-                    if ($smoothStreamingOutputFormat->playReady == NULL)
-                    {
-                        $codecConfigContainer->muxings[] = static::createSmoothStreamingMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getSmoothStreamingAudioOutputPath($jobContainer),
-                            $smoothStreamingOutputFormat, $apiClient);
-                    } else
-                    {
-                        $muxing = static::createSmoothStreamingMP4Muxing($encodingContainer->encoding, $stream,
-                            NULL, NULL, $smoothStreamingOutputFormat, $apiClient);
-                        $muxing->addDrm(SmoothStreamingManifestFactory::addPlayReadyToMP4Muxing($encodingContainer->encoding, $muxing,
-                            $smoothStreamingOutputFormat->playReady, $jobContainer->apiOutput,
-                            $codecConfigContainer->getSmoothStreamingPlayReadyAudioOutputPath($jobContainer),
-                            $apiClient));
-                        $codecConfigContainer->muxings[] = $muxing;
-                    }
-                }
-            }
+
+            $tmpCodecConfigContainer = new CodecConfigContainer();
+            $muxing = static::createMP4Muxing($encodingContainer->encoding, $streamsToMux,
+                $jobContainer->apiOutput, $tmpCodecConfigContainer->getMp4OutputPath($jobContainer), $progressiveMp4OutputFormat, $apiClient);
         }
+    }
+
+    /**
+     * @param ProgressiveMp4OutputFormat $progressiveMp4OutputFormat
+     *
+     * @return array
+     */
+    private static function getStreamConfigIdsFromProgressiveMp4Format(ProgressiveMp4OutputFormat $progressiveMp4OutputFormat)
+    {
+        $streamConfigIds = array();
+        foreach ($progressiveMp4OutputFormat->streamConfigs as $streamConfig)
+        {
+            $streamConfigIds[] = $streamConfig->getId();
+        }
+
+        return $streamConfigIds;
     }
 }
