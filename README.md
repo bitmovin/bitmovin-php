@@ -12,7 +12,7 @@ To install the api-client with composer, add the following to your `composer.jso
 {
 "require": 
   {
-    "bitmovin/bitmovin-php": "1.0.*"
+    "bitmovin/bitmovin-php": "1.1.*"
   }
 }
 ```
