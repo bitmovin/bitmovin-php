@@ -9,6 +9,7 @@ use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
+use Bitmovin\output\S3Output;
 
 class JobContainer
 {
@@ -91,6 +92,12 @@ class JobContainer
             return $this->addTrailingSlash($prefix);
         }
         else if ($output instanceof FtpOutput)
+        {
+            $prefix = $this->stripSlashes($output->prefix);
+            $prefix = $this->addLeadingSlash($prefix);
+            return $this->addTrailingSlash($prefix);
+        }
+        else if ($output instanceof S3Output)
         {
             $prefix = $this->stripSlashes($output->prefix);
             $prefix = $this->addLeadingSlash($prefix);
