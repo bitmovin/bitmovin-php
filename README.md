@@ -20,7 +20,7 @@ Then run `php composer.phar install`
 
 OR
 
-run the following command: `php composer.phar require bitmovin/bitmovin-php:1.0.*`
+run the following command: `php composer.phar require bitmovin/bitmovin-php:1.1.*`
 
 Example
 -----
