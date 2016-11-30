@@ -9,6 +9,7 @@ use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
+use Bitmovin\output\S3Output;
 
 class JobContainer
 {
@@ -85,7 +86,7 @@ class JobContainer
     public function getOutputPath()
     {
         $output = $this->job->output;
-        if ($output instanceof GcsOutput)
+        if ($output instanceof GcsOutput || $output instanceof S3Output)
         {
             $prefix = $this->stripSlashes($output->prefix);
             return $this->addTrailingSlash($prefix);

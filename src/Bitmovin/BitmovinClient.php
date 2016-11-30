@@ -46,6 +46,7 @@ use Bitmovin\output\FtpOutput;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\output\GcsOutput;
+use Bitmovin\output\S3Output;
 use Icecave\Parity\Parity;
 
 class BitmovinClient
@@ -173,6 +174,10 @@ class BitmovinClient
         else if ($output instanceof FtpOutput)
         {
             $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromFtpOutput($output));
+        }
+        else if ($output instanceof S3Output)
+        {
+            $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromS3Output($output));
         }
     }
 
