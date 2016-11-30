@@ -194,15 +194,8 @@ abstract class AbstractResource extends AbstractHttpClient
     {
         try
         {
-            $offset = intval($offset);
-            $limit = intval($limit);
-
-            if ($offset < 0)
-                $offset = 0;
-            if ($limit < 0)
-                $limit = 0;
-            if ($limit > 100)
-                $limit = 100;
+            $offset = max(0,intval($offset));
+            $limit = min(100,intval($limit));
 
             $response = $this->listRequest($this->getBaseUri(), $offset, $limit);
             $items = $this->buildResourcesFromArrayResponse($response);
