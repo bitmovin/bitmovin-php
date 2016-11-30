@@ -86,18 +86,12 @@ class JobContainer
     public function getOutputPath()
     {
         $output = $this->job->output;
-        if ($output instanceof GcsOutput)
+        if ($output instanceof GcsOutput || $output instanceof S3Output)
         {
             $prefix = $this->stripSlashes($output->prefix);
             return $this->addTrailingSlash($prefix);
         }
         else if ($output instanceof FtpOutput)
-        {
-            $prefix = $this->stripSlashes($output->prefix);
-            $prefix = $this->addLeadingSlash($prefix);
-            return $this->addTrailingSlash($prefix);
-        }
-        else if ($output instanceof S3Output)
         {
             $prefix = $this->stripSlashes($output->prefix);
             $prefix = $this->addLeadingSlash($prefix);
