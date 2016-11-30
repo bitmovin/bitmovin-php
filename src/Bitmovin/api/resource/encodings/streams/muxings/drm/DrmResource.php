@@ -9,7 +9,7 @@ use Bitmovin\api\resource\AbstractResource;
 
 abstract class DrmResource extends AbstractResource
 {
-    const LIST_NAME = 'drm';
+    const LIST_NAME = 'items';
 
     /** @var  Encoding */
     protected $encoding;

@@ -7,7 +7,7 @@ use Bitmovin\api\resource\AbstractResource;
 
 abstract class OutputResource extends AbstractResource
 {
-    const LIST_NAME = 'outputs';
+    const LIST_NAME = 'items';
 
     /**
      * OutputResource constructor.
