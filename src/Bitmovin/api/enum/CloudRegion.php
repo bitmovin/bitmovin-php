@@ -4,6 +4,9 @@ namespace Bitmovin\api\enum;
 
 class CloudRegion
 {
+    const AWS_PREFIX = "AWS_";
+    const GOOGLE_PREFIX = "GOOGLE_";
+
     const AWS_US_EAST_1 = 'AWS_US_EAST_1';
     const AWS_US_WEST_1 = 'AWS_US_WEST_1';
     const AWS_US_WEST_2 = 'AWS_US_WEST_2';
