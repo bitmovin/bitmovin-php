@@ -264,7 +264,7 @@ abstract class AbstractResource extends AbstractHttpClient
 
         $serializationClassName = $this->getClassName();
 
-        $jsonResult = json_encode($result->getContent()->items);
+        $jsonResult = json_encode($result->getContent());
 
         /** @var AbstractModel[] $deserializedContentArray */
         $deserializedContentArray = $this->getSerializer()
