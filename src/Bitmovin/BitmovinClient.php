@@ -9,6 +9,7 @@ use Bitmovin\api\container\CodecConfigContainer;
 use Bitmovin\api\container\EncodingContainer;
 use Bitmovin\api\container\JobContainer;
 use Bitmovin\api\enum\AclPermission;
+use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\exceptions\BitmovinException;
@@ -42,9 +43,13 @@ use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
-use Bitmovin\output\FtpOutput;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
+use Bitmovin\output\AbstractBitmovinOutput;
+use Bitmovin\output\AbstractOutput;
+use Bitmovin\output\BitmovinGcsOutput;
+use Bitmovin\output\BitmovinS3Output;
+use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
 use Icecave\Parity\Parity;
@@ -61,6 +66,7 @@ class BitmovinClient
 
     /**
      * BitmovinClient constructor.
+     *
      * @param string $apiKey
      */
     public function __construct($apiKey)
@@ -71,6 +77,7 @@ class BitmovinClient
 
     /**
      * @param $stream
+     *
      * @return Input|null
      */
     private function convertToApiInput($stream)
@@ -87,6 +94,7 @@ class BitmovinClient
         {
             return InputConverterFactory::createRtmpInput($this->apiClient);
         }
+
         return null;
     }
 
@@ -114,7 +122,8 @@ class BitmovinClient
             foreach ($jobContainer->encodingContainers as $encodingContainer)
             {
                 if ($encodingContainer->input instanceof $stream->input &&
-                    Parity::isEqualTo($encodingContainer->input, $stream->input))
+                    Parity::isEqualTo($encodingContainer->input, $stream->input)
+                )
                 {
                     $item = $encodingContainer;
                     break;
@@ -163,10 +172,19 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
+     *
+     * @throws BitmovinException
      */
     private function createOutput(JobContainer $jobContainer)
     {
         $output = $jobContainer->job->output;
+
+        if ($output instanceof AbstractBitmovinOutput)
+        {
+            $jobContainer->apiOutput = $this->getBitmovinOutputByRegion($output);
+            return;
+        }
+
         if ($output instanceof GcsOutput)
         {
             $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromGcsOutput($output));
@@ -182,7 +200,44 @@ class BitmovinClient
     }
 
     /**
+     * @param AbstractBitmovinOutput $selectedBitmovinOutput
+     *
+     * @return AbstractOutput
+     * @throws BitmovinException
+     */
+    private function getBitmovinOutputByRegion(AbstractBitmovinOutput $selectedBitmovinOutput)
+    {
+        /** @var AbstractOutput[] $bitmovinOutputs */
+        $bitmovinOutputs = array();
+        $cloudRegionPrefix = "";
+
+        if ($selectedBitmovinOutput instanceof BitmovinS3Output)
+        {
+            $bitmovinOutputs = $this->apiClient->outputs()->bitmovin()->s3()->listPage();
+            $cloudRegionPrefix = CloudRegion::AWS_PREFIX;
+        }
+        else if ($selectedBitmovinOutput instanceof BitmovinGcsOutput)
+        {
+            $bitmovinOutputs = $this->apiClient->outputs()->bitmovin()->gcs()->listPage();
+            $cloudRegionPrefix = CloudRegion::GOOGLE_PREFIX;
+        }
+
+        foreach ($bitmovinOutputs as $bitmovinOutput)
+        {
+            $longCloudRegion = $cloudRegionPrefix . $bitmovinOutput->getCloudRegion();
+            if ($longCloudRegion === $selectedBitmovinOutput->cloudRegion)
+            {
+                return $bitmovinOutput;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param JobContainer $jobContainer
+     *
+     * @throws BitmovinException
      */
     private function createEncodings(JobContainer $jobContainer)
     {
@@ -198,6 +253,8 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
+     *
+     * @throws BitmovinException
      */
     private function createConfigurations(JobContainer $jobContainer)
     {
@@ -243,7 +300,9 @@ class BitmovinClient
      * @param int                $position
      * @param CodecConfiguration $codecConfiguration
      * @param string             $selectionMode
+     *
      * @return Stream
+     * @throws BitmovinException
      */
     private function createStream(Encoding $encoding, Input $input, $inputPath, $position, CodecConfiguration $codecConfiguration, $selectionMode)
     {
@@ -251,7 +310,6 @@ class BitmovinClient
         $inputStream->setPosition($position);
 
         $stream = new Stream($codecConfiguration, [$inputStream]);
-
         return $this->apiClient->encodings()->streams($encoding)->create($stream);
     }
 
@@ -336,7 +394,7 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
-     * @param string $expectedStatus
+     * @param string       $expectedStatus
      */
     private function waitForJobsToReachState(JobContainer $jobContainer, $expectedStatus)
     {
@@ -374,6 +432,7 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
+     *
      * @return string
      */
     public function createDashManifest(JobContainer $jobContainer)
@@ -427,6 +486,7 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
+     *
      * @return string
      */
     public function createHlsManifest(JobContainer $jobContainer)
@@ -474,6 +534,7 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
+     *
      * @return string
      */
     public function createSmoothStreamingManifest(JobContainer $jobContainer)
@@ -559,7 +620,9 @@ class BitmovinClient
 
     /**
      * @param JobConfig $job
+     *
      * @return JobContainer
+     * @throws BitmovinException
      */
     public function runJobAndWaitForCompletion(JobConfig $job)
     {
@@ -574,7 +637,8 @@ class BitmovinClient
     /**
      * @param JobConfig $jobConfig
      *
-*@return JobContainer
+     * @return JobContainer
+     * @throws BitmovinException
      */
     public function startJob(JobConfig $jobConfig)
     {
@@ -593,6 +657,7 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
+     *
      * @return string
      */
     public function serializeJobContainer(JobContainer $jobContainer)
@@ -602,6 +667,7 @@ class BitmovinClient
 
     /**
      * @param string $serializedString
+     *
      * @return JobContainer
      */
     public function deserializeJobContainer($serializedString)
@@ -611,6 +677,7 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
+     *
      * @return array(LiveEncodingDetails)
      * @throws BitmovinException
      */
@@ -622,12 +689,12 @@ class BitmovinClient
         {
             array_push($liveEncodingDetailsArray, $this->getLiveStreamDataForEncodingWhenAvailable($encodingContainer->encoding));
         }
-
         return $liveEncodingDetailsArray;
     }
 
     /**
      * @param Encoding $encoding
+     *
      * @return LiveEncodingDetails|null
      * @throws BitmovinException
      */
@@ -642,7 +709,7 @@ class BitmovinClient
                 $liveEncodingDetails = $this->apiClient->encodings()->getLivestreamDetails($encoding);
                 break;
             }
-            catch(BitmovinException $exception)
+            catch (BitmovinException $exception)
             {
                 if ($exception->getCode() != 400)
                 {
@@ -651,7 +718,6 @@ class BitmovinClient
             }
             sleep(1);
         }
-
         return $liveEncodingDetails;
     }
 }
