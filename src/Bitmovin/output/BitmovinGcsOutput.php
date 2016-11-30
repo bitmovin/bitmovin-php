@@ -3,7 +3,7 @@
 
 namespace Bitmovin\output;
 
-class BitmovinGcsOutput extends AbstractOutput
+class BitmovinGcsOutput extends AbstractBitmovinOutput
 {
     /**
      * @var string GcsRegion enum (e.g. CloudRegion::GOOGLE_EUROPE_WEST_1)

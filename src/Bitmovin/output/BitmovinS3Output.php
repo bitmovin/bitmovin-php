@@ -3,7 +3,7 @@
 
 namespace Bitmovin\output;
 
-class BitmovinS3Output extends AbstractOutput
+class BitmovinS3Output extends AbstractBitmovinOutput
 {
     /**
      * @var string AwsRegion enum
@@ -20,5 +20,4 @@ class BitmovinS3Output extends AbstractOutput
     {
         $this->cloudRegion = $cloudRegion;
     }
-
 }
