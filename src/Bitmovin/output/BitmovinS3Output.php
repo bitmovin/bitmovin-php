@@ -6,18 +6,12 @@ namespace Bitmovin\output;
 class BitmovinS3Output extends AbstractBitmovinOutput
 {
     /**
-     * @var string AwsRegion enum
-     */
-    public $cloudRegion;
-
-    /**
-     * BitmovinS3Output constructor.
+     * BitmovinGcsOutput constructor.
      *
-     * @param string $cloudRegion * @param string $cloudRegion Recommended: Use, CloudRegion::AWS_US_EAST_1 to select a
-     *                            specific region
+     * @param string $cloudRegion Recommended: Use CloudRegion constants to select a specific region
      */
     public function __construct($cloudRegion)
     {
-        $this->cloudRegion = $cloudRegion;
+        parent::__construct($cloudRegion);
     }
 }
