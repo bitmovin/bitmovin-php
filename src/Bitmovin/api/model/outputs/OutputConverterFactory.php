@@ -18,6 +18,17 @@ class OutputConverterFactory
     }
 
     /**
+     * @param \Bitmovin\output\S3Output $output
+     * @return S3Output
+     */
+    public static function createFromS3Output(\Bitmovin\output\S3Output $output)
+    {
+        $convertedOutput = new S3Output($output->bucket, $output->accessKey, $output->secretKey);
+        $convertedOutput->setCloudRegion($output->cloudRegion);
+        return $convertedOutput;
+    }
+
+    /**
      * @param \Bitmovin\output\FtpOutput $output
      * @return FtpOutput
      */
