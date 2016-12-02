@@ -13,6 +13,10 @@ final class ApiUrls
     const PH_PERIOD_ID = "{period_id}";
     const PH_ADAPTION_ID = "{adaption_id}";
     const PH_REPRESENTATION_ID = "{representation_id}";
+    const PH_TRANSFER_ID = "{transfer_id}";
+
+    const ENCODING_TRANSFERS_ENCODING = "encoding/transfers/encoding";
+    const ENCODING_TRANSFERS_ENCODING_STATUS = "encoding/transfers/encoding/{transfer_id}/status";
 
     const ENCODINGS = "encoding/encodings";
     const ENCODING_GET = "encoding/encodings/{encoding_id}";
@@ -58,6 +62,9 @@ final class ApiUrls
     const OUTPUT_FTP = "encoding/outputs/ftp";
     const OUTPUT_SFTP = "encoding/outputs/sftp";
     const OUTPUT_AZURE = "encoding/outputs/azure";
+
+    const OUTPUT_BITMOVIN_AWS = "encoding/outputs/bitmovin/aws";
+    const OUTPUT_BITMOVIN_GCP = "encoding/outputs/bitmovin/gcp";
 
     const CODEC_CONFIGURATIONS = "encoding/configurations";
     const CODEC_CONFIGURATIONS_TYPE = "encoding/configurations/{configuration_id}/type";

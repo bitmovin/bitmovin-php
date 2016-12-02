@@ -17,7 +17,7 @@ use Bitmovin\api\util\RouteHelper;
 
 class DashManifestResource extends AbstractResource
 {
-    const LIST_NAME = 'manifests';
+    const LIST_NAME = 'items';
 
     /**
      * InputResource constructor.
