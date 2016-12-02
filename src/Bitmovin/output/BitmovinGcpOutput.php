@@ -3,7 +3,7 @@
 
 namespace Bitmovin\output;
 
-class BitmovinS3Output extends AbstractBitmovinOutput
+class BitmovinGcpOutput extends AbstractBitmovinOutput
 {
     /**
      * BitmovinGcsOutput constructor.

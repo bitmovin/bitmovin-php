@@ -3,7 +3,7 @@
 
 namespace Bitmovin\output;
 
-class BitmovinGcsOutput extends AbstractBitmovinOutput
+class BitmovinAwsOutput extends AbstractBitmovinOutput
 {
     /**
      * BitmovinGcsOutput constructor.
