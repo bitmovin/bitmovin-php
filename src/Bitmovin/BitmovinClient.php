@@ -98,13 +98,13 @@ class BitmovinClient
     {
         $jobContainer->encodingContainers = array();
 
-        $streams = array_merge($jobContainer->job->encodingProfile->videoStreamConfigs,
+        $streamConfigs = array_merge($jobContainer->job->encodingProfile->videoStreamConfigs,
             $jobContainer->job->encodingProfile->audioStreamConfigs);
 
-        /** @var AbstractStreamConfig $stream */
-        foreach ($streams as $stream)
+        /** @var AbstractStreamConfig $streamConfig */
+        foreach ($streamConfigs as $streamConfig)
         {
-            $apiInput = $this->convertToApiInput($stream);
+            $apiInput = $this->convertToApiInput($streamConfig);
             if ($apiInput == null)
             {
                 continue;
@@ -113,8 +113,8 @@ class BitmovinClient
             /** @var EncodingContainer $encodingContainer */
             foreach ($jobContainer->encodingContainers as $encodingContainer)
             {
-                if ($encodingContainer->input instanceof $stream->input &&
-                    Parity::isEqualTo($encodingContainer->input, $stream->input)
+                if ($encodingContainer->input instanceof $streamConfig->input &&
+                    Parity::isEqualTo($encodingContainer->input, $streamConfig->input)
                 )
                 {
                     $item = $encodingContainer;
@@ -123,11 +123,11 @@ class BitmovinClient
             }
             if ($item == null)
             {
-                $item = new EncodingContainer($this->apiClient, $apiInput, $stream->input);
+                $item = new EncodingContainer($this->apiClient, $apiInput, $streamConfig->input);
                 $jobContainer->encodingContainers[] = $item;
             }
             $codecConfigContainer = new CodecConfigContainer();
-            $codecConfigContainer->codecConfig = $stream;
+            $codecConfigContainer->codecConfig = $streamConfig;
             $item->codecConfigContainer[] = $codecConfigContainer;
         }
     }
