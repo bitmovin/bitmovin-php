@@ -10,19 +10,12 @@ use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\TransferConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
-use Bitmovin\output\BitmovinS3Output;
+use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\FtpOutput;
-use Bitmovin\output\GcsOutput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
-
-//TRANSFER OUTPUT CONFIGURATION
-$transferFtpHost = 'INSERT YOUR TRANSFER GCS OUTPUT ACCESS KEY HERE';
-$transferFtpUsername = 'INSERT YOUR TRANSFER GCS OUTPUT SECRET KEY HERE';
-$transferFtpPassword = 'INSERT YOUR TRANSFER GCS OUTPUT BUCKET NAME HERE';
-$transferFtpPrefix = 'path/to/your/transfer/output/destination/';
 
 // CONFIGURATION
 $videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
@@ -36,7 +29,7 @@ $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 $videoStreamConfig_1080 = new H264VideoStreamConfig();
 $videoStreamConfig_1080->input = new HttpInput($videoInputPath);
 $videoStreamConfig_1080->width = 1920;
-$videoStreamConfig_1080->height = 1080;
+$videoStreamConfig_1080->height = 816;
 $videoStreamConfig_1080->bitrate = 4800000;
 $videoStreamConfig_1080->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
@@ -45,7 +38,7 @@ $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
 $videoStreamConfig_720 = new H264VideoStreamConfig();
 $videoStreamConfig_720->input = new HttpInput($videoInputPath);
 $videoStreamConfig_720->width = 1280;
-$videoStreamConfig_720->height = 720;
+$videoStreamConfig_720->height = 544;
 $videoStreamConfig_720->bitrate = 2400000;
 $videoStreamConfig_720->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
@@ -63,11 +56,11 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
-/*$bitmovinGcsOutput = new BitmovinGcsOutput(CloudRegion::GOOGLE_EUROPE_WEST_1);
-$bitmovinGcsOutput ->prefix = "your/preferred/path/";*/
-$bitmovinS3Output = new BitmovinS3Output(CloudRegion::AWS_EU_WEST_1);
-$bitmovinS3Output->prefix = "your/preferred/path/";
-$jobConfig->output = $bitmovinS3Output;
+$bitmovinGcpOutput = new BitmovinGcpOutput(CloudRegion::GOOGLE_EUROPE_WEST_1);
+$bitmovinGcpOutput->prefix = "your/custom/path/";
+//$bitmovinAwsOutput = new BitmovinAwsOutput(CloudRegion::AWS_EU_WEST_1);
+//$bitmovinS3Output->prefix = "your/custom/path/";
+$jobConfig->output = $bitmovinGcpOutput;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 // ENABLE DASH OUTPUT
@@ -79,6 +72,12 @@ $jobConfig->outputFormat[] = new HlsOutputFormat();
 $jobContainer = $client->runJobAndWaitForCompletion($jobConfig);
 
 //==================================================================================================================
+
+//TRANSFER OUTPUT CONFIGURATION
+$transferFtpHost = 'YOUR FTP HOST';
+$transferFtpUsername = 'YOUR FTP USERNAME';
+$transferFtpPassword = 'YOUR FTP PASSWORD';
+$transferFtpPrefix = 'YOUR/FTP/DESTINATION/PATH/';
 
 // CREATE TRANSFER CONFIG
 $transferConfig = new TransferConfig();
