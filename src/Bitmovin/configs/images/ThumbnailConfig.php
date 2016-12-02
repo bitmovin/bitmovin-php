@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Bitmovin\configs;
+namespace Bitmovin\configs\images;
 
 
 use Bitmovin\configs\audio\AudioStreamConfig;
