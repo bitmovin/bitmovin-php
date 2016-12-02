@@ -52,8 +52,8 @@ use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\AbstractOutput;
-use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\BitmovinAwsOutput;
+use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
@@ -431,7 +431,7 @@ class BitmovinClient
 
     /**
      * @param TransferJobContainer $transferJobContainer
-     * @param string                     $expectedStatus
+     * @param string               $expectedStatus
      *
      * @throws BitmovinException
      */
@@ -679,7 +679,8 @@ class BitmovinClient
      * @return TransferJobContainer
      * @throws BitmovinException
      */
-    public function runTransferJobAndWaitForCompletion(TransferConfig $transferConfig) {
+    public function runTransferJobAndWaitForCompletion(TransferConfig $transferConfig)
+    {
         $transferJobContainer = $this->startTransferJob($transferConfig);
         $this->waitForTransferJobsToFinish($transferJobContainer);
 
@@ -716,8 +717,10 @@ class BitmovinClient
             {
                 $streamConfig = $codecConfigContainer->codecConfig;
 
-                if ($streamConfig instanceof H264VideoStreamConfig) {
-                    foreach($streamConfig->thumbnailConfigs as $thumbnailConfig) {
+                if ($streamConfig instanceof H264VideoStreamConfig)
+                {
+                    foreach ($streamConfig->thumbnailConfigs as $thumbnailConfig)
+                    {
                         $thumbnail = new Thumbnail($thumbnailConfig->height, $thumbnailConfig->positions);
                         $thumbnail->setName($thumbnailConfig->name);
                         $thumbnail->setDescription(($thumbnailConfig->description));
@@ -727,7 +730,6 @@ class BitmovinClient
                         $encodingOutput->setOutputPath($codecConfigContainer->getThumbnailOutputPath($jobContainer));
                         $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
                         $thumbnail->setOutputs(array($encodingOutput));
-
 
                         $codecConfigContainer->thumbnails[] = $this->apiClient
                             ->encodings()
@@ -747,7 +749,8 @@ class BitmovinClient
      * @return TransferJobContainer
      * @throws BitmovinException
      */
-    public function startTransferJob(TransferConfig $transferConfig) {
+    public function startTransferJob(TransferConfig $transferConfig)
+    {
         $transferJobContainer = new TransferJobContainer();
         $transferJobContainer->transferConfig = $transferConfig;
 
@@ -761,10 +764,12 @@ class BitmovinClient
     /**
      * @param TransferJobContainer $transferJobContainer
      */
-    private function convertEncodingsToTransferContainer(TransferJobContainer $transferJobContainer) {
+    private function convertEncodingsToTransferContainer(TransferJobContainer $transferJobContainer)
+    {
         $jobContainer = $transferJobContainer->transferConfig->jobContainer;
 
-        foreach($jobContainer->encodingContainers as $encodingContainer) {
+        foreach ($jobContainer->encodingContainers as $encodingContainer)
+        {
             $transferJobContainer->transferContainers[] = new TransferContainer($this->apiClient, $encodingContainer->encoding);
         }
     }
@@ -774,7 +779,8 @@ class BitmovinClient
      *
      * @throws BitmovinException
      */
-    public function startTransfers(TransferJobContainer $transferJobContainer) {
+    public function startTransfers(TransferJobContainer $transferJobContainer)
+    {
 
         foreach ($transferJobContainer->transferContainers as &$transferContainer)
         {
