@@ -7,6 +7,7 @@ namespace Bitmovin\api\container;
 use Bitmovin\api\model\codecConfigurations\CodecConfiguration;
 use Bitmovin\api\model\encodings\muxing\AbstractMuxing;
 use Bitmovin\api\model\encodings\streams\Stream;
+use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\video\AbstractVideoStreamConfig;
@@ -16,6 +17,7 @@ class CodecConfigContainer
 
     const AUDIO = 'audio/';
     const VIDEO = 'video/';
+    const THUMBNAILS = 'thumbnails/';
 
     /**
      * @var CodecConfiguration
@@ -33,6 +35,9 @@ class CodecConfigContainer
      * @var AbstractMuxing[]
      */
     public $muxings = array();
+
+    /** @var Thumbnail[] */
+    public $thumbnails = array();
 
     /**
      * @param string[] ...$paths
@@ -74,6 +79,11 @@ class CodecConfigContainer
         $codecConfigVideo = $this->codecConfig;
         $name = $codecConfigVideo->bitrate;
         return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/hls/');
+    }
+
+    public function getThumbnailOutputPath(JobContainer $jobContainer)
+    {
+        return $this->combinePath($jobContainer->getOutputPath(), static::THUMBNAILS);
     }
 
     public function getMp4OutputPath(JobContainer $jobContainer)

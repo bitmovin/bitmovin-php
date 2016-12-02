@@ -29,6 +29,7 @@ use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
 use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\api\model\encodings\streams\Stream;
+use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\api\model\inputs\InputConverterFactory;
 use Bitmovin\api\model\manifests\dash\DashManifest;
@@ -51,8 +52,8 @@ use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\AbstractOutput;
-use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\BitmovinAwsOutput;
+use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
@@ -110,13 +111,13 @@ class BitmovinClient
     {
         $jobContainer->encodingContainers = array();
 
-        $streams = array_merge($jobContainer->job->encodingProfile->videoStreamConfigs,
+        $streamConfigs = array_merge($jobContainer->job->encodingProfile->videoStreamConfigs,
             $jobContainer->job->encodingProfile->audioStreamConfigs);
 
-        /** @var AbstractStreamConfig $stream */
-        foreach ($streams as $stream)
+        /** @var AbstractStreamConfig $streamConfig */
+        foreach ($streamConfigs as $streamConfig)
         {
-            $apiInput = $this->convertToApiInput($stream);
+            $apiInput = $this->convertToApiInput($streamConfig);
             if ($apiInput == null)
             {
                 continue;
@@ -125,8 +126,8 @@ class BitmovinClient
             /** @var EncodingContainer $encodingContainer */
             foreach ($jobContainer->encodingContainers as $encodingContainer)
             {
-                if ($encodingContainer->input instanceof $stream->input &&
-                    Parity::isEqualTo($encodingContainer->input, $stream->input)
+                if ($encodingContainer->input instanceof $streamConfig->input &&
+                    Parity::isEqualTo($encodingContainer->input, $streamConfig->input)
                 )
                 {
                     $item = $encodingContainer;
@@ -135,11 +136,11 @@ class BitmovinClient
             }
             if ($item == null)
             {
-                $item = new EncodingContainer($this->apiClient, $apiInput, $stream->input);
+                $item = new EncodingContainer($this->apiClient, $apiInput, $streamConfig->input);
                 $jobContainer->encodingContainers[] = $item;
             }
             $codecConfigContainer = new CodecConfigContainer();
-            $codecConfigContainer->codecConfig = $stream;
+            $codecConfigContainer->codecConfig = $streamConfig;
             $item->codecConfigContainer[] = $codecConfigContainer;
         }
     }
@@ -430,7 +431,7 @@ class BitmovinClient
 
     /**
      * @param TransferJobContainer $transferJobContainer
-     * @param string                     $expectedStatus
+     * @param string               $expectedStatus
      *
      * @throws BitmovinException
      */
@@ -678,7 +679,8 @@ class BitmovinClient
      * @return TransferJobContainer
      * @throws BitmovinException
      */
-    public function runTransferJobAndWaitForCompletion(TransferConfig $transferConfig) {
+    public function runTransferJobAndWaitForCompletion(TransferConfig $transferConfig)
+    {
         $transferJobContainer = $this->startTransferJob($transferConfig);
         $this->waitForTransferJobsToFinish($transferJobContainer);
 
@@ -701,9 +703,44 @@ class BitmovinClient
         $this->createEncodings($jobContainer);
         $this->createConfigurations($jobContainer);
         $this->createStreams($jobContainer);
+        $this->createThumbnails($jobContainer);
         $this->createMuxings($jobContainer);
         $this->startEncodings($jobContainer);
         return $jobContainer;
+    }
+
+    private function createThumbnails(JobContainer $jobContainer)
+    {
+        foreach ($jobContainer->encodingContainers as &$encodingContainer)
+        {
+            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+            {
+                $streamConfig = $codecConfigContainer->codecConfig;
+
+                if ($streamConfig instanceof H264VideoStreamConfig)
+                {
+                    foreach ($streamConfig->thumbnailConfigs as $thumbnailConfig)
+                    {
+                        $thumbnail = new Thumbnail($thumbnailConfig->height, $thumbnailConfig->positions);
+                        $thumbnail->setName($thumbnailConfig->name);
+                        $thumbnail->setDescription(($thumbnailConfig->description));
+                        $thumbnail->setPattern($thumbnailConfig->pattern);
+
+                        $encodingOutput = new EncodingOutput($jobContainer->apiOutput);
+                        $encodingOutput->setOutputPath($codecConfigContainer->getThumbnailOutputPath($jobContainer));
+                        $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
+                        $thumbnail->setOutputs(array($encodingOutput));
+
+                        $codecConfigContainer->thumbnails[] = $this->apiClient
+                            ->encodings()
+                            ->streams($encodingContainer->encoding)
+                            ->thumbnails($codecConfigContainer->stream)
+                            ->create($thumbnail);
+                    }
+
+                }
+            }
+        }
     }
 
     /**
@@ -712,7 +749,8 @@ class BitmovinClient
      * @return TransferJobContainer
      * @throws BitmovinException
      */
-    public function startTransferJob(TransferConfig $transferConfig) {
+    public function startTransferJob(TransferConfig $transferConfig)
+    {
         $transferJobContainer = new TransferJobContainer();
         $transferJobContainer->transferConfig = $transferConfig;
 
@@ -726,10 +764,12 @@ class BitmovinClient
     /**
      * @param TransferJobContainer $transferJobContainer
      */
-    private function convertEncodingsToTransferContainer(TransferJobContainer $transferJobContainer) {
+    private function convertEncodingsToTransferContainer(TransferJobContainer $transferJobContainer)
+    {
         $jobContainer = $transferJobContainer->transferConfig->jobContainer;
 
-        foreach($jobContainer->encodingContainers as $encodingContainer) {
+        foreach ($jobContainer->encodingContainers as $encodingContainer)
+        {
             $transferJobContainer->transferContainers[] = new TransferContainer($this->apiClient, $encodingContainer->encoding);
         }
     }
@@ -739,7 +779,8 @@ class BitmovinClient
      *
      * @throws BitmovinException
      */
-    public function startTransfers(TransferJobContainer $transferJobContainer) {
+    public function startTransfers(TransferJobContainer $transferJobContainer)
+    {
 
         foreach ($transferJobContainer->transferContainers as &$transferContainer)
         {

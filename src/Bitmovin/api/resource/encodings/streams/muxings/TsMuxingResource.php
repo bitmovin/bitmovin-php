@@ -55,7 +55,9 @@ class TsMuxingResource extends MuxingResource
     /**
      * @param integer $offset
      * @param integer $limit
+     *
      * @return TSMuxing[]
+     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
     public function listPage($offset = 0, $limit = 25)
     {
