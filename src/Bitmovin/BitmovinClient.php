@@ -26,6 +26,7 @@ use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
 use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\api\model\encodings\streams\Stream;
+use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\api\model\inputs\InputConverterFactory;
 use Bitmovin\api\model\manifests\dash\DashManifest;
@@ -587,9 +588,43 @@ class BitmovinClient
         $this->createEncodings($jobContainer);
         $this->createConfigurations($jobContainer);
         $this->createStreams($jobContainer);
+        $this->createThumbnails($jobContainer);
         $this->createMuxings($jobContainer);
         $this->startEncodings($jobContainer);
         return $jobContainer;
+    }
+
+    private function createThumbnails(JobContainer $jobContainer)
+    {
+        foreach ($jobContainer->encodingContainers as &$encodingContainer)
+        {
+            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+            {
+                $streamConfig = $codecConfigContainer->codecConfig;
+
+                if ($streamConfig instanceof H264VideoStreamConfig) {
+                    foreach($streamConfig->thumbnailConfigs as $thumbnailConfig) {
+                        $thumbnail = new Thumbnail($thumbnailConfig->height, $thumbnailConfig->positions);
+                        $thumbnail->setName($thumbnailConfig->name);
+                        $thumbnail->setDescription(($thumbnailConfig->description));
+                        $thumbnail->setPattern($thumbnailConfig->pattern);
+
+                        $encodingOutput = new EncodingOutput($jobContainer->apiOutput);
+                        $encodingOutput->setOutputPath($codecConfigContainer->getThumbnailOutputPath($jobContainer));
+                        $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
+                        $thumbnail->setOutputs(array($encodingOutput));
+
+
+                        $codecConfigContainer->thumbnails[] = $this->apiClient
+                            ->encodings()
+                            ->streams($encodingContainer->encoding)
+                            ->thumbnails($codecConfigContainer->stream)
+                            ->create($thumbnail);
+                    }
+
+                }
+            }
+        }
     }
 
     /**
