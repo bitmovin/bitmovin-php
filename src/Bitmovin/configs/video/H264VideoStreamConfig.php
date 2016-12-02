@@ -15,5 +15,5 @@ class H264VideoStreamConfig extends AbstractVideoStreamConfig
     public $profile = H264Profile::HIGH;
 
     /** @var ThumbnailConfig[] */
-    public $thumbnails = array();
+    public $thumbnailConfigs = array();
 }
