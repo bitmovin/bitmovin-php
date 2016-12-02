@@ -7,7 +7,7 @@ use Bitmovin\api\resource\AbstractResource;
 
 abstract class MuxingResource extends AbstractResource
 {
-    const LIST_NAME = 'muxings';
+    const LIST_NAME = 'items';
 
     /**
      * MuxingResource constructor.

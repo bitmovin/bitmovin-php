@@ -7,11 +7,16 @@ final class ApiUrls
     const PH_ENCODING_ID = "{encoding_id}";
     const PH_CONFIGURATION_ID = "{configuration_id}";
     const PH_STREAM_ID = "{stream_id}";
+    const PH_THUMBNAIL_ID = "{thumbnail_id}";
     const PH_MUXING_ID = "{muxing_id}";
     const PH_MANIFEST_ID = "{manifest_id}";
     const PH_PERIOD_ID = "{period_id}";
     const PH_ADAPTION_ID = "{adaption_id}";
     const PH_REPRESENTATION_ID = "{representation_id}";
+    const PH_TRANSFER_ID = "{transfer_id}";
+
+    const ENCODING_TRANSFERS_ENCODING = "encoding/transfers/encoding";
+    const ENCODING_TRANSFERS_ENCODING_STATUS = "encoding/transfers/encoding/{transfer_id}/status";
 
     const ENCODINGS = "encoding/encodings";
     const ENCODING_GET = "encoding/encodings/{encoding_id}";
@@ -23,14 +28,12 @@ final class ApiUrls
     const ENCODING_STATUS = "encoding/encodings/{encoding_id}/status";
 
     const ENCODING_STREAMS = "encoding/encodings/{encoding_id}/streams";
-    const ENCODING_STREAMS_GET = "encoding/encodings/{encoding_id}/streams/{stream_id}";
+
+    const ENCODING_STREAMS_THUMBNAILS = "encoding/encodings/{encoding_id}/streams/{stream_id}/thumbnails";
 
     const ENCODING_MUXINGS_MP4 = "encoding/encodings/{encoding_id}/muxings/mp4";
     const ENCODING_MUXINGS_FMP4 = "encoding/encodings/{encoding_id}/muxings/fmp4";
     const ENCODING_MUXINGS_TS = "encoding/encodings/{encoding_id}/muxings/ts";
-    const ENCODING_MUXINGS_MP4_GET = "encoding/encodings/{encoding_id}/muxings/mp4/{muxing_id}";
-    const ENCODING_MUXINGS_FMP4_GET = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}";
-    const ENCODING_MUXINGS_TS_GET = "encoding/encodings/{encoding_id}/muxings/ts/{muxing_id}";
 
     const ENCODING_MUXINGS_FMP4_DRM_WIDEVINE = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}/drm/widevine";
     const ENCODING_MUXINGS_FMP4_DRM_PLAYREADY = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}/drm/playready";
@@ -59,6 +62,9 @@ final class ApiUrls
     const OUTPUT_FTP = "encoding/outputs/ftp";
     const OUTPUT_SFTP = "encoding/outputs/sftp";
     const OUTPUT_AZURE = "encoding/outputs/azure";
+
+    const OUTPUT_BITMOVIN_AWS = "encoding/outputs/bitmovin/aws";
+    const OUTPUT_BITMOVIN_GCP = "encoding/outputs/bitmovin/gcp";
 
     const CODEC_CONFIGURATIONS = "encoding/configurations";
     const CODEC_CONFIGURATIONS_TYPE = "encoding/configurations/{configuration_id}/type";

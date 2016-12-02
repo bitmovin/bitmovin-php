@@ -28,6 +28,9 @@ class OutputContainer
     /** @var  SftpOutputResource */
     private $sftp;
 
+    /** @var  BitmovinOutputContainer */
+    private $bitmovin;
+
     /**
      * OutputContainer constructor.
      *
@@ -35,6 +38,8 @@ class OutputContainer
      */
     public function __construct($apiKey)
     {
+        $this->bitmovin = new BitmovinOutputContainer($apiKey);
+
         $this->gcs = new GcsOutputResource(ApiUrls::OUTPUT_GCS, GcsOutput::class, $apiKey);
         $this->s3 = new S3OutputResource(ApiUrls::OUTPUT_S3, S3Output::class, $apiKey);
         $this->azure = new AzureOutputResource(ApiUrls::OUTPUT_AZURE, AzureOutput::class, $apiKey);
@@ -45,8 +50,11 @@ class OutputContainer
 
     /**
      * Creates an output
+     *
      * @param Output $output
+     *
      * @return Output
+     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
     public function create(Output $output)
     {
@@ -71,6 +79,14 @@ class OutputContainer
             return $this->sftp()->create($output);
         }
         throw new \InvalidArgumentException();
+    }
+
+    /**
+     * @return BitmovinOutputContainer
+     */
+    public function bitmovin()
+    {
+        return $this->bitmovin;
     }
 
     /**
