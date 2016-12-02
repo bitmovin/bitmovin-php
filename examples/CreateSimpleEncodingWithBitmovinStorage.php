@@ -9,8 +9,7 @@ use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
-use Bitmovin\output\BitmovinGcsOutput;
-use Bitmovin\output\BitmovinS3Output;
+use Bitmovin\output\BitmovinGcpOutput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -28,7 +27,7 @@ $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 $videoStreamConfig_1080 = new H264VideoStreamConfig();
 $videoStreamConfig_1080->input = new HttpInput($videoInputPath);
 $videoStreamConfig_1080->width = 1920;
-$videoStreamConfig_1080->height = 1080;
+$videoStreamConfig_1080->height = 816;
 $videoStreamConfig_1080->bitrate = 4800000;
 $videoStreamConfig_1080->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
@@ -37,7 +36,7 @@ $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
 $videoStreamConfig_720 = new H264VideoStreamConfig();
 $videoStreamConfig_720->input = new HttpInput($videoInputPath);
 $videoStreamConfig_720->width = 1280;
-$videoStreamConfig_720->height = 720;
+$videoStreamConfig_720->height = 544;
 $videoStreamConfig_720->bitrate = 2400000;
 $videoStreamConfig_720->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
@@ -55,11 +54,11 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
-/*$bitmovinGcsOutput = new BitmovinGcsOutput(CloudRegion::GOOGLE_EUROPE_WEST_1);
-$bitmovinGcsOutput ->prefix = "your/preferred/path/";*/
-$bitmovinS3Output = new BitmovinS3Output(CloudRegion::AWS_EU_WEST_1);
-$bitmovinS3Output->prefix = "your/preferred/path/";
-$jobConfig->output = $bitmovinS3Output;
+$bitmovinGcpOutput = new BitmovinGcpOutput(CloudRegion::GOOGLE_EUROPE_WEST_1);
+$bitmovinGcpOutput->prefix = "your/preferred/path/";
+/*$bitmovinS3Output = new BitmovinAwsOutput(CloudRegion::AWS_EU_WEST_1);
+$bitmovinS3Output->prefix = "your/preferred/path/";*/
+$jobConfig->output = $bitmovinGcpOutput;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 // ENABLE DASH OUTPUT
