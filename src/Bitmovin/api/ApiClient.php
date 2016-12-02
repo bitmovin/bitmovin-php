@@ -6,6 +6,7 @@ use Bitmovin\api\resource\container\CodecConfigurationContainer;
 use Bitmovin\api\resource\container\InputContainer;
 use Bitmovin\api\resource\container\ManifestContainer;
 use Bitmovin\api\resource\container\OutputContainer;
+use Bitmovin\api\resource\container\TransferContainer;
 use Bitmovin\api\resource\EncodingResource;
 
 class ApiClient
@@ -55,6 +56,13 @@ class ApiClient
     public function codecConfigurations()
     {
         return new CodecConfigurationContainer($this->getApiKey());
+    }
+
+    /**
+     * @return TransferContainer
+     */
+    public function transfers() {
+        return new TransferContainer($this->getApiKey());
     }
 
     private function getApiKey()
