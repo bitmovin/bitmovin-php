@@ -42,9 +42,9 @@ use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
-use Bitmovin\output\FtpOutput;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
+use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
 use Icecave\Parity\Parity;
@@ -114,7 +114,8 @@ class BitmovinClient
             foreach ($jobContainer->encodingContainers as $encodingContainer)
             {
                 if ($encodingContainer->input instanceof $stream->input &&
-                    Parity::isEqualTo($encodingContainer->input, $stream->input))
+                    Parity::isEqualTo($encodingContainer->input, $stream->input)
+                )
                 {
                     $item = $encodingContainer;
                     break;
@@ -336,7 +337,7 @@ class BitmovinClient
 
     /**
      * @param JobContainer $jobContainer
-     * @param string $expectedStatus
+     * @param string       $expectedStatus
      */
     private function waitForJobsToReachState(JobContainer $jobContainer, $expectedStatus)
     {
@@ -574,7 +575,7 @@ class BitmovinClient
     /**
      * @param JobConfig $jobConfig
      *
-*@return JobContainer
+     * @return JobContainer
      */
     public function startJob(JobConfig $jobConfig)
     {
@@ -642,7 +643,7 @@ class BitmovinClient
                 $liveEncodingDetails = $this->apiClient->encodings()->getLivestreamDetails($encoding);
                 break;
             }
-            catch(BitmovinException $exception)
+            catch (BitmovinException $exception)
             {
                 if ($exception->getCode() != 400)
                 {
