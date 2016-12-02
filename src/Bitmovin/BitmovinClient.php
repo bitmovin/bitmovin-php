@@ -441,9 +441,9 @@ class BitmovinClient
             $status = null;
             while (true)
             {
-                $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
-                $transferContainer->status = $status->getStatus();
-                if ($status->getStatus() == Status::ERROR || $status->getStatus() == $expectedStatus)
+                $status = $this->apiClient->transfers()->encoding()->get($transferContainer->transfer);
+                $transferContainer->status = $status->getState();
+                if (strtoupper($status->getState()) == Status::ERROR || strtoupper($status->getState()) == $expectedStatus)
                 {
                     break;
                 }
