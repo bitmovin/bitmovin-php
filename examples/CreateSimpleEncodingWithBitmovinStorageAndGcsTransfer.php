@@ -10,7 +10,8 @@ use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\TransferConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
-use Bitmovin\output\BitmovinS3Output;
+use Bitmovin\output\BitmovinAwsOutput;
+use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\GcsOutput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -62,11 +63,11 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
-/*$bitmovinGcsOutput = new BitmovinGcsOutput(CloudRegion::GOOGLE_EUROPE_WEST_1);
-$bitmovinGcsOutput ->prefix = "your/preferred/path/";*/
-$bitmovinS3Output = new BitmovinS3Output(CloudRegion::AWS_EU_WEST_1);
-$bitmovinS3Output->prefix = "your/preferred/path/";
-$jobConfig->output = $bitmovinS3Output;
+$bitmovinGcpOutput = new BitmovinGcpOutput(CloudRegion::GOOGLE_EUROPE_WEST_1);
+$bitmovinGcpOutput ->prefix = "your/preferred/path/";
+$bitmovinAwsOutput = new BitmovinAwsOutput(CloudRegion::AWS_EU_WEST_1);
+$bitmovinAwsOutput->prefix = "your/preferred/path/";
+$jobConfig->output = $bitmovinAwsOutput;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 // ENABLE DASH OUTPUT
