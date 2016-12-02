@@ -26,6 +26,11 @@ class TransferContainer
     public $transfer;
 
     /**
+     * @var  string
+     */
+    public $status;
+
+    /**
      * TransferContainer constructor.
      *
      * @param ApiClient $apiClient
