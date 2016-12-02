@@ -7,7 +7,7 @@ use Bitmovin\api\resource\AbstractResource;
 
 abstract class InputResource extends AbstractResource
 {
-    const LIST_NAME = 'inputs';
+    const LIST_NAME = 'items';
 
     /**
      * InputResource constructor.

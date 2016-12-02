@@ -4,42 +4,48 @@
 namespace Bitmovin\api\container;
 
 
-use Bitmovin\api\enum\Status;
 use Bitmovin\api\model\outputs\Output;
-use Bitmovin\configs\JobConfig;
+use Bitmovin\configs\TransferConfig;
 use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\BitmovinAwsOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
 
-class JobContainer
+class TransferJobContainer
 {
 
     /**
-     * @var JobConfig
+     * @var TransferConfig
      */
-    public $job;
+    public $transferConfig;
 
     /**
-     * @var EncodingContainer[]
+     * @var TransferContainer[]
      */
-    public $encodingContainers = array();
+    public $transferContainers = array();
 
     /**
      * @var Output
      */
     public $apiOutput;
 
-    public function deleteFinishedEncodings()
+    public function getOutputPath()
     {
-        foreach ($this->encodingContainers as $encodingContainer)
+        $output = $this->transferConfig->output;
+        if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof BitmovinGcpOutput
+            || $output instanceof BitmovinAwsOutput)
         {
-            if ($encodingContainer->status == Status::FINISHED)
-            {
-                $encodingContainer->deleteEncoding();
-            }
+            $prefix = $this->stripSlashes($output->prefix);
+            return $this->addTrailingSlash($prefix);
         }
+        else if ($output instanceof FtpOutput)
+        {
+            $prefix = $this->stripSlashes($output->prefix);
+            $prefix = $this->addLeadingSlash($prefix);
+            return $this->addTrailingSlash($prefix);
+        }
+        throw new \InvalidArgumentException();
     }
 
     /**
@@ -84,23 +90,4 @@ class JobContainer
         }
         return $prefix;
     }
-
-    public function getOutputPath()
-    {
-        $output = $this->job->output;
-        if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof BitmovinGcpOutput
-            || $output instanceof BitmovinAwsOutput)
-        {
-            $prefix = $this->stripSlashes($output->prefix);
-            return $this->addTrailingSlash($prefix);
-        }
-        else if ($output instanceof FtpOutput)
-        {
-            $prefix = $this->stripSlashes($output->prefix);
-            $prefix = $this->addLeadingSlash($prefix);
-            return $this->addTrailingSlash($prefix);
-        }
-        throw new \InvalidArgumentException();
-    }
-
 }

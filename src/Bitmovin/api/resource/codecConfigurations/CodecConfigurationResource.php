@@ -7,7 +7,7 @@ use Bitmovin\api\resource\AbstractResource;
 
 abstract class CodecConfigurationResource extends AbstractResource
 {
-    const LIST_NAME = 'codecConfigurations';
+    const LIST_NAME = 'items';
 
     /**
      * CodecConfigurationResource constructor.

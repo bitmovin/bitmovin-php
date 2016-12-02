@@ -21,7 +21,7 @@ abstract class AbstractResource extends AbstractHttpClient
     /** @var string Namespace\ClassName */
     private $className;
     /** @var  string */
-    private $listName = NULL;
+    private $listName = null;
     /** @var SerializerInterface */
     private $serializer;
 
@@ -47,7 +47,7 @@ abstract class AbstractResource extends AbstractHttpClient
         AnnotationRegistry::registerLoader('class_exists');
         $propertyNamingStrategy = new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy());
         $this->serializer = SerializerBuilder::create()->setPropertyNamingStrategy($propertyNamingStrategy)
-                                             ->build();
+            ->build();
 
         $this->baseUri = trim($baseUri, "/");
         $this->className = $className;
@@ -194,15 +194,8 @@ abstract class AbstractResource extends AbstractHttpClient
     {
         try
         {
-            $offset = intval($offset);
-            $limit = intval($limit);
-
-            if ($offset < 0)
-                $offset = 0;
-            if ($limit < 0)
-                $limit = 0;
-            if ($limit > 100)
-                $limit = 100;
+            $offset = max(0, intval($offset));
+            $limit = max(0, min(100, intval($limit)));
 
             $response = $this->listRequest($this->getBaseUri(), $offset, $limit);
             $items = $this->buildResourcesFromArrayResponse($response);
@@ -271,11 +264,11 @@ abstract class AbstractResource extends AbstractHttpClient
 
         $serializationClassName = $this->getClassName();
 
-        $jsonResult = json_encode($result->getContent()->items);
+        $jsonResult = json_encode($result->getContent());
 
         /** @var AbstractModel[] $deserializedContentArray */
         $deserializedContentArray = $this->getSerializer()
-                                         ->deserialize($jsonResult, "array<" . $serializationClassName . ">", 'json');
+            ->deserialize($jsonResult, "array<" . $serializationClassName . ">", 'json');
 
         return $deserializedContentArray;
     }
