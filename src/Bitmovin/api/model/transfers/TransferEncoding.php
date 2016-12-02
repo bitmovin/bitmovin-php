@@ -40,6 +40,12 @@ class TransferEncoding extends AbstractModel
     private $cloudRegion;
 
     /**
+     * @JMS\Type("string")
+     * @var  string usage CloudRegion constants recommended
+     */
+    private $state;
+
+    /**
      * @JMS\Type("array<Bitmovin\api\model\encodings\helper\EncodingOutput>")
      * @var  EncodingOutput[]
      */
@@ -75,6 +81,22 @@ class TransferEncoding extends AbstractModel
     public function setEncodingId($encodingId)
     {
         $this->encodingId = $encodingId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
     }
 
     /**
