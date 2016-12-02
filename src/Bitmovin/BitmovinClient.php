@@ -51,8 +51,8 @@ use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\AbstractOutput;
-use Bitmovin\output\BitmovinGcsOutput;
-use Bitmovin\output\BitmovinS3Output;
+use Bitmovin\output\BitmovinGcpOutput;
+use Bitmovin\output\BitmovinAwsOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
@@ -215,12 +215,12 @@ class BitmovinClient
         $bitmovinOutputs = array();
         $cloudRegionPrefix = "";
 
-        if ($selectedBitmovinOutput instanceof BitmovinS3Output)
+        if ($selectedBitmovinOutput instanceof BitmovinAwsOutput)
         {
             $bitmovinOutputs = $this->apiClient->outputs()->bitmovin()->s3()->listPage();
             $cloudRegionPrefix = CloudRegion::AWS_PREFIX;
         }
-        else if ($selectedBitmovinOutput instanceof BitmovinGcsOutput)
+        else if ($selectedBitmovinOutput instanceof BitmovinGcpOutput)
         {
             $bitmovinOutputs = $this->apiClient->outputs()->bitmovin()->gcs()->listPage();
             $cloudRegionPrefix = CloudRegion::GOOGLE_PREFIX;
