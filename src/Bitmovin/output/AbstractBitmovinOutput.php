@@ -15,7 +15,7 @@ abstract class AbstractBitmovinOutput
     public $prefix = '';
 
     /**
-     * BitmovinGcsOutput constructor.
+     * AbstractBitmovinOutput constructor.
      *
      * @param string $cloudRegion Recommended: Use, CloudRegion::GOOGLE_EUROPE_WEST_1 to select a specific region
      */

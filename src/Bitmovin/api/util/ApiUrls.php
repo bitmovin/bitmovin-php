@@ -64,8 +64,8 @@ final class ApiUrls
     const OUTPUT_SFTP = "encoding/outputs/sftp";
     const OUTPUT_AZURE = "encoding/outputs/azure";
 
-    const OUTPUT_BITMOVIN_S3 = "encoding/outputs/bitmovin/aws";
-    const OUTPUT_BITMOVIN_GCS = "encoding/outputs/bitmovin/gcp";
+    const OUTPUT_BITMOVIN_AWS = "encoding/outputs/bitmovin/aws";
+    const OUTPUT_BITMOVIN_GCP = "encoding/outputs/bitmovin/gcp";
 
     const CODEC_CONFIGURATIONS = "encoding/configurations";
     const CODEC_CONFIGURATIONS_TYPE = "encoding/configurations/{configuration_id}/type";

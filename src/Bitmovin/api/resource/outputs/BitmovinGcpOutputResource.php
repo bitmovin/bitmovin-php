@@ -6,7 +6,7 @@ use Bitmovin\api\model\outputs\GcsOutput;
 use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\Defaults;
 
-class BitmovinGcsOutputResource extends BitmovinOutputResource
+class BitmovinGcpOutputResource extends BitmovinOutputResource
 {
 
     /**

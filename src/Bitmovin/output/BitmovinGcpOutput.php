@@ -6,7 +6,7 @@ namespace Bitmovin\output;
 class BitmovinGcpOutput extends AbstractBitmovinOutput
 {
     /**
-     * BitmovinGcsOutput constructor.
+     * BitmovinGcpOutput constructor.
      *
      * @param string $cloudRegion Recommended: Use CloudRegion constants to select a specific region
      */

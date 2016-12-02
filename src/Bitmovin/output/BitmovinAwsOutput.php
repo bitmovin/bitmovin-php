@@ -6,7 +6,7 @@ namespace Bitmovin\output;
 class BitmovinAwsOutput extends AbstractBitmovinOutput
 {
     /**
-     * BitmovinGcsOutput constructor.
+     * BitmovinAwsOutput constructor.
      *
      * @param string $cloudRegion Recommended: Use CloudRegion constants to select a specific region
      */

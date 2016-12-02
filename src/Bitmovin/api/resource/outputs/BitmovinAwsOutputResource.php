@@ -5,7 +5,7 @@ namespace Bitmovin\api\resource\outputs;
 use Bitmovin\api\model\outputs\S3Output;
 use Bitmovin\api\util\Defaults;
 
-class BitmovinS3OutputResource extends BitmovinOutputResource
+class BitmovinAwsOutputResource extends BitmovinOutputResource
 {
 
     /**
