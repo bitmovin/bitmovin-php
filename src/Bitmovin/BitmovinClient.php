@@ -217,12 +217,12 @@ class BitmovinClient
 
         if ($selectedBitmovinOutput instanceof BitmovinAwsOutput)
         {
-            $bitmovinOutputs = $this->apiClient->outputs()->bitmovin()->s3()->listPage();
+            $bitmovinOutputs = $this->apiClient->outputs()->bitmovin()->aws()->listPage();
             $cloudRegionPrefix = CloudRegion::AWS_PREFIX;
         }
         else if ($selectedBitmovinOutput instanceof BitmovinGcpOutput)
         {
-            $bitmovinOutputs = $this->apiClient->outputs()->bitmovin()->gcs()->listPage();
+            $bitmovinOutputs = $this->apiClient->outputs()->bitmovin()->gcp()->listPage();
             $cloudRegionPrefix = CloudRegion::GOOGLE_PREFIX;
         }
 

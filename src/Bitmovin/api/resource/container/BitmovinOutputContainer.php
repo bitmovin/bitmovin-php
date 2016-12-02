@@ -29,7 +29,7 @@ class BitmovinOutputContainer
     /**
      * @return BitmovinS3OutputResource
      */
-    public function s3()
+    public function aws()
     {
         return $this->s3;
     }
@@ -37,7 +37,7 @@ class BitmovinOutputContainer
     /**
      * @return BitmovinGcsOutputResource
      */
-    public function gcs()
+    public function gcp()
     {
         return $this->gcs;
     }
