@@ -21,7 +21,7 @@ abstract class AbstractResource extends AbstractHttpClient
     /** @var string Namespace\ClassName */
     private $className;
     /** @var  string */
-    private $listName = NULL;
+    private $listName = null;
     /** @var SerializerInterface */
     private $serializer;
 
@@ -47,7 +47,7 @@ abstract class AbstractResource extends AbstractHttpClient
         AnnotationRegistry::registerLoader('class_exists');
         $propertyNamingStrategy = new SerializedNameAnnotationStrategy(new IdenticalPropertyNamingStrategy());
         $this->serializer = SerializerBuilder::create()->setPropertyNamingStrategy($propertyNamingStrategy)
-                                             ->build();
+            ->build();
 
         $this->baseUri = trim($baseUri, "/");
         $this->className = $className;
@@ -194,8 +194,8 @@ abstract class AbstractResource extends AbstractHttpClient
     {
         try
         {
-            $offset = max(0,intval($offset));
-            $limit = min(100,intval($limit));
+            $offset = max(0, intval($offset));
+            $limit = max(0, min(100, intval($limit)));
 
             $response = $this->listRequest($this->getBaseUri(), $offset, $limit);
             $items = $this->buildResourcesFromArrayResponse($response);
@@ -268,7 +268,7 @@ abstract class AbstractResource extends AbstractHttpClient
 
         /** @var AbstractModel[] $deserializedContentArray */
         $deserializedContentArray = $this->getSerializer()
-                                         ->deserialize($jsonResult, "array<" . $serializationClassName . ">", 'json');
+            ->deserialize($jsonResult, "array<" . $serializationClassName . ">", 'json');
 
         return $deserializedContentArray;
     }
