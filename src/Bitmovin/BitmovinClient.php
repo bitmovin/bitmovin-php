@@ -8,6 +8,8 @@ use Bitmovin\api\ApiClient;
 use Bitmovin\api\container\CodecConfigContainer;
 use Bitmovin\api\container\EncodingContainer;
 use Bitmovin\api\container\JobContainer;
+use Bitmovin\api\container\TransferContainer;
+use Bitmovin\api\container\TransferJobContainer;
 use Bitmovin\api\enum\AclPermission;
 use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\api\enum\SelectionMode;
@@ -34,6 +36,7 @@ use Bitmovin\api\model\manifests\dash\Period;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\smoothstreaming\SmoothStreamingManifest;
 use Bitmovin\api\model\outputs\OutputConverterFactory;
+use Bitmovin\api\model\transfers\TransferEncoding;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\JobConfig;
@@ -41,6 +44,7 @@ use Bitmovin\configs\LiveStreamJobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
+use Bitmovin\configs\TransferConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
@@ -414,6 +418,40 @@ class BitmovinClient
         }
     }
 
+    public function waitForTransferJobsToFinish(TransferJobContainer $transferJobContainer)
+    {
+        return $this->waitForTransfersToReachState($transferJobContainer, Status::FINISHED);
+    }
+
+    public function waitForTransferJobsToStart(TransferJobContainer $transferJobContainer)
+    {
+        return $this->waitForTransfersToReachState($transferJobContainer, Status::RUNNING);
+    }
+
+    /**
+     * @param TransferJobContainer $transferJobContainer
+     * @param string                     $expectedStatus
+     *
+     * @throws BitmovinException
+     */
+    private function waitForTransfersToReachState(TransferJobContainer $transferJobContainer, $expectedStatus)
+    {
+        foreach ($transferJobContainer->transferContainers as &$transferContainer)
+        {
+            $status = null;
+            while (true)
+            {
+                $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
+                $transferContainer->status = $status->getStatus();
+                if ($status->getStatus() == Status::ERROR || $status->getStatus() == $expectedStatus)
+                {
+                    break;
+                }
+                sleep(1);
+            }
+        }
+    }
+
     private function createDashManifestItem($name, EncodingOutput $output)
     {
         $manifest = new DashManifest();
@@ -635,6 +673,19 @@ class BitmovinClient
     }
 
     /**
+     * @param TransferConfig $transferConfig
+     *
+     * @return TransferJobContainer
+     * @throws BitmovinException
+     */
+    public function runTransferJobAndWaitForCompletion(TransferConfig $transferConfig) {
+        $transferJobContainer = $this->startTransferJob($transferConfig);
+        $this->waitForTransferJobsToFinish($transferJobContainer);
+
+        return $transferJobContainer;
+    }
+
+    /**
      * @param JobConfig $jobConfig
      *
      * @return JobContainer
@@ -653,6 +704,82 @@ class BitmovinClient
         $this->createMuxings($jobContainer);
         $this->startEncodings($jobContainer);
         return $jobContainer;
+    }
+
+    /**
+     * @param TransferConfig $transferConfig
+     *
+     * @return TransferJobContainer
+     * @throws BitmovinException
+     */
+    public function startTransferJob(TransferConfig $transferConfig) {
+        $transferJobContainer = new TransferJobContainer();
+        $transferJobContainer->transferConfig = $transferConfig;
+
+        $this->convertEncodingsToTransferContainer($transferJobContainer);
+        $this->createTransferOutput($transferJobContainer);
+        $this->startTransfers($transferJobContainer);
+
+        return $transferJobContainer;
+    }
+
+    /**
+     * @param TransferJobContainer $transferJobContainer
+     */
+    private function convertEncodingsToTransferContainer(TransferJobContainer $transferJobContainer) {
+        $jobContainer = $transferJobContainer->transferConfig->jobContainer;
+
+        foreach($jobContainer->encodingContainers as $encodingContainer) {
+            $transferJobContainer->transferContainers[] = new TransferContainer($this->apiClient, $encodingContainer->encoding);
+        }
+    }
+
+    /**
+     * @param TransferJobContainer $transferJobContainer
+     *
+     * @throws BitmovinException
+     */
+    public function startTransfers(TransferJobContainer $transferJobContainer) {
+
+        foreach ($transferJobContainer->transferContainers as &$transferContainer)
+        {
+            $transferEncoding = new TransferEncoding($transferContainer->encoding);
+            $transferOutput = new EncodingOutput($transferJobContainer->apiOutput);
+            $transferOutput->setOutputPath($transferContainer->getTransferOutputPath($transferJobContainer));
+
+            $transferEncoding->setOutputs(array($transferOutput));
+
+            $transferContainer->transfer = $this->apiClient->transfers()->encoding()->create($transferEncoding);
+        }
+    }
+
+    /**
+     * @param TransferJobContainer $transferJobContainer
+     *
+     * @throws BitmovinException
+     */
+    private function createTransferOutput(TransferJobContainer $transferJobContainer)
+    {
+        $output = $transferJobContainer->transferConfig->output;
+
+        if ($output instanceof AbstractBitmovinOutput)
+        {
+            $transferJobContainer->apiOutput = $this->getBitmovinOutputByRegion($output);
+            return;
+        }
+
+        if ($output instanceof GcsOutput)
+        {
+            $transferJobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromGcsOutput($output));
+        }
+        else if ($output instanceof FtpOutput)
+        {
+            $transferJobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromFtpOutput($output));
+        }
+        else if ($output instanceof S3Output)
+        {
+            $transferJobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromS3Output($output));
+        }
     }
 
     /**
