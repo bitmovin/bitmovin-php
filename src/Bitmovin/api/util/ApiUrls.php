@@ -12,6 +12,10 @@ final class ApiUrls
     const PH_PERIOD_ID = "{period_id}";
     const PH_ADAPTION_ID = "{adaption_id}";
     const PH_REPRESENTATION_ID = "{representation_id}";
+    const PH_TRANSFER_ID = "{transfer_id}";
+
+    const ENCODING_TRANSFERS_ENCODING = "encoding/transfers/encoding";
+    const ENCODING_TRANSFERS_ENCODING_STATUS = "encoding/transfers/encoding/{transfer_id}/status";
 
     const ENCODINGS = "encoding/encodings";
     const ENCODING_GET = "encoding/encodings/{encoding_id}";
