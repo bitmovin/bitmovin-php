@@ -10,6 +10,8 @@ use Bitmovin\api\model\ITransfer;
 use Bitmovin\api\model\manifests\dash\DashManifest;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\Transferable;
+use Bitmovin\api\model\transfers\TransferEncoding;
+use Bitmovin\api\model\transfers\TransferManifest;
 
 class TransferContainer
 {
@@ -24,7 +26,7 @@ class TransferContainer
     public $transferableResource;
 
     /**
-     * @var  ITransfer
+     * @var  ITransfer|TransferEncoding|TransferManifest
      */
     public $transfer;
 
