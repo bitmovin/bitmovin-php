@@ -8,6 +8,7 @@ use Bitmovin\api\container\JobContainer;
 use Bitmovin\api\enum\manifests\hls\MediaInfoType;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
+use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\model\encodings\muxing\TSMuxing;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
@@ -69,6 +70,51 @@ class HlsManifestFactory
      * @param                                           $manifest
      * @param ApiClient                                 $apiClient
      */
+    public static function createHlsFmp4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, $manifest, ApiClient $apiClient)
+    {
+        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+        {
+            if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
+            {
+                foreach ($codecConfigContainer->muxings as $muxing)
+                {
+                    if (!$muxing instanceof FMP4Muxing)
+                    {
+                        continue;
+                    }
+                    $segmentPath = static::createSegmentPath($jobContainer, $muxing);
+                    $playlistFileName = static::createPlaylistFileName($segmentPath);
+                    static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
+                        $codecConfigContainer->stream->getId(), $muxing->getId(), null,
+                        'audio', null, $segmentPath, $manifest, $apiClient);
+                }
+            }
+            if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
+            {
+                foreach ($codecConfigContainer->muxings as $muxing)
+                {
+                    if (!$muxing instanceof FMP4Muxing)
+                    {
+                        continue;
+                    }
+                    /** @var AudioStreamConfig $codec */
+                    $codec = $codecConfigContainer->codecConfig;
+                    $segmentPath = static::createSegmentPath($jobContainer, $muxing);
+                    $playlistFileName = static::createPlaylistFileName($segmentPath);
+                    $mediaInfo = static::getDefaultAudioMediaInfo($codec, $encodingContainer->encoding->getId(),
+                        $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
+                    $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param JobContainer                              $jobContainer
+     * @param EncodingContainer                         $encodingContainer
+     * @param                                           $manifest
+     * @param ApiClient                                 $apiClient
+     */
     public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, $manifest, ApiClient $apiClient)
     {
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
@@ -110,7 +156,7 @@ class HlsManifestFactory
 
     /**
      * @param JobContainer $jobContainer
-     * @param TSMuxing     $muxing
+     * @param TSMuxing|FMP4Muxing     $muxing
      * @return mixed|string
      */
     private static function createSegmentPath(JobContainer $jobContainer, $muxing)

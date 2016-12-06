@@ -43,6 +43,7 @@ use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\LiveStreamJobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
+use Bitmovin\configs\manifest\HlsFmp4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
 use Bitmovin\configs\TransferConfig;
@@ -523,6 +524,38 @@ class BitmovinClient
         return $this->apiClient->manifests()->hls()->create($manifest);
     }
 
+    public function createHlsFmp4Manifest(JobContainer $jobContainer)
+    {
+        $hlsFmp4Format = null;
+        foreach ($jobContainer->job->outputFormat as &$format)
+        {
+            if ($format instanceof HlsFmp4OutputFormat)
+            {
+                $hlsFmp4Format = $format;
+                break;
+            }
+        }
+        if ($hlsFmp4Format == null)
+        {
+            return Status::ERROR;
+        }
+
+        $manifestOutput = new EncodingOutput($jobContainer->apiOutput);
+        $manifestOutput->setOutputPath($jobContainer->getOutputPath());
+        $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
+        $manifestOutput->setAcl([$acl]);
+
+        $manifest = $this->createHlsManifestItem("streamFmp4.m3u8", $manifestOutput);
+
+        foreach ($jobContainer->encodingContainers as &$encodingContainer)
+        {
+            HlsManifestFactory::createHlsFmp4ManifestForEncoding($jobContainer, $encodingContainer, $manifest, $this->apiClient);
+        }
+
+        $this->runHlsFmp4Creation($manifest, $hlsFmp4Format);
+        return $hlsFmp4Format->status;
+    }
+
     /**
      * @param JobContainer $jobContainer
      *
@@ -641,6 +674,22 @@ class BitmovinClient
         }
     }
 
+    private function runHlsFmp4Creation(HlsManifest $manifest, HlsFmp4OutputFormat $hlsOutputFormat)
+    {
+        $status = null;
+        $this->apiClient->manifests()->hls()->start($manifest);
+        while (true)
+        {
+            $status = $this->apiClient->manifests()->hls()->status($manifest);
+            $hlsOutputFormat->status = $status->getStatus();
+            if ($status->getStatus() == Status::ERROR || $status->getStatus() == Status::FINISHED)
+            {
+                return;
+            }
+            sleep(1);
+        }
+    }
+
     private function runSmoothStreamingCreation(SmoothStreamingManifest $manifest, SmoothStreamingOutputFormat $outputFormat)
     {
         $status = null;
@@ -669,6 +718,7 @@ class BitmovinClient
         $this->waitForJobsToFinish($jobContainer);
         $this->createDashManifest($jobContainer);
         $this->createHlsManifest($jobContainer);
+        $this->createHlsFmp4Manifest($jobContainer);
         $this->createSmoothStreamingManifest($jobContainer);
         return $jobContainer;
     }
