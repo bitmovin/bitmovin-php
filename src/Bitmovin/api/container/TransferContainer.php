@@ -44,7 +44,7 @@ class TransferContainer
 
     public function getTransferOutputPath(TransferJobContainer $transferJobContainer)
     {
-        return $this->combinePath($transferJobContainer->getOutputPath(), $this->encoding->getId());
+        return $this->combinePath($transferJobContainer->getOutputPath());
     }
 
     /**
