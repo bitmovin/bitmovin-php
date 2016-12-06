@@ -7,8 +7,8 @@ namespace Bitmovin\api\container;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\JobConfig;
-use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\BitmovinAwsOutput;
+use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
@@ -25,6 +25,11 @@ class JobContainer
      * @var EncodingContainer[]
      */
     public $encodingContainers = array();
+
+    /**
+     * @var ManifestContainer[]
+     */
+    public $manifestContainers = array();
 
     /**
      * @var Output
@@ -89,7 +94,8 @@ class JobContainer
     {
         $output = $this->job->output;
         if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof BitmovinGcpOutput
-            || $output instanceof BitmovinAwsOutput)
+            || $output instanceof BitmovinAwsOutput
+        )
         {
             $prefix = $this->stripSlashes($output->prefix);
             return $this->addTrailingSlash($prefix);
