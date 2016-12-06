@@ -3,9 +3,10 @@
 namespace Bitmovin\api\model\encodings;
 
 use Bitmovin\api\model\AbstractModel;
+use Bitmovin\api\model\Transferable;
 use JMS\Serializer\Annotation as JMS;
 
-class Encoding extends AbstractModel
+class Encoding extends AbstractModel implements Transferable
 {
     /**
      * @JMS\Type("string")
