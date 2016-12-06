@@ -446,15 +446,15 @@ class BitmovinClient
             while (true)
             {
                 if($transferContainer->transferableResource instanceof Encoding) {
-                    $status = $this->apiClient->transfers()->encoding()->get($transferContainer->transfer);
+                    $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
                 } else if ($transferContainer->transferableResource instanceof DashManifest) {
-                    $status = $this->apiClient->transfers()->manifest()->get($transferContainer->transfer);
+                    $status = $this->apiClient->transfers()->manifest()->status($transferContainer->transfer);
                 } else {
                     break;
                 }
 
-                $transferContainer->status = $status->getState();
-                if (strtoupper($status->getState()) == Status::ERROR || strtoupper($status->getState()) == $expectedStatus)
+                $transferContainer->status = $status->getStatus();
+                if (strtoupper($status->getStatus()) == Status::ERROR || strtoupper($status->getStatus()) == $expectedStatus)
                 {
                     break;
                 }
