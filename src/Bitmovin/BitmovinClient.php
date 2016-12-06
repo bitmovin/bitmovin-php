@@ -445,10 +445,12 @@ class BitmovinClient
             $status = null;
             while (true)
             {
-                if($transferContainer->transferableResource instanceof TransferEncoding) {
+                if($transferContainer->transferableResource instanceof Encoding) {
                     $status = $this->apiClient->transfers()->encoding()->get($transferContainer->transfer);
-                } else if ($transferContainer->transferableResource instanceof IManifest) {
+                } else if ($transferContainer->transferableResource instanceof DashManifest) {
                     $status = $this->apiClient->transfers()->manifest()->get($transferContainer->transfer);
+                } else {
+                    break;
                 }
 
                 $transferContainer->status = $status->getState();
@@ -820,11 +822,13 @@ class BitmovinClient
                 $transferEncoding->setOutputs(array($transferOutput));
                 $transferContainer->transfer = $this->apiClient->transfers()->encoding()->create($transferEncoding);
             }
-            else if ($transferableResource instanceof IManifest)
+            else if ($transferableResource instanceof DashManifest)
             {
                 $transferManifest = new TransferManifest($transferContainer->transferableResource);
                 $transferManifest->setOutputs(array($transferOutput));
                 $transferContainer->transfer = $this->apiClient->transfers()->manifest()->create($transferManifest);
+            } else {
+                continue;
             }
         }
     }
