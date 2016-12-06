@@ -4,9 +4,10 @@ namespace Bitmovin\api\model\manifests\hls;
 
 use Bitmovin\api\model\AbstractModel;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
+use Bitmovin\api\model\manifests\IManifest;
 use JMS\Serializer\Annotation as JMS;
 
-class HlsManifest extends AbstractModel
+class HlsManifest extends AbstractModel implements IManifest
 {
 
     /**
@@ -14,6 +15,12 @@ class HlsManifest extends AbstractModel
      * @var  string
      */
     private $name;
+
+    /**
+     * @JMS\Type("string")
+     * @var  string
+     */
+    private $description;
 
     /**
      * @JMS\Type("array<Bitmovin\api\model\encodings\helper\EncodingOutput>")
@@ -35,6 +42,22 @@ class HlsManifest extends AbstractModel
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 
     /**
