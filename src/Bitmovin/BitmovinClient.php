@@ -8,6 +8,7 @@ use Bitmovin\api\ApiClient;
 use Bitmovin\api\container\CodecConfigContainer;
 use Bitmovin\api\container\EncodingContainer;
 use Bitmovin\api\container\JobContainer;
+use Bitmovin\api\container\ManifestContainer;
 use Bitmovin\api\container\TransferContainer;
 use Bitmovin\api\container\TransferJobContainer;
 use Bitmovin\api\enum\AclPermission;
@@ -35,9 +36,11 @@ use Bitmovin\api\model\inputs\InputConverterFactory;
 use Bitmovin\api\model\manifests\dash\DashManifest;
 use Bitmovin\api\model\manifests\dash\Period;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
+use Bitmovin\api\model\manifests\IManifest;
 use Bitmovin\api\model\manifests\smoothstreaming\SmoothStreamingManifest;
 use Bitmovin\api\model\outputs\OutputConverterFactory;
 use Bitmovin\api\model\transfers\TransferEncoding;
+use Bitmovin\api\model\transfers\TransferManifest;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\JobConfig;
@@ -442,7 +445,12 @@ class BitmovinClient
             $status = null;
             while (true)
             {
-                $status = $this->apiClient->transfers()->encoding()->get($transferContainer->transfer);
+                if($transferContainer->transferableResource instanceof TransferEncoding) {
+                    $status = $this->apiClient->transfers()->encoding()->get($transferContainer->transfer);
+                } else if ($transferContainer->transferableResource instanceof IManifest) {
+                    $status = $this->apiClient->transfers()->manifest()->get($transferContainer->transfer);
+                }
+
                 $transferContainer->status = $status->getState();
                 if (strtoupper($status->getState()) == Status::ERROR || strtoupper($status->getState()) == $expectedStatus)
                 {
@@ -497,21 +505,23 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $manifest = $this->createDashManifestItem("stream.mpd", $manifestOutput);
-        $period = $this->addPeriodToDashManifest("0", null, $manifest);
+        $dashManifest = $this->createDashManifestItem("stream.mpd", $manifestOutput);
+        $period = $this->addPeriodToDashManifest("0", null, $dashManifest);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
             if ($dash->cenc != null)
             {
-                DashProtectedManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $manifest, $period, $this->apiClient);
+                DashProtectedManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $dashManifest, $period, $this->apiClient);
             }
             else
             {
-                DashManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $manifest, $period, $this->apiClient);
+                DashManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $dashManifest, $period, $this->apiClient);
             }
         }
-        $this->runDashCreation($manifest, $dash);
+        $this->runDashCreation($dashManifest, $dash);
+        $jobContainer->manifestContainers[] = new ManifestContainer($this->apiClient, $dashManifest);
+
         return $dash->status;
     }
 
@@ -549,14 +559,16 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $manifest = $this->createHlsManifestItem("stream.m3u8", $manifestOutput);
+        $hlsManifest = $this->createHlsManifestItem("stream.m3u8", $manifestOutput);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            HlsManifestFactory::createHlsManifestForEncoding($jobContainer, $encodingContainer, $manifest, $this->apiClient);
+            HlsManifestFactory::createHlsManifestForEncoding($jobContainer, $encodingContainer, $hlsManifest, $this->apiClient);
         }
 
-        $this->runHlsCreation($manifest, $hlsFormat);
+        $this->runHlsCreation($hlsManifest, $hlsFormat);
+        $jobContainer->manifestContainers[] = new ManifestContainer($this->apiClient, $hlsManifest);
+
         return $hlsFormat->status;
     }
 
@@ -667,9 +679,11 @@ class BitmovinClient
     {
         $jobContainer = $this->startJob($job);
         $this->waitForJobsToFinish($jobContainer);
+
         $this->createDashManifest($jobContainer);
         $this->createHlsManifest($jobContainer);
         $this->createSmoothStreamingManifest($jobContainer);
+
         return $jobContainer;
     }
 
@@ -755,10 +769,24 @@ class BitmovinClient
         $transferJobContainer->transferConfig = $transferConfig;
 
         $this->convertEncodingsToTransferContainer($transferJobContainer);
+        $this->convertManifestsToTransferContainer($transferJobContainer);
         $this->createTransferOutput($transferJobContainer);
         $this->startTransfers($transferJobContainer);
 
         return $transferJobContainer;
+    }
+
+    /**
+     * @param TransferJobContainer $transferJobContainer
+     */
+    private function convertManifestsToTransferContainer(TransferJobContainer $transferJobContainer)
+    {
+        $jobContainer = $transferJobContainer->transferConfig->jobContainer;
+
+        foreach ($jobContainer->manifestContainers as $manifestContainer)
+        {
+            $transferJobContainer->transferContainers[] = new TransferContainer($this->apiClient, $manifestContainer->manifest);
+        }
     }
 
     /**
@@ -779,18 +807,26 @@ class BitmovinClient
      *
      * @throws BitmovinException
      */
-    public function startTransfers(TransferJobContainer $transferJobContainer)
+    private function startTransfers(TransferJobContainer $transferJobContainer)
     {
-
         foreach ($transferJobContainer->transferContainers as &$transferContainer)
         {
-            $transferEncoding = new TransferEncoding($transferContainer->encoding);
+            $transferableResource = $transferContainer->transferableResource;
             $transferOutput = new EncodingOutput($transferJobContainer->apiOutput);
             $transferOutput->setOutputPath($transferContainer->getTransferOutputPath($transferJobContainer));
 
-            $transferEncoding->setOutputs(array($transferOutput));
-
-            $transferContainer->transfer = $this->apiClient->transfers()->encoding()->create($transferEncoding);
+            if($transferableResource instanceof Encoding)
+            {
+                $transferEncoding = new TransferEncoding($transferContainer->transferableResource);
+                $transferEncoding->setOutputs(array($transferOutput));
+                $transferContainer->transfer = $this->apiClient->transfers()->encoding()->create($transferEncoding);
+            }
+            else if ($transferableResource instanceof IManifest)
+            {
+                $transferManifest = new TransferManifest($transferContainer->transferableResource);
+                $transferManifest->setOutputs(array($transferOutput));
+                $transferContainer->transfer = $this->apiClient->transfers()->manifest()->create($transferManifest);
+            }
         }
     }
 
