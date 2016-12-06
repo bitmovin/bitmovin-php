@@ -751,7 +751,6 @@ class BitmovinClient
                             ->thumbnails($codecConfigContainer->stream)
                             ->create($thumbnail);
                     }
-
                 }
             }
         }
