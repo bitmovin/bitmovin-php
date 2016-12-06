@@ -11,7 +11,7 @@ use Bitmovin\api\util\RouteHelper;
 
 class EncodingResource extends AbstractResource
 {
-    const LIST_NAME = "encodings";
+    const LIST_NAME = "items";
 
     /**
      * EncodingResource constructor.

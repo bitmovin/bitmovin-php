@@ -10,7 +10,7 @@ use Bitmovin\api\util\RouteHelper;
 
 class StreamResource extends AbstractResource
 {
-    const LIST_NAME = "streams";
+    const LIST_NAME = "items";
 
     /** @var  Encoding */
     private $encoding;
