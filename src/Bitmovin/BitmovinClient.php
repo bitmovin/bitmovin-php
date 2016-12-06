@@ -391,8 +391,8 @@ class BitmovinClient
     {
         foreach ($transferJobContainer->transferContainers as &$transferContainer)
         {
-            $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
-            $transferContainer->status = $status->getStatus();
+            $status = $this->apiClient->transfers()->encoding()->get($transferContainer->transfer)->getState();
+            $transferContainer->status = $status;
         }
     }
 
