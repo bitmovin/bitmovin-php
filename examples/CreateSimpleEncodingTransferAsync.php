@@ -1,30 +1,29 @@
 <?php
 
 use Bitmovin\api\enum\CloudRegion;
+use Bitmovin\api\enum\Status;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
+use Bitmovin\configs\TransferConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
-use Bitmovin\output\GcsOutput;
+use Bitmovin\output\BitmovinGcpOutput;
+use Bitmovin\output\FtpOutput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$client = new BitmovinClient('INSERT YOUR API KEY HERE');
+$client = new BitmovinClient('INSERT YOU API KEY HERE');
 
 // CONFIGURATION
 $videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
-$gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
-$gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
-$gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
-$gcs_prefix = 'path/to/your/output/destination/';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
-$encodingProfile->name = 'Test Encoding';
+$encodingProfile->name = 'Test Encoding Transfer Async';
 $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
@@ -58,7 +57,11 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
-$jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketName, $gcs_prefix);
+$bitmovinGcpOutput = new BitmovinGcpOutput(CloudRegion::GOOGLE_EUROPE_WEST_1);
+$bitmovinGcpOutput->prefix = "your/custom/path/";
+//$bitmovinAwsOutput = new BitmovinAwsOutput(CloudRegion::AWS_EU_WEST_1);
+//$bitmovinS3Output->prefix = "your/custom/path/";
+$jobConfig->output = $bitmovinGcpOutput;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 // ENABLE DASH OUTPUT
@@ -67,4 +70,35 @@ $jobConfig->outputFormat[] = new DashOutputFormat();
 $jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
-$client->runJobAndWaitForCompletion($jobConfig);
+$jobContainer = $client->runJobAndWaitForCompletion($jobConfig);
+
+//==================================================================================================================
+
+//TRANSFER OUTPUT CONFIGURATION
+$transferFtpHost = 'YOUR FTP HOST';
+$transferFtpUsername = 'YOUR FTP USERNAME';
+$transferFtpPassword = 'YOUR FTP PASSWORD';
+$transferFtpPrefix = 'YOUR/FTP/DESTINATION/PATH/';
+
+// CREATE TRANSFER CONFIG
+$transferConfig = new TransferConfig();
+$transferConfig->jobContainer = $jobContainer;
+$transferConfig->output = new FtpOutput($transferFtpHost, $transferFtpUsername, $transferFtpPassword, $transferFtpPrefix);
+
+// RUN JOB AND WAIT UNTIL IT HAS FINISHED
+$transferJobContainer = $client->startTransferJob($transferConfig);
+
+// TRANSFER-JOB IS STARTED - WAIT FOR IT TO FINISH
+do
+{
+    $allFinished = true;
+    $client->updateTransferJobStatus($transferJobContainer);
+    foreach ($transferJobContainer->transferContainers as $transferContainer)
+    {
+        if ($transferContainer->status !== Status::FINISHED && $transferContainer->status !== Status::ERROR)
+        {
+            $allFinished = false;
+        }
+    }
+    sleep(1);
+} while (!$allFinished);

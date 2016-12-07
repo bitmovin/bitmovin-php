@@ -10,7 +10,7 @@ class Acl
      * @JMS\Type("string")
      * @var  string
      */
-    private $scope;
+    private $scope = "";
     /**
      * @JMS\Type("string")
      * @var  string Enum AclPermission available
