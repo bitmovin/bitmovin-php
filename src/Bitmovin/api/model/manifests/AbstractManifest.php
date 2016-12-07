@@ -5,9 +5,10 @@ namespace Bitmovin\api\model\manifests;
 use Bitmovin\api\model\AbstractModel;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\manifests\IManifest;
+use Bitmovin\api\model\Transferable;
 use JMS\Serializer\Annotation as JMS;
 
-class AbstractManifest extends AbstractModel
+class AbstractManifest extends AbstractModel implements Transferable
 {
     /**
      * @JMS\Type("string")
