@@ -11,7 +11,6 @@ use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
 use Bitmovin\api\model\encodings\muxing\AbstractMuxing;
 use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\model\encodings\muxing\TSMuxing;
-use Bitmovin\api\model\manifests\AbstractManifest;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
@@ -67,10 +66,10 @@ class HlsManifestFactory
     }
 
     /**
-     * @param JobContainer                              $jobContainer
-     * @param EncodingContainer                         $encodingContainer
-     * @param                                           $manifest
-     * @param ApiClient                                 $apiClient
+     * @param JobContainer      $jobContainer
+     * @param EncodingContainer $encodingContainer
+     * @param HlsManifest       $manifest
+     * @param ApiClient         $apiClient
      */
     public static function createHlsFmp4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
     {
@@ -112,10 +111,10 @@ class HlsManifestFactory
     }
 
     /**
-     * @param JobContainer                              $jobContainer
-     * @param EncodingContainer                         $encodingContainer
-     * @param                                           $manifest
-     * @param ApiClient                                 $apiClient
+     * @param JobContainer      $jobContainer
+     * @param EncodingContainer $encodingContainer
+     * @param HlsManifest       $manifest
+     * @param ApiClient         $apiClient
      */
     public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
     {
