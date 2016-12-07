@@ -1,7 +1,7 @@
 <?php
 
-
 namespace Bitmovin\configs\images;
+
 
 class ThumbnailConfig
 {

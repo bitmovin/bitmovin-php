@@ -5,10 +5,10 @@ namespace Bitmovin\api\container;
 
 
 use Bitmovin\api\ApiClient;
-use Bitmovin\api\model\Transferable;
-use Bitmovin\api\model\transfers\AbstractTransfer;
+use Bitmovin\api\model\manifests\AbstractManifest;
+use Bitmovin\api\model\transfers\TransferManifest;
 
-class TransferContainer
+class ManifestContainer
 {
     /**
      * @var ApiClient
@@ -16,12 +16,12 @@ class TransferContainer
     private $apiClient;
 
     /**
-     * @var Transferable
+     * @var AbstractManifest
      */
-    public $transferableResource;
+    public $manifest;
 
     /**
-     * @var  AbstractTransfer
+     * @var  TransferManifest
      */
     public $transfer;
 
@@ -31,19 +31,19 @@ class TransferContainer
     public $status;
 
     /**
-     * TransferContainer constructor.
-     * @param ApiClient    $apiClient
-     * @param Transferable $resource
+     * ManifestContainer constructor.
+     * @param ApiClient        $apiClient
+     * @param AbstractManifest $manifest
      */
-    public function __construct(ApiClient $apiClient, Transferable $resource)
+    public function __construct(ApiClient $apiClient, AbstractManifest $manifest)
     {
         $this->apiClient = $apiClient;
-        $this->transferableResource = $resource;
+        $this->manifest = $manifest;
     }
 
-    public function getTransferOutputPath(TransferJobContainer $transferJobContainer)
+    public function getTransferManifestOutputPath(TransferJobContainer $transferJobContainer)
     {
-        return $this->combinePath($transferJobContainer->getOutputPath());
+        return $this->combinePath($transferJobContainer->getOutputPath(), "manifests");
     }
 
     /**

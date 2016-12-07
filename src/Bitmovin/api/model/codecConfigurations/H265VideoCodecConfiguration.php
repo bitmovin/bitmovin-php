@@ -12,7 +12,6 @@ class H265VideoCodecConfiguration extends VideoConfiguration
      * @var  string  H265Profile
      */
     private $profile;
-
     /**
      * @JMS\Type("integer")
      * @var  integer
@@ -27,7 +26,12 @@ class H265VideoCodecConfiguration extends VideoConfiguration
      * @JMS\Type("integer")
      * @var  integer
      */
-    private $qp;
+    private $qpMin;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $qpMax;
     /**
      * @JMS\Type("integer")
      * @var  integer
@@ -39,15 +43,45 @@ class H265VideoCodecConfiguration extends VideoConfiguration
      */
     private $maxBitrate;
     /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $bufsize;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $minGop;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $maxGop;
+    /**
+     * @JMS\Type("string")
+     * @var  string MvPredictionMode
+     */
+    private $mvPredictionMode;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer Range: 16-24
+     */
+    private $mvSearchRangeMax;
+    /**
      * @JMS\Type("string")
      * @var  string H265Level
      */
     private $level;
     /**
+     * @JMS\Type("boolean")
+     * @var  boolean
+     */
+    private $cabac;
+    /**
      * @JMS\Type("integer")
      * @var  integer
      */
-    private $rcLookahed;
+    private $rcLookahead;
 
     /**
      * @JMS\Type("string")
@@ -84,6 +118,7 @@ class H265VideoCodecConfiguration extends VideoConfiguration
      * @var  integer
      */
     private $subMe;
+
     /**
      * @JMS\Type("integer")
      * @var  integer
@@ -173,22 +208,6 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     /**
      * @return int
      */
-    public function getQp()
-    {
-        return $this->qp;
-    }
-
-    /**
-     * @param int $qp
-     */
-    public function setQp($qp)
-    {
-        $this->qp = $qp;
-    }
-
-    /**
-     * @return int
-     */
     public function getMinBitrate()
     {
         return $this->minBitrate;
@@ -219,6 +238,134 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     }
 
     /**
+     * @return int
+     */
+    public function getQpMin()
+    {
+        return $this->qpMin;
+    }
+
+    /**
+     * @param int $qpMin
+     */
+    public function setQpMin($qpMin)
+    {
+        $this->qpMin = $qpMin;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQpMax()
+    {
+        return $this->qpMax;
+    }
+
+    /**
+     * @param int $qpMax
+     */
+    public function setQpMax($qpMax)
+    {
+        $this->qpMax = $qpMax;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBufsize()
+    {
+        return $this->bufsize;
+    }
+
+    /**
+     * @param int $bufsize
+     */
+    public function setBufsize($bufsize)
+    {
+        $this->bufsize = $bufsize;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinGop()
+    {
+        return $this->minGop;
+    }
+
+    /**
+     * @param int $minGop
+     */
+    public function setMinGop($minGop)
+    {
+        $this->minGop = $minGop;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxGop()
+    {
+        return $this->maxGop;
+    }
+
+    /**
+     * @param int $maxGop
+     */
+    public function setMaxGop($maxGop)
+    {
+        $this->maxGop = $maxGop;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMvPredictionMode()
+    {
+        return $this->mvPredictionMode;
+    }
+
+    /**
+     * @param string $mvPredictionMode
+     */
+    public function setMvPredictionMode($mvPredictionMode)
+    {
+        $this->mvPredictionMode = $mvPredictionMode;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMvSearchRangeMax()
+    {
+        return $this->mvSearchRangeMax;
+    }
+
+    /**
+     * @param int $mvSearchRangeMax
+     */
+    public function setMvSearchRangeMax($mvSearchRangeMax)
+    {
+        $this->mvSearchRangeMax = $mvSearchRangeMax;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isCabac()
+    {
+        return $this->cabac;
+    }
+
+    /**
+     * @param boolean $cabac
+     */
+    public function setCabac($cabac)
+    {
+        $this->cabac = $cabac;
+    }
+
+    /**
      * @return string
      */
     public function getLevel()
@@ -237,17 +384,17 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     /**
      * @return int
      */
-    public function getRcLookahed()
+    public function getRcLookahead()
     {
-        return $this->rcLookahed;
+        return $this->rcLookahead;
     }
 
     /**
-     * @param int $rcLookahed
+     * @param int $rcLookahead
      */
-    public function setRcLookahed($rcLookahed)
+    public function setRcLookahead($rcLookahead)
     {
-        $this->rcLookahed = $rcLookahed;
+        $this->rcLookahead = $rcLookahead;
     }
 
     /**

@@ -13,8 +13,7 @@ abstract class AbstractHttpClient
 {
     /** @var Client */
     private static $httpClient = NULL;
-    /** @var string */
-    private $apiVersion = "v1";
+
     private $requiredOptions = array(
         "base_uri" => "https://api.bitmovin.com",
         "verify" => false,

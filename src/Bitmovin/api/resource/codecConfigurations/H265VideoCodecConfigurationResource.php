@@ -3,6 +3,7 @@
 namespace Bitmovin\api\resource\codecConfigurations;
 
 use Bitmovin\api\model\codecConfigurations\H265VideoCodecConfiguration;
+use Bitmovin\api\util\Defaults;
 
 class H265VideoCodecConfigurationResource extends CodecConfigurationResource
 {
@@ -42,11 +43,12 @@ class H265VideoCodecConfigurationResource extends CodecConfigurationResource
     }
 
     /**
-     * @param integer $offset
-     * @param integer $limit
-     * @return H265VideoCodecConfiguration[]
+     * @param int $offset
+     * @param int $limit
+     * @return \Bitmovin\api\model\AbstractModel[]
+     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function listPage($offset = 0, $limit = 25)
+    public function listPage($offset = Defaults::LIST_OFFSET, $limit = Defaults::LIST_LIMIT)
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->listResourcePage($offset, $limit);
