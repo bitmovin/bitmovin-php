@@ -79,7 +79,7 @@ class SmoothStreamingManifestFactory
         {
             $mediaFilePath .= '/';
         }
-        $mediaFilePath .= $muxing->getName();
+        $mediaFilePath .= $muxing->getFilename();
         return $mediaFilePath;
     }
 

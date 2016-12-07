@@ -53,7 +53,6 @@ use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\output\AbstractBitmovinOutput;
-use Bitmovin\output\AbstractOutput;
 use Bitmovin\output\BitmovinAwsOutput;
 use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\FtpOutput;
@@ -209,12 +208,12 @@ class BitmovinClient
     /**
      * @param AbstractBitmovinOutput $selectedBitmovinOutput
      *
-     * @return AbstractOutput
+     * @return \Bitmovin\api\model\outputs\AbstractBitmovinOutput
      * @throws BitmovinException
      */
     private function getBitmovinOutputByRegion(AbstractBitmovinOutput $selectedBitmovinOutput)
     {
-        /** @var AbstractOutput[] $bitmovinOutputs */
+        /** @var \Bitmovin\api\model\outputs\AbstractBitmovinOutput[] $bitmovinOutputs */
         $bitmovinOutputs = array();
         $cloudRegionPrefix = "";
 
@@ -480,7 +479,7 @@ class BitmovinClient
     private function createDashManifestItem($name, EncodingOutput $output)
     {
         $manifest = new DashManifest();
-        $manifest->setName($name);
+        $manifest->setManifestName($name);
         $manifest->setOutputs([$output]);
         return $this->apiClient->manifests()->dash()->create($manifest);
     }
@@ -544,7 +543,7 @@ class BitmovinClient
     private function createHlsManifestItem($name, EncodingOutput $output)
     {
         $manifest = new HlsManifest();
-        $manifest->setName($name);
+        $manifest->setManifestName($name);
         $manifest->setOutputs([$output]);
         return $this->apiClient->manifests()->hls()->create($manifest);
     }

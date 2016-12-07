@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Bitmovin\api\model\manifests\dash;
 
 use Bitmovin\api\model\manifests\AbstractManifest;

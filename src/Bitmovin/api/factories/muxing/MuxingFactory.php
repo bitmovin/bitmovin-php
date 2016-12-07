@@ -92,7 +92,7 @@ class MuxingFactory
         {
             $muxing->setOutputs([$encodingOutput]);
         }
-        $muxing->setName($smoothStreamingOutputFormat->mediaFileName);
+        $muxing->setFilename($smoothStreamingOutputFormat->mediaFileName);
         $muxing->setFragmentDuration(4000);
         $streamMuxing = new MuxingStream();
         $streamMuxing->setStreamId($stream->getId());
@@ -128,7 +128,7 @@ class MuxingFactory
         {
             $muxing->setOutputs([$encodingOutput]);
         }
-        $muxing->setName($progressiveMp4OutputFormat->fileName);
+        $muxing->setFilename($progressiveMp4OutputFormat->fileName);
         $muxingStreams = array();
         foreach ($streams as $stream)
         {

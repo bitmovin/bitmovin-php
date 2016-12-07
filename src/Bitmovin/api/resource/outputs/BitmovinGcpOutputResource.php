@@ -2,19 +2,19 @@
 
 namespace Bitmovin\api\resource\outputs;
 
-use Bitmovin\api\model\outputs\GcsOutput;
+use Bitmovin\api\model\outputs\BitmovinGcpOutput;
 use Bitmovin\api\util\Defaults;
 
 class BitmovinGcpOutputResource extends BitmovinOutputResource
 {
 
     /**
-     * @param GcsOutput $output
+     * @param BitmovinGcpOutput $output
      *
-     * @return GcsOutput
+     * @return BitmovinGcpOutput
      * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function get(GcsOutput $output)
+    public function get(BitmovinGcpOutput $output)
     {
         return parent::getOutput($output);
     }
@@ -23,7 +23,7 @@ class BitmovinGcpOutputResource extends BitmovinOutputResource
      * @param integer $offset
      * @param integer $limit
      *
-     * @return GcsOutput[]
+     * @return BitmovinGcpOutput[]
      * @throws \Bitmovin\api\exceptions\BitmovinException
      */
     public function listPage($offset = Defaults::LIST_OFFSET, $limit = Defaults::LIST_LIMIT)
@@ -35,7 +35,7 @@ class BitmovinGcpOutputResource extends BitmovinOutputResource
     /**
      * @param $outputId
      *
-     * @return GcsOutput
+     * @return BitmovinGcpOutput
      * @throws \Bitmovin\api\exceptions\BitmovinException
      */
     public function getById($outputId)
