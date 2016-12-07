@@ -4,10 +4,9 @@ namespace Bitmovin\api\model\transfers;
 
 use Bitmovin\api\model\AbstractModel;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
-use Bitmovin\api\model\ITransfer;
 use JMS\Serializer\Annotation as JMS;
 
-class AbstractTransfer extends AbstractModel implements ITransfer
+class AbstractTransfer extends AbstractModel
 {
     /**
      * @JMS\Type("DateTime")
