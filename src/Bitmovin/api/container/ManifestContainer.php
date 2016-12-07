@@ -5,8 +5,7 @@ namespace Bitmovin\api\container;
 
 
 use Bitmovin\api\ApiClient;
-use Bitmovin\api\model\encodings\Encoding;
-use Bitmovin\api\model\manifests\IManifest;
+use Bitmovin\api\model\manifests\AbstractManifest;
 use Bitmovin\api\model\transfers\TransferManifest;
 
 class ManifestContainer
@@ -17,7 +16,7 @@ class ManifestContainer
     private $apiClient;
 
     /**
-     * @var Encoding
+     * @var AbstractManifest
      */
     public $manifest;
 
@@ -33,10 +32,10 @@ class ManifestContainer
 
     /**
      * ManifestContainer constructor.
-     * @param ApiClient $apiClient
-     * @param IManifest $manifest
+     * @param ApiClient        $apiClient
+     * @param AbstractManifest $manifest
      */
-    public function __construct(ApiClient $apiClient, IManifest $manifest)
+    public function __construct(ApiClient $apiClient, AbstractManifest $manifest)
     {
         $this->apiClient = $apiClient;
         $this->manifest = $manifest;
