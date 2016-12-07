@@ -389,6 +389,15 @@ class BitmovinClient
         }
     }
 
+    public function updateTransferJobStatus(TransferJobContainer $transferJobContainer)
+    {
+        foreach ($transferJobContainer->transferContainers as &$transferContainer)
+        {
+            $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
+            $transferContainer->status = $status->getStatus();
+        }
+    }
+
     public function waitForJobsToFinish(JobContainer $jobContainer)
     {
         return $this->waitForJobsToReachState($jobContainer, Status::FINISHED);
