@@ -13,8 +13,7 @@ abstract class AbstractHttpClient
 {
     /** @var Client */
     private static $httpClient = NULL;
-    /** @var string */
-    private $apiVersion = "v1";
+
     private $requiredOptions = array(
         "base_uri" => "https://api.bitmovin.com",
         "verify" => false,
@@ -55,7 +54,9 @@ abstract class AbstractHttpClient
         $this->requiredOptions["base_uri"] = trim($usedEndpointUrl, "/") . "/" . $version . "/";
         $this->requiredOptions['headers'] = array(
             'X-Api-Key' => $apiKey,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'X-Api-Client' => 'bitmovin-php',
+            'X-Api-Client-Version' => '1.3.2'
         );
         self::$httpClient = new Client($this->getRequiredOptions());
 

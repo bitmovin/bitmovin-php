@@ -1,11 +1,7 @@
 <?php
 
-
 namespace Bitmovin\configs\images;
 
-
-use Bitmovin\configs\audio\AudioStreamConfig;
-use Bitmovin\configs\video\AbstractVideoStreamConfig;
 
 class ThumbnailConfig
 {

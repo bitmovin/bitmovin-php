@@ -58,7 +58,7 @@ class DashManifestResourceTest extends AbstractBitmovinApiTest
         $encodingOutput->setOutputId(Uuid::uuid4()->toString());
         $encodingOutput->setOutputPath('/test/path/' . Uuid::uuid4()->toString());
         $dashManifest = new DashManifest();
-        $dashManifest->setName('PHP_DASH_TEST');
+        $dashManifest->setManifestName('PHP_DASH_TEST');
         $dashManifest->setOutputs([$encodingOutput]);
         return $dashManifest;
     }

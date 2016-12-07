@@ -17,6 +17,11 @@ final class ApiUrls
 
     const ENCODING_TRANSFERS_ENCODING = "encoding/transfers/encoding";
     const ENCODING_TRANSFERS_ENCODING_STATUS = "encoding/transfers/encoding/{transfer_id}/status";
+    const ENCODING_TRANSFERS_ENCODING_CUSTOM_DATA = "encoding/transfers/manifest/{transfer_id}/customData";
+
+    const ENCODING_TRANSFERS_MANIFEST = "encoding/transfers/manifest";
+    const ENCODING_TRANSFERS_MANIFEST_STATUS = self::ENCODING_TRANSFERS_MANIFEST . "/{transfer_id}/status";
+    const ENCODING_TRANSFERS_MANIFEST_CUSTOM_DATA = self::ENCODING_TRANSFERS_MANIFEST . "/{transfer_id}/customData";
 
     const ENCODINGS = "encoding/encodings";
     const ENCODING_GET = "encoding/encodings/{encoding_id}";

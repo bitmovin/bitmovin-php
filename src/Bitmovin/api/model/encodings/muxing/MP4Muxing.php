@@ -11,7 +11,7 @@ class MP4Muxing extends AbstractMuxing
      * @JMS\Type("string")
      * @var  string
      */
-    private $name;
+    private $filename;
     /**
      * @JMS\Type("integer")
      * @var  integer
@@ -33,17 +33,17 @@ class MP4Muxing extends AbstractMuxing
     /**
      * @return string
      */
-    public function getName()
+    public function getFilename()
     {
-        return $this->name;
+        return $this->filename;
     }
 
     /**
-     * @param string $name
+     * @param string $filename
      */
-    public function setName($name)
+    public function setFilename($filename)
     {
-        $this->name = $name;
+        $this->filename = $filename;
     }
 
     /**

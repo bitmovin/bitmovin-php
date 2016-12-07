@@ -59,7 +59,7 @@ class HlsManifestResourceTest extends AbstractBitmovinApiTest
         $encodingOutput->setOutputId(Uuid::uuid4()->toString());
         $encodingOutput->setOutputPath('/test/path/' . Uuid::uuid4()->toString());
         $manifest = new HlsManifest();
-        $manifest->setName('PHP_HLS_TEST');
+        $manifest->setManifestName('PHP_HLS_TEST');
         $manifest->setOutputs([$encodingOutput]);
         return $manifest;
     }

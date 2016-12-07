@@ -4,15 +4,16 @@
 namespace Bitmovin\configs\video;
 
 
-use Bitmovin\api\enum\codecConfigurations\H264Profile;
+use Bitmovin\api\enum\codecConfigurations\H265Profile;
 use Bitmovin\configs\images\ThumbnailConfig;
 
-class H264VideoStreamConfig extends AbstractVideoStreamConfig
+
+class H265VideoStreamConfig extends AbstractVideoStreamConfig
 {
     /**
      * @var string Enum: \Bitmovin\api\enum\codecConfigurations\H264Profile
      */
-    public $profile = H264Profile::HIGH;
+    public $profile = H265Profile::MAIN;
 
     /** @var ThumbnailConfig[] */
     public $thumbnailConfigs = array();
