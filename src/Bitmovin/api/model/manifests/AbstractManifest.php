@@ -13,7 +13,7 @@ class AbstractManifest extends AbstractModel implements Transferable
      * @JMS\Type("string")
      * @var  string
      */
-    private $name;
+    private $manifestName;
 
     /**
      * @JMS\Type("string")
@@ -30,17 +30,9 @@ class AbstractManifest extends AbstractModel implements Transferable
     /**
      * @return string
      */
-    public function getName()
+    public function getManifestName()
     {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
+        return $this->manifestName;
     }
 
     /**
@@ -60,6 +52,14 @@ class AbstractManifest extends AbstractModel implements Transferable
     }
 
     /**
+     * @param string $manifestName
+     */
+    public function setManifestName($manifestName)
+    {
+        $this->manifestName = $manifestName;
+    }
+
+    /**
      * @return \Bitmovin\api\model\encodings\helper\EncodingOutput[]
      */
     public function getOutputs()
@@ -74,5 +74,6 @@ class AbstractManifest extends AbstractModel implements Transferable
     {
         $this->outputs = $outputs;
     }
+
 
 }
