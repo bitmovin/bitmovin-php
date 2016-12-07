@@ -55,7 +55,9 @@ abstract class AbstractHttpClient
         $this->requiredOptions["base_uri"] = trim($usedEndpointUrl, "/") . "/" . $version . "/";
         $this->requiredOptions['headers'] = array(
             'X-Api-Key' => $apiKey,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'X-Api-Client' => 'bitmovin-php',
+            'X-Api-Client-Version' => '1.3.2'
         );
         self::$httpClient = new Client($this->getRequiredOptions());
 
