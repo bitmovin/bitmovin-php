@@ -36,7 +36,6 @@ use Bitmovin\api\model\inputs\InputConverterFactory;
 use Bitmovin\api\model\manifests\dash\DashManifest;
 use Bitmovin\api\model\manifests\dash\Period;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
-use Bitmovin\api\model\manifests\IManifest;
 use Bitmovin\api\model\manifests\smoothstreaming\SmoothStreamingManifest;
 use Bitmovin\api\model\outputs\OutputConverterFactory;
 use Bitmovin\api\model\transfers\TransferEncoding;
@@ -443,18 +442,20 @@ class BitmovinClient
         foreach ($transferJobContainer->transferContainers as &$transferContainer)
         {
             $status = null;
+            if($transferContainer->transferableResource instanceof HlsManifest) {
+                continue;
+            }
+
             while (true)
             {
-                if($transferContainer->transferableResource instanceof Encoding) {
+                if($transferContainer->transfer instanceof TransferEncoding) {
                     $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
-                } else if ($transferContainer->transferableResource instanceof DashManifest) {
+                } else if ($transferContainer->transfer instanceof TransferManifest) {
                     $status = $this->apiClient->transfers()->manifest()->status($transferContainer->transfer);
-                } else {
-                    break;
                 }
 
                 $transferContainer->status = $status->getStatus();
-                if (strtoupper($status->getStatus()) == Status::ERROR || strtoupper($status->getStatus()) == $expectedStatus)
+                if (in_array($status->getStatus(), [Status::ERROR, $expectedStatus]))
                 {
                     break;
                 }
@@ -818,13 +819,13 @@ class BitmovinClient
 
             if($transferableResource instanceof Encoding)
             {
-                $transferEncoding = new TransferEncoding($transferContainer->transferableResource);
+                $transferEncoding = new TransferEncoding($transferableResource);
                 $transferEncoding->setOutputs(array($transferOutput));
                 $transferContainer->transfer = $this->apiClient->transfers()->encoding()->create($transferEncoding);
             }
             else if ($transferableResource instanceof DashManifest)
             {
-                $transferManifest = new TransferManifest($transferContainer->transferableResource);
+                $transferManifest = new TransferManifest($transferableResource);
                 $transferManifest->setOutputs(array($transferOutput));
                 $transferContainer->transfer = $this->apiClient->transfers()->manifest()->create($transferManifest);
             } else {
