@@ -13,7 +13,7 @@ class HlsManifest extends AbstractModel
      * @JMS\Type("string")
      * @var  string
      */
-    private $name;
+    private $manifestName;
 
     /**
      * @JMS\Type("array<Bitmovin\api\model\encodings\helper\EncodingOutput>")
@@ -24,17 +24,17 @@ class HlsManifest extends AbstractModel
     /**
      * @return string
      */
-    public function getName()
+    public function getManifestName()
     {
-        return $this->name;
+        return $this->manifestName;
     }
 
     /**
-     * @param string $name
+     * @param string $manifestName
      */
-    public function setName($name)
+    public function setManifestName($manifestName)
     {
-        $this->name = $name;
+        $this->manifestName = $manifestName;
     }
 
     /**

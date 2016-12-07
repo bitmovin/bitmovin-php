@@ -456,7 +456,7 @@ class BitmovinClient
     private function createDashManifestItem($name, EncodingOutput $output)
     {
         $manifest = new DashManifest();
-        $manifest->setName($name);
+        $manifest->setManifestName($name);
         $manifest->setOutputs([$output]);
         return $this->apiClient->manifests()->dash()->create($manifest);
     }
@@ -518,7 +518,7 @@ class BitmovinClient
     private function createHlsManifestItem($name, EncodingOutput $output)
     {
         $manifest = new HlsManifest();
-        $manifest->setName($name);
+        $manifest->setManifestName($name);
         $manifest->setOutputs([$output]);
         return $this->apiClient->manifests()->hls()->create($manifest);
     }
