@@ -442,15 +442,19 @@ class BitmovinClient
         foreach ($transferJobContainer->transferContainers as &$transferContainer)
         {
             $status = null;
-            if($transferContainer->transferableResource instanceof HlsManifest) {
+            if ($transferContainer->transferableResource instanceof HlsManifest)
+            {
                 continue;
             }
 
             while (true)
             {
-                if($transferContainer->transfer instanceof TransferEncoding) {
+                if ($transferContainer->transfer instanceof TransferEncoding)
+                {
                     $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
-                } else if ($transferContainer->transfer instanceof TransferManifest) {
+                }
+                else if ($transferContainer->transfer instanceof TransferManifest)
+                {
                     $status = $this->apiClient->transfers()->manifest()->status($transferContainer->transfer);
                 }
 
@@ -817,7 +821,7 @@ class BitmovinClient
             $transferOutput = new EncodingOutput($transferJobContainer->apiOutput);
             $transferOutput->setOutputPath($transferContainer->getTransferOutputPath($transferJobContainer));
 
-            if($transferableResource instanceof Encoding)
+            if ($transferableResource instanceof Encoding)
             {
                 $transferEncoding = new TransferEncoding($transferableResource);
                 $transferEncoding->setOutputs(array($transferOutput));
@@ -828,7 +832,9 @@ class BitmovinClient
                 $transferManifest = new TransferManifest($transferableResource);
                 $transferManifest->setOutputs(array($transferOutput));
                 $transferContainer->transfer = $this->apiClient->transfers()->manifest()->create($transferManifest);
-            } else {
+            }
+            else
+            {
                 continue;
             }
         }
