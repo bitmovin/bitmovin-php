@@ -2,19 +2,19 @@
 
 namespace Bitmovin\api\resource\outputs;
 
-use Bitmovin\api\model\outputs\S3Output;
+use Bitmovin\api\model\outputs\BitmovinAwsOutput;
 use Bitmovin\api\util\Defaults;
 
 class BitmovinAwsOutputResource extends BitmovinOutputResource
 {
 
     /**
-     * @param S3Output $output
+     * @param BitmovinAwsOutput $output
      *
-     * @return S3Output
+     * @return BitmovinAwsOutput
      * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    public function get(S3Output $output)
+    public function get(BitmovinAwsOutput $output)
     {
         return parent::getOutput($output);
     }
@@ -23,7 +23,7 @@ class BitmovinAwsOutputResource extends BitmovinOutputResource
      * @param integer $offset
      * @param integer $limit
      *
-     * @return S3Output[]
+     * @return BitmovinAwsOutput[]
      * @throws \Bitmovin\api\exceptions\BitmovinException
      */
     public function listPage($offset = Defaults::LIST_OFFSET, $limit = Defaults::LIST_LIMIT)
@@ -35,7 +35,7 @@ class BitmovinAwsOutputResource extends BitmovinOutputResource
     /**
      * @param $outputId
      *
-     * @return S3Output
+     * @return BitmovinAwsOutput
      * @throws \Bitmovin\api\exceptions\BitmovinException
      */
     public function getById($outputId)

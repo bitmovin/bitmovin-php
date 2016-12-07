@@ -51,7 +51,6 @@ use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\output\AbstractBitmovinOutput;
-use Bitmovin\output\AbstractOutput;
 use Bitmovin\output\BitmovinAwsOutput;
 use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\FtpOutput;
@@ -207,12 +206,12 @@ class BitmovinClient
     /**
      * @param AbstractBitmovinOutput $selectedBitmovinOutput
      *
-     * @return AbstractOutput
+     * @return \Bitmovin\api\model\outputs\AbstractBitmovinOutput
      * @throws BitmovinException
      */
     private function getBitmovinOutputByRegion(AbstractBitmovinOutput $selectedBitmovinOutput)
     {
-        /** @var AbstractOutput[] $bitmovinOutputs */
+        /** @var \Bitmovin\api\model\outputs\AbstractBitmovinOutput[] $bitmovinOutputs */
         $bitmovinOutputs = array();
         $cloudRegionPrefix = "";
 

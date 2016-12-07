@@ -2,8 +2,8 @@
 
 namespace Bitmovin\api\resource\container;
 
-use Bitmovin\api\model\outputs\GcsOutput;
-use Bitmovin\api\model\outputs\S3Output;
+use Bitmovin\api\model\outputs\BitmovinAwsOutput;
+use Bitmovin\api\model\outputs\BitmovinGcpOutput;
 use Bitmovin\api\resource\outputs\BitmovinGcpOutputResource;
 use Bitmovin\api\resource\outputs\BitmovinAwsOutputResource;
 use Bitmovin\api\util\ApiUrls;
@@ -22,8 +22,8 @@ class BitmovinOutputContainer
      */
     public function __construct($apiKey)
     {
-        $this->aws = new BitmovinAwsOutputResource(ApiUrls::OUTPUT_BITMOVIN_AWS, S3Output::class, $apiKey);
-        $this->gcp = new BitmovinGcpOutputResource(ApiUrls::OUTPUT_BITMOVIN_GCP, GcsOutput::class, $apiKey);
+        $this->aws = new BitmovinAwsOutputResource(ApiUrls::OUTPUT_BITMOVIN_AWS, BitmovinAwsOutput::class, $apiKey);
+        $this->gcp = new BitmovinGcpOutputResource(ApiUrls::OUTPUT_BITMOVIN_GCP, BitmovinGcpOutput::class, $apiKey);
     }
 
     /**
