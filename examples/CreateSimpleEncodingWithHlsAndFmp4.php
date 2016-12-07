@@ -51,14 +51,14 @@ $videoStreamConfig720->rate = 25.0;
 $encodingProfileConfig->videoStreamConfigs[] = $videoStreamConfig720;
 
 // CREATE AUDIO STREAM CONFIG
-$audioConfig = new AudioStreamConfig();
-$audioConfig->input = $input;
-$audioConfig->bitrate = 128000;
-$audioConfig->rate = 48000;
-$audioConfig->name = 'English';
-$audioConfig->lang = 'en';
-$audioConfig->position = 1;
-$encodingProfileConfig->audioStreamConfigs[] = $audioConfig;
+$audioStreamConfig = new AudioStreamConfig();
+$audioStreamConfig->input = $input;
+$audioStreamConfig->bitrate = 128000;
+$audioStreamConfig->rate = 48000;
+$audioStreamConfig->name = 'English';
+$audioStreamConfig->lang = 'en';
+$audioStreamConfig->position = 1;
+$encodingProfileConfig->audioStreamConfigs[] = $audioStreamConfig;
 
 // CREATE OUTPUT FORMAT COLLECTION
 $outputFormats = array();
