@@ -14,7 +14,14 @@
     "MPD",
     "M3U8",
     "mp4",
-    "DRM"
+    "DRM",
+    "fmp4",
+    "playready",
+    "widevine",
+    "fairplay",
+    "cenc",
+    "vr",
+    "360"
   ],
   "support": {
     "email": "support@bitmovin.com",
