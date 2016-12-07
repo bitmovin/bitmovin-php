@@ -8,8 +8,10 @@ use Bitmovin\api\container\JobContainer;
 use Bitmovin\api\enum\manifests\hls\MediaInfoType;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
+use Bitmovin\api\model\encodings\muxing\AbstractMuxing;
 use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\model\encodings\muxing\TSMuxing;
+use Bitmovin\api\model\manifests\AbstractManifest;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
@@ -70,7 +72,7 @@ class HlsManifestFactory
      * @param                                           $manifest
      * @param ApiClient                                 $apiClient
      */
-    public static function createHlsFmp4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, $manifest, ApiClient $apiClient)
+    public static function createHlsFmp4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
     {
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
         {
@@ -115,7 +117,7 @@ class HlsManifestFactory
      * @param                                           $manifest
      * @param ApiClient                                 $apiClient
      */
-    public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, $manifest, ApiClient $apiClient)
+    public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
     {
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
         {
@@ -155,11 +157,11 @@ class HlsManifestFactory
     }
 
     /**
-     * @param JobContainer $jobContainer
-     * @param TSMuxing|FMP4Muxing     $muxing
+     * @param JobContainer   $jobContainer
+     * @param AbstractMuxing $muxing
      * @return mixed|string
      */
-    private static function createSegmentPath(JobContainer $jobContainer, $muxing)
+    private static function createSegmentPath(JobContainer $jobContainer, AbstractMuxing $muxing)
     {
         $segmentPath = $muxing->getOutputs()[0]->getOutputPath();
         $segmentPath = str_ireplace($jobContainer->getOutputPath(), "", $segmentPath);
