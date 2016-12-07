@@ -3,7 +3,6 @@
 namespace Bitmovin\api\resource\outputs;
 
 use Bitmovin\api\model\outputs\GcsOutput;
-use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\Defaults;
 
 class BitmovinGcpOutputResource extends BitmovinOutputResource
