@@ -18,10 +18,10 @@ $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
 // CONFIGURATION
 $videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
-$gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
-$gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
-$gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
-$gcs_prefix = 'path/to/your/output/destination/';
+$gcsAccessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
+$gcsSecretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
+$gcsBucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
+$gcsPrefix = 'path/to/your/output/destination/';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
@@ -59,7 +59,7 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
-$jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketName, $gcs_prefix);
+$jobConfig->output = new GcsOutput($gcsAccessKey, $gcsSecretKey, $gcsBucketName, $gcsPrefix);
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 
