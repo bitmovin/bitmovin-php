@@ -5,13 +5,8 @@ namespace Bitmovin\api\container;
 
 
 use Bitmovin\api\ApiClient;
-use Bitmovin\api\model\encodings\Encoding;
-use Bitmovin\api\model\ITransfer;
-use Bitmovin\api\model\manifests\dash\DashManifest;
-use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\Transferable;
-use Bitmovin\api\model\transfers\TransferEncoding;
-use Bitmovin\api\model\transfers\TransferManifest;
+use Bitmovin\api\model\transfers\AbstractTransfer;
 
 class TransferContainer
 {
@@ -21,12 +16,12 @@ class TransferContainer
     private $apiClient;
 
     /**
-     * @var Transferable|Encoding|DashManifest|HlsManifest
+     * @var Transferable
      */
     public $transferableResource;
 
     /**
-     * @var  ITransfer|TransferEncoding|TransferManifest
+     * @var  AbstractTransfer
      */
     public $transfer;
 
