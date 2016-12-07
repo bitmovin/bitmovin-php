@@ -392,8 +392,14 @@ class BitmovinClient
     {
         foreach ($transferJobContainer->transferContainers as &$transferContainer)
         {
-            $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
-            $transferContainer->status = $status->getStatus();
+            if($transferContainer->transfer instanceof TransferEncoding) {
+                $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
+                $transferContainer->status = $status->getStatus();
+            }
+            if($transferContainer->transfer instanceof TransferManifest) {
+                $status = $this->apiClient->transfers()->manifest()->status($transferContainer->transfer);
+                $transferContainer->status = $status->getStatus();
+            }
         }
     }
 
@@ -452,6 +458,7 @@ class BitmovinClient
             $status = null;
             if ($transferContainer->transferableResource instanceof HlsManifest)
             {
+                var_dump("HLS Manifest TransferStatus: not available");
                 continue;
             }
 
@@ -460,15 +467,18 @@ class BitmovinClient
                 if ($transferContainer->transfer instanceof TransferEncoding)
                 {
                     $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
+                    var_dump($transferContainer->transfer->getId() . " Encoding TransferStatus: " . $status->getStatus());
                 }
                 else if ($transferContainer->transfer instanceof TransferManifest)
                 {
                     $status = $this->apiClient->transfers()->manifest()->status($transferContainer->transfer);
+                    var_dump($transferContainer->transfer->getId() . "Dash Manifest TransferStatus: " . $status->getStatus());
                 }
-
                 $transferContainer->status = $status->getStatus();
+
                 if (in_array($status->getStatus(), [Status::ERROR, $expectedStatus]))
                 {
+                    var_dump($transferContainer->transfer->getId() . " Transfer completed " . get_class($transferContainer->transferableResource));
                     break;
                 }
                 sleep(1);
