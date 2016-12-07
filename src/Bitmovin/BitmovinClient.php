@@ -392,11 +392,13 @@ class BitmovinClient
     {
         foreach ($transferJobContainer->transferContainers as &$transferContainer)
         {
-            if($transferContainer->transfer instanceof TransferEncoding) {
+            if ($transferContainer->transfer instanceof TransferEncoding)
+            {
                 $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
                 $transferContainer->status = $status->getStatus();
             }
-            if($transferContainer->transfer instanceof TransferManifest) {
+            if ($transferContainer->transfer instanceof TransferManifest)
+            {
                 $status = $this->apiClient->transfers()->manifest()->status($transferContainer->transfer);
                 $transferContainer->status = $status->getStatus();
             }
@@ -839,6 +841,7 @@ class BitmovinClient
             $transferOutput = new EncodingOutput($transferJobContainer->apiOutput);
             $transferOutput->setOutputPath($transferContainer->getTransferOutputPath($transferJobContainer));
 
+            //TODO implement HLS Manifest transfer support
             if ($transferableResource instanceof Encoding)
             {
                 $transferEncoding = new TransferEncoding($transferableResource);
@@ -850,10 +853,6 @@ class BitmovinClient
                 $transferManifest = new TransferManifest($transferableResource);
                 $transferManifest->setOutputs(array($transferOutput));
                 $transferContainer->transfer = $this->apiClient->transfers()->manifest()->create($transferManifest);
-            }
-            else
-            {
-                continue;
             }
         }
     }
