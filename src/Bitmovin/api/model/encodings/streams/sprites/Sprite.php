@@ -60,8 +60,8 @@ class Sprite extends AbstractModel
      * Sprite constructor.
      * @param integer $width
      * @param integer $height
-     * @param string $spriteName
-     * @param string $vttName
+     * @param string  $spriteName
+     * @param string  $vttName
      */
     public function __construct($width, $height, $spriteName, $vttName)
     {
