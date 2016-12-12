@@ -21,7 +21,7 @@ use Bitmovin\api\model\encodings\muxing\TSMuxing;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\manifest\DashOutputFormat;
-use Bitmovin\configs\manifest\HlsFmp4OutputFormat;
+use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\manifest\ProgressiveMp4OutputFormat;
 use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
@@ -189,8 +189,8 @@ class MuxingFactory
         /** @var DashOutputFormat $dashOutputFormat */
         $dashOutputFormat = null;
 
-        /** @var HlsFmp4OutputFormat $hlsFmp4OutputFormat */
-        $hlsFmp4OutputFormat = null;
+        /** @var HlsFMP4OutputFormat $hlsFMP4OutputFormat */
+        $hlsFMP4OutputFormat = null;
 
         /** @var HlsOutputFormat $hlsOutputFormat */
         $hlsOutputFormat = null;
@@ -204,9 +204,9 @@ class MuxingFactory
             {
                 $dashOutputFormat = $format;
             }
-            if ($format instanceof HlsFmp4OutputFormat)
+            if ($format instanceof HlsFMP4OutputFormat)
             {
-                $hlsFmp4OutputFormat = $format;
+                $hlsFMP4OutputFormat = $format;
             }
             if ($format instanceof HlsOutputFormat)
             {
@@ -225,7 +225,7 @@ class MuxingFactory
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
             {
                 $stream = $codecConfigContainer->stream;
-                if ($hlsFmp4OutputFormat)
+                if ($hlsFMP4OutputFormat)
                 {
                     $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer),
@@ -278,7 +278,7 @@ class MuxingFactory
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
             {
                 $stream = $codecConfigContainer->stream;
-                if ($hlsFmp4OutputFormat)
+                if ($hlsFMP4OutputFormat)
                 {
                     $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer), $apiClient);

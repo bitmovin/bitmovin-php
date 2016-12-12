@@ -45,7 +45,7 @@ use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\LiveStreamJobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
-use Bitmovin\configs\manifest\HlsFmp4OutputFormat;
+use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
 use Bitmovin\configs\TransferConfig;
@@ -562,7 +562,7 @@ class BitmovinClient
         $hlsFmp4Format = null;
         foreach ($jobContainer->job->outputFormat as &$format)
         {
-            if ($format instanceof HlsFmp4OutputFormat)
+            if ($format instanceof HlsFMP4OutputFormat)
             {
                 $hlsFmp4Format = $format;
                 break;
@@ -709,7 +709,7 @@ class BitmovinClient
         }
     }
 
-    private function runHlsFmp4Creation(HlsManifest $manifest, HlsFmp4OutputFormat $hlsOutputFormat)
+    private function runHlsFmp4Creation(HlsManifest $manifest, HlsFMP4OutputFormat $hlsOutputFormat)
     {
         $status = null;
         $this->apiClient->manifests()->hls()->start($manifest);
