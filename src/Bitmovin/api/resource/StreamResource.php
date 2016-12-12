@@ -4,6 +4,7 @@ namespace Bitmovin\api\resource;
 
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\streams\Stream;
+use Bitmovin\api\resource\encodings\streams\thumbnails\SpriteResource;
 use Bitmovin\api\resource\encodings\streams\thumbnails\ThumbnailResource;
 use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\RouteHelper;
@@ -39,6 +40,15 @@ class StreamResource extends AbstractResource
     public function thumbnails(Stream $stream)
     {
         return new ThumbnailResource($this->getEncoding(), $stream, parent::getApiKey());
+    }
+
+    /**
+     * @param Stream $stream
+     * @return SpriteResource
+     */
+    public function sprites(Stream $stream)
+    {
+        return new SpriteResource($this->getEncoding(), $stream, parent::getApiKey());
     }
 
     /**
