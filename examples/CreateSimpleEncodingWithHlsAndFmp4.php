@@ -6,67 +6,74 @@ use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
+use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
-use Bitmovin\configs\images\ThumbnailConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
-use Bitmovin\output\GcsOutput;
+use Bitmovin\output\S3Output;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
-// CONFIGURATION
-$videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
-$gcsAccessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
-$gcsSecretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
-$gcsBucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
-$gcsPrefix = 'path/to/your/output/destination/';
+// CREATE INPUT CONFIGURATION
+$videoUrl = 'http://example.com/path/to/your/movie.mp4';
+$input = new HttpInput($videoUrl);
+
+// CREATE OUTPUT CONFIGURATION
+$s3AccessKey = 'INSERT YOUR S3 ACCESS KEY HERE';
+$s3SecretKey = 'INSERT YOUR S3 SECRET KEY HERE';
+$s3BucketName = 'INSERT YOUR S3 BUCKET NAME HERE';
+$s3Prefix = 'path/to/your/output/destination/';
+$s3Output = new S3Output($s3AccessKey, $s3SecretKey, $s3BucketName, $s3Prefix);
 
 // CREATE ENCODING PROFILE
-$encodingProfile = new EncodingProfileConfig();
-$encodingProfile->name = 'Test Encoding';
-$encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
+$encodingProfileConfig = new EncodingProfileConfig();
+$encodingProfileConfig->name = 'Test Encoding FMP4';
+$encodingProfileConfig->cloudRegion = CloudRegion::AWS_EU_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
 $videoStreamConfig1080 = new H264VideoStreamConfig();
-$videoStreamConfig1080->input = new HttpInput($videoInputPath);
+$videoStreamConfig1080->input = $input;
 $videoStreamConfig1080->width = 1920;
 $videoStreamConfig1080->height = 816;
 $videoStreamConfig1080->bitrate = 4800000;
 $videoStreamConfig1080->rate = 25.0;
-$videoStreamConfig1080->thumbnailConfigs[] = new ThumbnailConfig(320, array(5,15,25,35,60));
-$encodingProfile->videoStreamConfigs[] = $videoStreamConfig1080;
+$encodingProfileConfig->videoStreamConfigs[] = $videoStreamConfig1080;
 
 // CREATE VIDEO STREAM CONFIG FOR 720p
 $videoStreamConfig720 = new H264VideoStreamConfig();
-$videoStreamConfig720->input = new HttpInput($videoInputPath);
+$videoStreamConfig720->input = $input;
 $videoStreamConfig720->width = 1280;
 $videoStreamConfig720->height = 544;
 $videoStreamConfig720->bitrate = 2400000;
 $videoStreamConfig720->rate = 25.0;
-$encodingProfile->videoStreamConfigs[] = $videoStreamConfig720;
+$encodingProfileConfig->videoStreamConfigs[] = $videoStreamConfig720;
 
 // CREATE AUDIO STREAM CONFIG
 $audioStreamConfig = new AudioStreamConfig();
-$audioStreamConfig->input = new HttpInput($videoInputPath);
+$audioStreamConfig->input = $input;
 $audioStreamConfig->bitrate = 128000;
 $audioStreamConfig->rate = 48000;
 $audioStreamConfig->name = 'English';
 $audioStreamConfig->lang = 'en';
 $audioStreamConfig->position = 1;
-$encodingProfile->audioStreamConfigs[] = $audioStreamConfig;
+$encodingProfileConfig->audioStreamConfigs[] = $audioStreamConfig;
+
+// CREATE OUTPUT FORMAT COLLECTION
+$outputFormats = array();
+$outputFormats[] = new HlsFMP4OutputFormat();
+$outputFormats[] = new HlsOutputFormat();
+$outputFormats[] = new DashOutputFormat();
 
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
-$jobConfig->output = new GcsOutput($gcsAccessKey, $gcsSecretKey, $gcsBucketName, $gcsPrefix);
+$jobConfig->output = $s3Output;
 // ASSIGN ENCODING PROFILES TO JOB
-$jobConfig->encodingProfile = $encodingProfile;
-// ENABLE DASH OUTPUT
-$jobConfig->outputFormat[] = new DashOutputFormat();
-// ENABLE HLS OUTPUT
-$jobConfig->outputFormat[] = new HlsOutputFormat();
+$jobConfig->encodingProfile = $encodingProfileConfig;
+// ASSIGN SELECTED OUTPUT FORMATS
+$jobConfig->outputFormat = $outputFormats;
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
 $client->runJobAndWaitForCompletion($jobConfig);
