@@ -30,6 +30,7 @@ use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
 use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\api\model\encodings\streams\Stream;
+use Bitmovin\api\model\encodings\streams\thumbnails\Sprite;
 use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\api\model\inputs\InputConverterFactory;
@@ -791,6 +792,7 @@ class BitmovinClient
         $this->createConfigurations($jobContainer);
         $this->createStreams($jobContainer);
         $this->createThumbnails($jobContainer);
+        $this->createSprites($jobContainer);
         $this->createMuxings($jobContainer);
         $this->startEncodings($jobContainer);
         return $jobContainer;
@@ -823,6 +825,40 @@ class BitmovinClient
                             ->streams($encodingContainer->encoding)
                             ->thumbnails($codecConfigContainer->stream)
                             ->create($thumbnail);
+                    }
+                }
+            }
+        }
+    }
+
+    private function createSprites(JobContainer $jobContainer)
+    {
+        foreach ($jobContainer->encodingContainers as &$encodingContainer)
+        {
+            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+            {
+                $streamConfig = $codecConfigContainer->codecConfig;
+
+                if ($streamConfig instanceof H264VideoStreamConfig)
+                {
+                    foreach ($streamConfig->spriteConfigs as $spriteConfig)
+                    {
+                        $encodingOutput = new EncodingOutput($jobContainer->apiOutput);
+                        $encodingOutput->setOutputPath($codecConfigContainer->getThumbnailOutputPath($jobContainer));
+                        $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
+
+                        $sprite = new Sprite($spriteConfig->width, $spriteConfig->height);
+                        $sprite->setName($spriteConfig->name);
+                        $sprite->setDescription(($spriteConfig->description));
+                        $sprite->setFilename(uniqid());
+
+                        $sprite->setOutputs(array($encodingOutput));
+
+                        $codecConfigContainer->thumbnails[] = $this->apiClient
+                            ->encodings()
+                            ->streams($encodingContainer->encoding)
+                            ->sprites($codecConfigContainer->stream)
+                            ->create($sprite);
                     }
                 }
             }
