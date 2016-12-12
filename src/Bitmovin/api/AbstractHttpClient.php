@@ -56,7 +56,7 @@ abstract class AbstractHttpClient
             'X-Api-Key' => $apiKey,
             'Content-Type' => 'application/json',
             'X-Api-Client' => 'bitmovin-php',
-            'X-Api-Client-Version' => '1.3.4'
+            'X-Api-Client-Version' => '1.3.5'
         );
         self::$httpClient = new Client($this->getRequiredOptions());
 
