@@ -31,10 +31,14 @@ abstract class AbstractVideoStreamConfig extends AbstractStreamConfig
      */
     public $rate;
 
-    /** @var ThumbnailConfig[] */
+    /**
+     * @var ThumbnailConfig[]
+     */
     public $thumbnailConfigs = array();
 
-    /** @var SpriteConfig[] */
+    /**
+     * @var SpriteConfig[]
+     */
     public $spriteConfigs = array();
 
     /**
