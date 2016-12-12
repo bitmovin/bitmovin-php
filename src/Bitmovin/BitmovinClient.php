@@ -557,18 +557,18 @@ class BitmovinClient
         return $this->apiClient->manifests()->hls()->create($manifest);
     }
 
-    public function createHlsFmp4Manifest(JobContainer $jobContainer)
+    public function createHlsFMP4Manifest(JobContainer $jobContainer)
     {
-        $hlsFmp4Format = null;
+        $hlsFMP4Format = null;
         foreach ($jobContainer->job->outputFormat as &$format)
         {
             if ($format instanceof HlsFMP4OutputFormat)
             {
-                $hlsFmp4Format = $format;
+                $hlsFMP4Format = $format;
                 break;
             }
         }
-        if ($hlsFmp4Format == null)
+        if ($hlsFMP4Format == null)
         {
             return Status::ERROR;
         }
@@ -578,15 +578,15 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $manifest = $this->createHlsManifestItem("streamFmp4.m3u8", $manifestOutput);
+        $manifest = $this->createHlsManifestItem("streamFMP4.m3u8", $manifestOutput);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            HlsManifestFactory::createHlsFmp4ManifestForEncoding($jobContainer, $encodingContainer, $manifest, $this->apiClient);
+            HlsManifestFactory::createHlsFMP4ManifestForEncoding($jobContainer, $encodingContainer, $manifest, $this->apiClient);
         }
 
-        $this->runHlsFmp4Creation($manifest, $hlsFmp4Format);
-        return $hlsFmp4Format->status;
+        $this->runHlsFmp4Creation($manifest, $hlsFMP4Format);
+        return $hlsFMP4Format->status;
     }
 
     /**
@@ -754,7 +754,7 @@ class BitmovinClient
 
         $this->createDashManifest($jobContainer);
         $this->createHlsManifest($jobContainer);
-        $this->createHlsFmp4Manifest($jobContainer);
+        $this->createHlsFMP4Manifest($jobContainer);
         $this->createSmoothStreamingManifest($jobContainer);
 
         return $jobContainer;

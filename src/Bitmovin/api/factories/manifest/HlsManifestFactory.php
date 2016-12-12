@@ -71,7 +71,7 @@ class HlsManifestFactory
      * @param HlsManifest       $manifest
      * @param ApiClient         $apiClient
      */
-    public static function createHlsFmp4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
+    public static function createHlsFMP4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
     {
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
         {
