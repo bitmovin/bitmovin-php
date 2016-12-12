@@ -34,6 +34,7 @@ final class ApiUrls
 
     const ENCODING_STREAMS = "encoding/encodings/{encoding_id}/streams";
 
+    const ENCODING_STREAMS_SPRITES = "encoding/encodings/{encoding_id}/streams/{stream_id}/sprites";
     const ENCODING_STREAMS_THUMBNAILS = "encoding/encodings/{encoding_id}/streams/{stream_id}/thumbnails";
 
     const ENCODING_MUXINGS_MP4 = "encoding/encodings/{encoding_id}/muxings/mp4";
