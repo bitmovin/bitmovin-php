@@ -847,11 +847,9 @@ class BitmovinClient
                         $encodingOutput->setOutputPath($codecConfigContainer->getThumbnailOutputPath($jobContainer));
                         $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
 
-                        $sprite = new Sprite($spriteConfig->width, $spriteConfig->height);
+                        $sprite = new Sprite($spriteConfig->width, $spriteConfig->height, $spriteConfig->spriteName, $spriteConfig->vttName);
                         $sprite->setName($spriteConfig->name);
                         $sprite->setDescription(($spriteConfig->description));
-                        $sprite->setFilename(uniqid());
-
                         $sprite->setOutputs(array($encodingOutput));
 
                         $codecConfigContainer->thumbnails[] = $this->apiClient
