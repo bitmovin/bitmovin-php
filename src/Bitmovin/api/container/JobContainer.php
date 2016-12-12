@@ -5,9 +5,9 @@ namespace Bitmovin\api\container;
 
 
 use Bitmovin\api\enum\Status;
-use Bitmovin\api\model\outputs\AbstractBitmovinOutput;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\JobConfig;
+use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
