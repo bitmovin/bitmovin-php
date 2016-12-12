@@ -36,7 +36,13 @@ class Sprite extends AbstractModel
      * @JMS\Type("string")
      * @var string
      */
-    private $filename;
+    private $spriteName;
+
+    /**
+     * @JMS\Type("string")
+     * @var string
+     */
+    private $vttName;
 
     /**
      * @JMS\Type("integer")
@@ -54,11 +60,15 @@ class Sprite extends AbstractModel
      * Sprite constructor.
      * @param integer $width
      * @param integer $height
+     * @param string $spriteName
+     * @param string $vttName
      */
-    public function __construct($width, $height)
+    public function __construct($width, $height, $spriteName, $vttName)
     {
         $this->setHeight($height);
         $this->setWidth($width);
+        $this->setSpriteName($spriteName);
+        $this->setVttName($vttName);
     }
 
     /**
@@ -144,17 +154,33 @@ class Sprite extends AbstractModel
     /**
      * @return string
      */
-    public function getFilename()
+    public function getSpriteName()
     {
-        return $this->filename;
+        return $this->spriteName;
     }
 
     /**
-     * @param string $filename
+     * @param string $spriteName
      */
-    public function setFilename($filename)
+    public function setSpriteName($spriteName)
     {
-        $this->filename = $filename;
+        $this->spriteName = $spriteName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVttName()
+    {
+        return $this->vttName;
+    }
+
+    /**
+     * @param string $vttName
+     */
+    public function setVttName($vttName)
+    {
+        $this->vttName = $vttName;
     }
 
     /**
