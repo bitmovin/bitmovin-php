@@ -19,7 +19,12 @@ class SpriteConfig
     /**
      * @var  string
      */
-    public $filename;
+    public $spriteName;
+
+    /**
+     * @var string
+     */
+    public $vttName;
 
     /**
      * @var  integer
@@ -38,13 +43,17 @@ class SpriteConfig
 
     /**
      * SpriteConfig constructor.
-     * @param $width
-     * @param $height
+     * @param integer $width
+     * @param integer $height
+     * @param string  $spriteName
+     * @param string  $vttName
      */
-    public function __construct($width, $height)
+    public function __construct($width, $height, $spriteName, $vttName)
     {
         $this->width = $width;
         $this->height = $height;
+        $this->spriteName = $spriteName;
+        $this->vttName = $vttName;
     }
 
 
