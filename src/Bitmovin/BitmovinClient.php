@@ -30,7 +30,7 @@ use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
 use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\api\model\encodings\streams\Stream;
-use Bitmovin\api\model\encodings\streams\thumbnails\Sprite;
+use Bitmovin\api\model\encodings\streams\sprites\Sprite;
 use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\api\model\inputs\InputConverterFactory;
@@ -852,7 +852,7 @@ class BitmovinClient
                         $sprite->setDescription(($spriteConfig->description));
                         $sprite->setOutputs(array($encodingOutput));
 
-                        $codecConfigContainer->thumbnails[] = $this->apiClient
+                        $codecConfigContainer->sprites[] = $this->apiClient
                             ->encodings()
                             ->streams($encodingContainer->encoding)
                             ->sprites($codecConfigContainer->stream)

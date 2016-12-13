@@ -3,10 +3,10 @@
 
 namespace Bitmovin\api\container;
 
-
 use Bitmovin\api\model\codecConfigurations\CodecConfiguration;
 use Bitmovin\api\model\encodings\muxing\AbstractMuxing;
 use Bitmovin\api\model\encodings\streams\Stream;
+use Bitmovin\api\model\encodings\streams\sprites\Sprite;
 use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
@@ -35,9 +35,14 @@ class CodecConfigContainer
      * @var AbstractMuxing[]
      */
     public $muxings = array();
-
-    /** @var Thumbnail[] */
+    /**
+     * @var Thumbnail[]
+     */
     public $thumbnails = array();
+    /**
+     * @var Sprite[]
+     */
+    public $sprites = array();
 
     /**
      * @param string[] ...$paths

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bitmovin\api\model\encodings\streams\thumbnails;
+namespace Bitmovin\api\model\encodings\streams\sprites;
 
 use Bitmovin\api\model\AbstractModel;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;

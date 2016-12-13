@@ -3,8 +3,8 @@
 namespace Bitmovin\api\resource\encodings\streams\thumbnails;
 
 use Bitmovin\api\model\encodings\Encoding;
+use Bitmovin\api\model\encodings\streams\sprites\Sprite;
 use Bitmovin\api\model\encodings\streams\Stream;
-use Bitmovin\api\model\encodings\streams\thumbnails\Sprite;
 use Bitmovin\api\resource\AbstractResource;
 use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\RouteHelper;
