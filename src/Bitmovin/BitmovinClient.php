@@ -21,6 +21,7 @@ use Bitmovin\api\factories\manifest\DashProtectedManifestFactory;
 use Bitmovin\api\factories\manifest\HlsManifestFactory;
 use Bitmovin\api\factories\manifest\SmoothStreamingManifestFactory;
 use Bitmovin\api\factories\muxing\MuxingFactory;
+use Bitmovin\api\factories\sprite\SpriteFactory;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\CodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
@@ -30,7 +31,6 @@ use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
 use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\api\model\encodings\streams\Stream;
-use Bitmovin\api\model\encodings\streams\sprites\Sprite;
 use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\api\model\inputs\InputConverterFactory;
@@ -836,32 +836,7 @@ class BitmovinClient
     {
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
-            {
-                $streamConfig = $codecConfigContainer->codecConfig;
-
-                if ($streamConfig instanceof AbstractVideoStreamConfig)
-                {
-                    foreach ($streamConfig->spriteConfigs as $spriteConfig)
-                    {
-                        $encodingOutput = new EncodingOutput($jobContainer->apiOutput);
-                        $encodingOutput->setOutputPath($codecConfigContainer->getThumbnailOutputPath($jobContainer));
-                        $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
-
-                        $sprite = new Sprite($spriteConfig->width, $spriteConfig->height, $spriteConfig->spriteName, $spriteConfig->vttName);
-                        $sprite->setName($spriteConfig->name);
-                        $sprite->setDescription(($spriteConfig->description));
-                        $sprite->setDistance($spriteConfig->distance);
-                        $sprite->setOutputs(array($encodingOutput));
-
-                        $codecConfigContainer->sprites[] = $this->apiClient
-                            ->encodings()
-                            ->streams($encodingContainer->encoding)
-                            ->sprites($codecConfigContainer->stream)
-                            ->create($sprite);
-                    }
-                }
-            }
+            SpriteFactory::createSpritesForEncoding($jobContainer, $encodingContainer, $this->apiClient);
         }
     }
 
