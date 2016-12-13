@@ -37,9 +37,9 @@ class SpriteConfig
     public $width;
 
     /**
-     * @var  integer
+     * @var  float
      */
-    public $distance;
+    public $distance = 10;
 
     /**
      * SpriteConfig constructor.
