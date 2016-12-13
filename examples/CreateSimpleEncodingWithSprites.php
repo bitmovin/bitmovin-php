@@ -36,8 +36,14 @@ $videoStreamConfig1080->width = 1920;
 $videoStreamConfig1080->height = 816;
 $videoStreamConfig1080->bitrate = 4800000;
 $videoStreamConfig1080->rate = 25.0;
-$videoStreamConfig1080->spriteConfigs[] = new SpriteConfig(640, 360, "fullhd_640x360.jpg", "fullhd_640x360.vtt");
-$videoStreamConfig1080->spriteConfigs[] = new SpriteConfig(640, 360, "fullhd_640x360.png", "fullhd_640x360.vtt");
+
+$jpgSpriteConfig = new SpriteConfig(640, 360, "fullhd_640x360.jpg", "fullhd_640x360.vtt");
+$jpgSpriteConfig->distance = 10;
+$pngSpriteConfig = new SpriteConfig(640, 360, "fullhd_640x360.png", "fullhd_640x360.vtt");
+$pngSpriteConfig->distance = 10;
+$videoStreamConfig1080->spriteConfigs[] = $jpgSpriteConfig;
+$videoStreamConfig1080->spriteConfigs[] = $pngSpriteConfig;
+
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig1080;
 
 // CREATE VIDEO STREAM CONFIG FOR 720p
