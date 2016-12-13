@@ -18,6 +18,7 @@ class CodecConfigContainer
     const AUDIO = 'audio/';
     const VIDEO = 'video/';
     const THUMBNAILS = 'thumbnails/';
+    const SPRITES = 'sprites/';
 
     /**
      * @var CodecConfiguration
@@ -89,6 +90,11 @@ class CodecConfigContainer
     public function getThumbnailOutputPath(JobContainer $jobContainer)
     {
         return $this->combinePath($jobContainer->getOutputPath(), static::THUMBNAILS);
+    }
+
+    public function getSpriteOutputPath(JobContainer $jobContainer)
+    {
+        return $this->combinePath($jobContainer->getOutputPath(), static::SPRITES);
     }
 
     public function getMp4OutputPath(JobContainer $jobContainer)
