@@ -22,6 +22,7 @@ use Bitmovin\api\factories\manifest\HlsManifestFactory;
 use Bitmovin\api\factories\manifest\SmoothStreamingManifestFactory;
 use Bitmovin\api\factories\muxing\MuxingFactory;
 use Bitmovin\api\factories\sprite\SpriteFactory;
+use Bitmovin\api\factories\thumbnail\ThumbnailFactory;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\CodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
@@ -803,32 +804,7 @@ class BitmovinClient
     {
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
-            {
-                $streamConfig = $codecConfigContainer->codecConfig;
-
-                if ($streamConfig instanceof AbstractVideoStreamConfig)
-                {
-                    foreach ($streamConfig->thumbnailConfigs as $thumbnailConfig)
-                    {
-                        $thumbnail = new Thumbnail($thumbnailConfig->height, $thumbnailConfig->positions);
-                        $thumbnail->setName($thumbnailConfig->name);
-                        $thumbnail->setDescription(($thumbnailConfig->description));
-                        $thumbnail->setPattern($thumbnailConfig->pattern);
-
-                        $encodingOutput = new EncodingOutput($jobContainer->apiOutput);
-                        $encodingOutput->setOutputPath($codecConfigContainer->getThumbnailOutputPath($jobContainer));
-                        $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
-                        $thumbnail->setOutputs(array($encodingOutput));
-
-                        $codecConfigContainer->thumbnails[] = $this->apiClient
-                            ->encodings()
-                            ->streams($encodingContainer->encoding)
-                            ->thumbnails($codecConfigContainer->stream)
-                            ->create($thumbnail);
-                    }
-                }
-            }
+            ThumbnailFactory::createThumbnailsForEncoding($jobContainer, $encodingContainer, $this->apiClient);
         }
     }
 
