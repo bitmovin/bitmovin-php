@@ -23,7 +23,7 @@ class SpriteFactory
             {
                 foreach ($streamConfig->spriteConfigs as $spriteConfig)
                 {
-                    $outputPath = $codecConfigContainer->getThumbnailOutputPath($jobContainer);
+                    $outputPath = $codecConfigContainer->getSpriteOutputPath($jobContainer);
                     $encodingOutput = EncodingOutputFactory::createPublicEncodingOutput($apiOutput, $outputPath);
 
                     $sprite = new Sprite($spriteConfig->width, $spriteConfig->height, $spriteConfig->spriteName, $spriteConfig->vttName);
