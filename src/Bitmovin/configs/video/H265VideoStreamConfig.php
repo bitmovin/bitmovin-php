@@ -5,7 +5,6 @@ namespace Bitmovin\configs\video;
 
 
 use Bitmovin\api\enum\codecConfigurations\H265Profile;
-use Bitmovin\configs\images\ThumbnailConfig;
 
 
 class H265VideoStreamConfig extends AbstractVideoStreamConfig
