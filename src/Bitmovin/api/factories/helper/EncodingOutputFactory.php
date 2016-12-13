@@ -13,32 +13,39 @@ class EncodingOutputFactory
      * @param Output $apiOutput
      * @param string $outputPath
      * @param Acl[]  $acl
-     * @return mixed
+     * @return EncodingOutput
      */
     public static function createEncodingOutput(Output $apiOutput, $outputPath, array $acl)
     {
         $encodingOutput = new EncodingOutput($apiOutput);
         $encodingOutput->setOutputPath($outputPath);
         $encodingOutput->setAcl($acl);
-
         return $encodingOutput;
     }
 
+    /**
+     * @param Output  $apiOutput
+     * @param  string $outputPath
+     * @return EncodingOutput
+     */
     public static function createPublicEncodingOutput(Output $apiOutput, $outputPath)
     {
-        $acls = array(
+        $aclCollection = array(
             new Acl(AclPermission::ACL_PUBLIC_READ)
         );
-
-        return static::createEncodingOutput($apiOutput, $outputPath, $acls);
+        return static::createEncodingOutput($apiOutput, $outputPath, $aclCollection);
     }
 
+    /**
+     * @param Output $apiOutput
+     * @param string $outputPath
+     * @return EncodingOutput
+     */
     public static function createPrivateEncodingOutput(Output $apiOutput, $outputPath)
     {
-        $acls = array(
+        $aclCollection = array(
             new Acl(AclPermission::ACL_PRIVATE)
         );
-
-        return static::createEncodingOutput($apiOutput, $outputPath, $acls);
+        return static::createEncodingOutput($apiOutput, $outputPath, $aclCollection);
     }
 }
