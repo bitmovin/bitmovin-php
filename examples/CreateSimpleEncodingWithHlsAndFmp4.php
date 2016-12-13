@@ -5,9 +5,7 @@ use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
-use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
-use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\S3Output;
@@ -63,8 +61,6 @@ $encodingProfileConfig->audioStreamConfigs[] = $audioStreamConfig;
 // CREATE OUTPUT FORMAT COLLECTION
 $outputFormats = array();
 $outputFormats[] = new HlsFMP4OutputFormat();
-$outputFormats[] = new HlsOutputFormat();
-$outputFormats[] = new DashOutputFormat();
 
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
