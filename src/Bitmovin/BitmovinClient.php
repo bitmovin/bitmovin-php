@@ -50,6 +50,7 @@ use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
 use Bitmovin\configs\TransferConfig;
+use Bitmovin\configs\video\AbstractVideoStreamConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
@@ -806,7 +807,7 @@ class BitmovinClient
             {
                 $streamConfig = $codecConfigContainer->codecConfig;
 
-                if ($streamConfig instanceof H264VideoStreamConfig)
+                if ($streamConfig instanceof AbstractVideoStreamConfig)
                 {
                     foreach ($streamConfig->thumbnailConfigs as $thumbnailConfig)
                     {
@@ -839,7 +840,7 @@ class BitmovinClient
             {
                 $streamConfig = $codecConfigContainer->codecConfig;
 
-                if ($streamConfig instanceof H264VideoStreamConfig)
+                if ($streamConfig instanceof AbstractVideoStreamConfig)
                 {
                     foreach ($streamConfig->spriteConfigs as $spriteConfig)
                     {
@@ -850,6 +851,7 @@ class BitmovinClient
                         $sprite = new Sprite($spriteConfig->width, $spriteConfig->height, $spriteConfig->spriteName, $spriteConfig->vttName);
                         $sprite->setName($spriteConfig->name);
                         $sprite->setDescription(($spriteConfig->description));
+                        $sprite->setDistance($spriteConfig->distance);
                         $sprite->setOutputs(array($encodingOutput));
 
                         $codecConfigContainer->sprites[] = $this->apiClient
