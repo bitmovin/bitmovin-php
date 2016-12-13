@@ -1,7 +1,7 @@
 {
   "name": "bitmovin/bitmovin-php",
   "description": "PHP-Client which enables you to seamlessly integrate the Bitmovin API into your existing projects",
-  "version": "v1.3.5",
+  "version": "v1.4.0",
   "homepage": "https://bitmovin.com/support",
   "license": "Unlicense",
   "keywords": [
@@ -14,7 +14,14 @@
     "MPD",
     "M3U8",
     "mp4",
-    "DRM"
+    "DRM",
+    "fmp4",
+    "playready",
+    "widevine",
+    "fairplay",
+    "cenc",
+    "vr",
+    "360"
   ],
   "support": {
     "email": "support@bitmovin.com",
