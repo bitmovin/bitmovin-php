@@ -5,9 +5,7 @@ use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
-use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
-use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\S3Output;
@@ -36,7 +34,7 @@ $encodingProfileConfig->cloudRegion = CloudRegion::AWS_EU_WEST_1;
 $videoStreamConfig1080 = new H264VideoStreamConfig();
 $videoStreamConfig1080->input = $input;
 $videoStreamConfig1080->width = 1920;
-$videoStreamConfig1080->height = 816;
+$videoStreamConfig1080->height = 1080;
 $videoStreamConfig1080->bitrate = 4800000;
 $videoStreamConfig1080->rate = 25.0;
 $encodingProfileConfig->videoStreamConfigs[] = $videoStreamConfig1080;
@@ -45,7 +43,7 @@ $encodingProfileConfig->videoStreamConfigs[] = $videoStreamConfig1080;
 $videoStreamConfig720 = new H264VideoStreamConfig();
 $videoStreamConfig720->input = $input;
 $videoStreamConfig720->width = 1280;
-$videoStreamConfig720->height = 544;
+$videoStreamConfig720->height = 720;
 $videoStreamConfig720->bitrate = 2400000;
 $videoStreamConfig720->rate = 25.0;
 $encodingProfileConfig->videoStreamConfigs[] = $videoStreamConfig720;
@@ -63,8 +61,6 @@ $encodingProfileConfig->audioStreamConfigs[] = $audioStreamConfig;
 // CREATE OUTPUT FORMAT COLLECTION
 $outputFormats = array();
 $outputFormats[] = new HlsFMP4OutputFormat();
-$outputFormats[] = new HlsOutputFormat();
-$outputFormats[] = new DashOutputFormat();
 
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();

@@ -1,36 +1,7 @@
-# [![bitmovin](https://cloudfront-prod.bitmovin.com/wp-content/themes/Bitmovin-V-0.1/images/logo3.png)](http://www.bitmovin.com)
-PHP-Client which enables you to seamlessly integrate the Bitmovin API into your existing projects
-
-Installation 
-------------
-
-Requirements: PHP 5.6.0 or higher is required
-
-### Composer ###
- 
-  
-To install the api-client with composer, add the following to your `composer.json` file:  
-```json
-{
-"require": 
-  {
-    "bitmovin/bitmovin-php": "1.4.*"
-  }
-}
-```
-Then run `php composer.phar install`
-
-OR
-
-run the following command: `php composer.phar require bitmovin/bitmovin-php:1.4.*`
-
-Example
------
-The following example creates a simple transcoding job and transfers it to a GCS output location ([CreateSimpleEncoding.php](https://github.com/bitmovin/bitmovin-php/tree/master/examples/CreateSimpleEncoding.php)):
-```php
 <?php
 
 use Bitmovin\api\enum\CloudRegion;
+use Bitmovin\api\enum\Status;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
@@ -41,7 +12,7 @@ use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\GcsOutput;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
@@ -54,7 +25,7 @@ $gcs_prefix = 'path/to/your/output/destination/';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
-$encodingProfile->name = 'Test Encoding';
+$encodingProfile->name = 'Test Encoding Async';
 $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
@@ -97,7 +68,27 @@ $jobConfig->outputFormat[] = new DashOutputFormat();
 $jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
-$client->runJobAndWaitForCompletion($jobConfig);
-```
+$jobContainer = $client->startJob($jobConfig);
 
-For more examples go to our [example page](https://github.com/bitmovin/bitmovin-php/tree/master/examples/).
+// GET ENCODING IDS AND PRINT THEM
+$ids = $jobContainer->getEncodingIds();
+print_r($ids);
+
+// JOB IS STARTED - WAIT FOR IT TO FINISH
+do
+{
+    $allFinished = true;
+    $client->updateEncodingJobStatus($jobContainer);
+    foreach ($jobContainer->encodingContainers as $encodingContainer)
+    {
+        if ($encodingContainer->status != Status::FINISHED && $encodingContainer->status != Status::ERROR)
+        {
+            $allFinished = false;
+        }
+    }
+    sleep(1);
+} while (!$allFinished);
+
+// CREATE MANIFESTS
+$client->createDashManifest($jobContainer);
+$client->createHlsManifest($jobContainer);

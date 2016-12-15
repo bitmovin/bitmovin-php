@@ -35,6 +35,22 @@ class JobContainer
      */
     public $apiOutput;
 
+    /**
+     * Get the encoding ids
+     *
+     * @return string[]
+     */
+    public function getEncodingIds()
+    {
+        $ids = array();
+        foreach ($this->encodingContainers as $encodingContainer)
+        {
+            if ($encodingContainer->encoding != null)
+                $ids[] = $encodingContainer->encoding->getId();
+        }
+        return $ids;
+    }
+
     public function deleteFinishedEncodings()
     {
         foreach ($this->encodingContainers as $encodingContainer)
