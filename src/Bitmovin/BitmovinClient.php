@@ -893,7 +893,7 @@ class BitmovinClient
                 $transferEncoding->setOutputs(array($transferOutput));
                 $transferContainer->transfer = $this->apiClient->transfers()->encoding()->create($transferEncoding);
             }
-            else if ($transferableResource instanceof DashManifest)
+            else if ($transferableResource instanceof DashManifest || $transferableResource instanceof HlsManifest)
             {
                 $transferManifest = new TransferManifest($transferableResource);
                 $transferManifest->setOutputs(array($transferOutput));
