@@ -4,6 +4,7 @@
 namespace Bitmovin\configs;
 
 
+use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\input\AbstractInput;
 
 abstract class AbstractStreamConfig
@@ -19,6 +20,11 @@ abstract class AbstractStreamConfig
      * @var int
      */
     public $position = 0;
+
+    /**
+     * @var string SelectionMode enum available
+     */
+    public $selectionMode = SelectionMode::POSITION_ABSOLUTE;
 
     public function __construct()
     {
