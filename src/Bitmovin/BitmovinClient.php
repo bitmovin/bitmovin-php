@@ -438,6 +438,16 @@ class BitmovinClient
         }
     }
 
+    /**
+     * @param string $encodingId
+     *
+     * @return string
+     */
+    public function getStatusOfEncoding($encodingId)
+    {
+        return $this->apiClient->encodings()->statusById($encodingId)->getStatus();
+    }
+
     public function waitForTransferJobsToFinish(TransferJobContainer $transferJobContainer)
     {
         return $this->waitForTransfersToReachState($transferJobContainer, Status::FINISHED);
@@ -894,7 +904,7 @@ class BitmovinClient
                 $transferEncoding->setOutputs(array($transferOutput));
                 $transferContainer->transfer = $this->apiClient->transfers()->encoding()->create($transferEncoding);
             }
-            else if ($transferableResource instanceof DashManifest)
+            else if ($transferableResource instanceof DashManifest || $transferableResource instanceof HlsManifest)
             {
                 $transferManifest = new TransferManifest($transferableResource);
                 $transferManifest->setOutputs(array($transferOutput));
