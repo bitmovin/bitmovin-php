@@ -67,6 +67,19 @@ class EncodingResource extends AbstractResource
     }
 
     /**
+     * @param string $encodingId
+     * @return Status
+     */
+    public function statusById($encodingId)
+    {
+        $routeReplacementMap = array(ApiUrls::PH_ENCODING_ID => $encodingId);
+        $baseUriEncoding = RouteHelper::buildURI(ApiUrls::ENCODING_STATUS, $routeReplacementMap);
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return parent::getResourceCustomClass($baseUriEncoding, Status::class);
+    }
+
+    /**
      * @param Encoding $encoding
      */
     public function stop(Encoding $encoding)

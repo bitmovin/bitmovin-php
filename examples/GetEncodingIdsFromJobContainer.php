@@ -78,10 +78,10 @@ print_r($ids);
 do
 {
     $allFinished = true;
-    $client->updateEncodingJobStatus($jobContainer);
-    foreach ($jobContainer->encodingContainers as $encodingContainer)
+    foreach ($ids as $id)
     {
-        if ($encodingContainer->status != Status::FINISHED && $encodingContainer->status != Status::ERROR)
+        $status = $client->getStatusOfEncoding($id);
+        if ($status != Status::FINISHED && $status != Status::ERROR)
         {
             $allFinished = false;
         }
