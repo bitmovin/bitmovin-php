@@ -437,6 +437,16 @@ class BitmovinClient
         }
     }
 
+    /**
+     * @param string $encodingId
+     *
+     * @return string
+     */
+    public function getStatusOfEncoding($encodingId)
+    {
+        return $this->apiClient->encodings()->statusById($encodingId)->getStatus();
+    }
+
     public function waitForTransferJobsToFinish(TransferJobContainer $transferJobContainer)
     {
         return $this->waitForTransfersToReachState($transferJobContainer, Status::FINISHED);
