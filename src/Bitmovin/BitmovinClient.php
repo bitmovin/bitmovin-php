@@ -13,7 +13,6 @@ use Bitmovin\api\container\TransferContainer;
 use Bitmovin\api\container\TransferJobContainer;
 use Bitmovin\api\enum\AclPermission;
 use Bitmovin\api\enum\CloudRegion;
-use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\exceptions\BitmovinException;
 use Bitmovin\api\factories\manifest\DashManifestFactory;
@@ -334,7 +333,7 @@ class BitmovinClient
                      */
                     $codec = $codecConfigContainer->apiCodecConfiguration;
                     $codecConfigContainer->stream = $this->createStream($encodingContainer->encoding, $encodingContainer->apiInput,
-                        $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, SelectionMode::POSITION_ABSOLUTE);
+                        $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, $codecConfigContainer->codecConfig->selectionMode);
                 }
                 // Create AAC configurations
                 if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
@@ -344,7 +343,7 @@ class BitmovinClient
                      */
                     $codec = $codecConfigContainer->apiCodecConfiguration;
                     $codecConfigContainer->stream = $this->createStream($encodingContainer->encoding, $encodingContainer->apiInput,
-                        $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, SelectionMode::POSITION_ABSOLUTE);
+                        $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, $codecConfigContainer->codecConfig->selectionMode);
                 }
             }
         }
