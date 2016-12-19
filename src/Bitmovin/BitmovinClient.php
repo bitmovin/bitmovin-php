@@ -761,6 +761,15 @@ class BitmovinClient
         $jobContainer = $this->startJob($job);
         $this->waitForJobsToFinish($jobContainer);
 
+        foreach ($jobContainer->encodingContainers as $encodingContainer)
+        {
+            if ($encodingContainer->status != Status::FINISHED)
+            {
+                $id = $encodingContainer->encoding->getId();
+                throw new BitmovinException("Encoding with id '$id' has not finished successfully. It's current state is '$encodingContainer->status'.");
+            }
+        }
+
         $this->createDashManifest($jobContainer);
         $this->createHlsManifest($jobContainer);
         $this->createHlsFMP4Manifest($jobContainer);
