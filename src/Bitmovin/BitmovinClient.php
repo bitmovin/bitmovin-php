@@ -766,7 +766,7 @@ class BitmovinClient
             if ($encodingContainer->status != Status::FINISHED)
             {
                 $id = $encodingContainer->encoding->getId();
-                throw new BitmovinException("Encoding with id '$id' has not finished successfully. It's current state is '$encodingContainer->status'. Can not start manifest creation.");
+                throw new BitmovinException("Encoding with id '$id' has not finished successfully. It's current state is '$encodingContainer->status'.");
             }
         }
 
