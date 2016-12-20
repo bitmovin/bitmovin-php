@@ -38,6 +38,22 @@ $videoStreamConfig_1080->height = 1080;
 $videoStreamConfig_1080->bitrate = 4800000;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
 
+// CREATE VIDEO STREAM CONFIG FOR 720p
+$videoStreamConfig_720 = new H264VideoStreamConfig();
+$videoStreamConfig_720->input = new HttpInput($videoInputPath);
+$videoStreamConfig_720->width = 1280;
+$videoStreamConfig_720->height = 720;
+$videoStreamConfig_720->bitrate = 2400000;
+$encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
+
+// CREATE VIDEO STREAM CONFIG FOR 480p
+$videoStreamConfig_480 = new H264VideoStreamConfig();
+$videoStreamConfig_480->input = new HttpInput($videoInputPath);
+$videoStreamConfig_480->width = 854;
+$videoStreamConfig_480->height = 480;
+$videoStreamConfig_480->bitrate = 1200000;
+$encodingProfile->videoStreamConfigs[] = $videoStreamConfig_480;
+
 // CREATE AUDIO STREAM CONFIG
 $audioConfig = new AudioStreamConfig();
 $audioConfig->input = new HttpInput($videoInputPath);
@@ -55,6 +71,18 @@ $jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketNa
 $jobConfig->encodingProfile = $encodingProfile;
 
 // ADD PROGRESSIVE MP4 OUTPUTS
+$mp4Muxing480 = new ProgressiveMp4OutputFormat();
+$mp4Muxing480->fileName = "480p_1200kbps.mp4";
+$mp4Muxing480->streamConfigs = array($videoStreamConfig_480, $audioConfig);
+$mp4Muxing480->clearKey = new ClearKeyDrm($clearkey_key, $clearkey_kid);
+$jobConfig->outputFormat[] = $mp4Muxing480;
+
+$mp4Muxing720 = new ProgressiveMp4OutputFormat();
+$mp4Muxing720->fileName = "720p_2400kbps.mp4";
+$mp4Muxing720->streamConfigs = array($videoStreamConfig_720, $audioConfig);
+$mp4Muxing720->clearKey = new ClearKeyDrm($clearkey_key, $clearkey_kid);
+$jobConfig->outputFormat[] = $mp4Muxing720;
+
 $mp4Muxing1080 = new ProgressiveMp4OutputFormat();
 $mp4Muxing1080->fileName = "1080p_4800kbps.mp4";
 $mp4Muxing1080->streamConfigs = array($videoStreamConfig_1080, $audioConfig);
