@@ -20,8 +20,8 @@ class Webhook extends AbstractModel
      */
     private $method = WebhookHttpMethod::POST;
     /**
-     * @JMS\Type("bool")
-     * @var  bool
+     * @JMS\Type("boolean")
+     * @var  boolean
      */
     private $insecureSsl;
     /**
@@ -34,6 +34,12 @@ class Webhook extends AbstractModel
      * @var  WebhookSignature
      */
     private $signature;
+
+    /**
+     * @JMS\Type("array")
+     * @var  array
+     */
+    private $schema;
 
     /**
      * Webhook constructor.
@@ -77,7 +83,7 @@ class Webhook extends AbstractModel
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function isInsecureSsl()
     {
@@ -85,7 +91,7 @@ class Webhook extends AbstractModel
     }
 
     /**
-     * @param bool $insecureSsl
+     * @param boolean $insecureSsl
      */
     public function setInsecureSsl($insecureSsl)
     {
@@ -122,6 +128,22 @@ class Webhook extends AbstractModel
     public function setSignature($signature)
     {
         $this->signature = $signature;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSchema()
+    {
+        return $this->schema;
+    }
+
+    /**
+     * @param array $schema
+     */
+    public function setSchema($schema)
+    {
+        $this->schema = $schema;
     }
 
 }

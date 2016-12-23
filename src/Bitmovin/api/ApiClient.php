@@ -7,6 +7,7 @@ use Bitmovin\api\resource\container\InputContainer;
 use Bitmovin\api\resource\container\ManifestContainer;
 use Bitmovin\api\resource\container\OutputContainer;
 use Bitmovin\api\resource\container\TransferContainer;
+use Bitmovin\api\resource\container\WebhookContainer;
 use Bitmovin\api\resource\EncodingResource;
 
 class ApiClient
@@ -61,8 +62,17 @@ class ApiClient
     /**
      * @return TransferContainer
      */
-    public function transfers() {
+    public function transfers()
+    {
         return new TransferContainer($this->getApiKey());
+    }
+
+    /**
+     * @return WebhookContainer
+     */
+    public function webhooks()
+    {
+        return new WebhookContainer($this->getApiKey());
     }
 
     private function getApiKey()
