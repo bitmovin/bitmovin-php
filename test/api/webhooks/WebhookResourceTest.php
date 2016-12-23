@@ -61,7 +61,7 @@ class WebhookResourceTest extends AbstractBitmovinApiTest
         $createdWebhook = $this->apiClient->webhooks()->encodingFinished()->getById($createdWebhook->getId());
         $this->assertNotNull($createdWebhook);
         $this->assertNotNull($createdWebhook->getId());
-        $this->assertNull($createdWebhook->getSchema());
+        $this->assertNotNull($createdWebhook->getSchema());
         $this->assertEquals('http://webhookurl.com/path', $createdWebhook->getUrl());
         $this->assertNotNull($createdWebhook->getSignature());
         $this->assertEquals(SignatureType::HMAC, $createdWebhook->getSignature()->getType());
@@ -133,7 +133,7 @@ class WebhookResourceTest extends AbstractBitmovinApiTest
         $createdWebhook = $this->apiClient->webhooks()->encodingError()->getById($createdWebhook->getId());
         $this->assertNotNull($createdWebhook);
         $this->assertNotNull($createdWebhook->getId());
-        $this->assertNull($createdWebhook->getSchema());
+        $this->assertNotNull($createdWebhook->getSchema());
         $this->assertEquals('http://webhookurl.com/path', $createdWebhook->getUrl());
         $this->assertNotNull($createdWebhook->getSignature());
         $this->assertEquals(SignatureType::HMAC, $createdWebhook->getSignature()->getType());
