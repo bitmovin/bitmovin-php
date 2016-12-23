@@ -38,6 +38,18 @@ class FtpOutput extends Output
     private $password;
 
     /**
+     * @JMS\Type("string")
+     * @var string
+     */
+    private $transferVersion;
+
+    /**
+     * @JMS\Type("integer")
+     * @var integer
+     */
+    private $maxConcurrentConnections;
+
+    /**
      * FtpInput constructor.
      * @param string $host
      * @param string $username
@@ -129,6 +141,38 @@ class FtpOutput extends Output
     public function setPassword($password)
     {
         $this->password = $password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransferVersion()
+    {
+        return $this->transferVersion;
+    }
+
+    /**
+     * @param string $transferVersion
+     */
+    public function setTransferVersion($transferVersion)
+    {
+        $this->transferVersion = $transferVersion;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMaxConcurrentConnections()
+    {
+        return $this->maxConcurrentConnections;
+    }
+
+    /**
+     * @param integer $maxConcurrentConnections
+     */
+    public function setMaxConcurrentConnections($maxConcurrentConnections)
+    {
+        $this->maxConcurrentConnections = $maxConcurrentConnections;
     }
 
 }
