@@ -3,6 +3,7 @@
 use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
+use Bitmovin\configs\drm\ClearKeyDrm;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
@@ -16,12 +17,13 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
 // CONFIGURATION
-
 $videoInputPath = 'INSERT YOUR HTTP VIDEO INPUT PATH HERE';
 $gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
 $gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
 $gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
 $gcs_prefix = 'path/to/your/output/destination/';
+$clearkey_key = 'CLEARKEY KEY';
+$clearkey_kid = 'CLEARKEY KID';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
@@ -44,6 +46,14 @@ $videoStreamConfig_720->height = 720;
 $videoStreamConfig_720->bitrate = 2400000;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
 
+// CREATE VIDEO STREAM CONFIG FOR 480p
+$videoStreamConfig_480 = new H264VideoStreamConfig();
+$videoStreamConfig_480->input = new HttpInput($videoInputPath);
+$videoStreamConfig_480->width = 854;
+$videoStreamConfig_480->height = 480;
+$videoStreamConfig_480->bitrate = 1200000;
+$encodingProfile->videoStreamConfigs[] = $videoStreamConfig_480;
+
 // CREATE AUDIO STREAM CONFIG
 $audioConfig = new AudioStreamConfig();
 $audioConfig->input = new HttpInput($videoInputPath);
@@ -60,18 +70,23 @@ $jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketNa
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 
-// ADD DASH OUTPUT
-$jobConfig->outputFormat[] = new DashOutputFormat();
-
 // ADD PROGRESSIVE MP4 OUTPUTS
+$mp4Muxing480 = new ProgressiveMp4OutputFormat();
+$mp4Muxing480->fileName = "480p_1200kbps.mp4";
+$mp4Muxing480->streamConfigs = array($videoStreamConfig_480, $audioConfig);
+$mp4Muxing480->clearKey = new ClearKeyDrm($clearkey_key, $clearkey_kid);
+$jobConfig->outputFormat[] = $mp4Muxing480;
+
 $mp4Muxing720 = new ProgressiveMp4OutputFormat();
 $mp4Muxing720->fileName = "720p_2400kbps.mp4";
 $mp4Muxing720->streamConfigs = array($videoStreamConfig_720, $audioConfig);
+$mp4Muxing720->clearKey = new ClearKeyDrm($clearkey_key, $clearkey_kid);
 $jobConfig->outputFormat[] = $mp4Muxing720;
 
 $mp4Muxing1080 = new ProgressiveMp4OutputFormat();
 $mp4Muxing1080->fileName = "1080p_4800kbps.mp4";
 $mp4Muxing1080->streamConfigs = array($videoStreamConfig_1080, $audioConfig);
+$mp4Muxing1080->clearKey = new ClearKeyDrm($clearkey_key, $clearkey_kid);
 $jobConfig->outputFormat[] = $mp4Muxing1080;
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED

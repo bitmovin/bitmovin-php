@@ -212,13 +212,15 @@ class ResponseBuilder
      */
     public static function buildErrorData(\stdClass $errorData)
     {
-        $code = $errorData->code;
-        $message = $errorData->message;
+        $code = null;
+        $message = '';
         $developerMessage = '';
+        if (property_exists($errorData, 'code'))
+            $code = $errorData->code;
+        if (property_exists($errorData, 'message'))
+            $message = $errorData->message;
         if (property_exists($errorData, 'developerMessage'))
-        {
             $developerMessage = $errorData->developerMessage;
-        }
         /** @var Link[] $links */
         $links = array();
         /** @var Message[] $details */

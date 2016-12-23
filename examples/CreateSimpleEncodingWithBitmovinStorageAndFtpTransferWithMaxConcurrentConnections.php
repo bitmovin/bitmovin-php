@@ -6,48 +6,48 @@ use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
-use Bitmovin\configs\manifest\ProgressiveMp4OutputFormat;
+use Bitmovin\configs\manifest\HlsOutputFormat;
+use Bitmovin\configs\TransferConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
-use Bitmovin\output\GcsOutput;
+use Bitmovin\output\BitmovinGcpOutput;
+use Bitmovin\output\FtpOutput;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
 // CONFIGURATION
-
-$videoInputPath = 'INSERT YOUR HTTP VIDEO INPUT PATH HERE';
-$gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
-$gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
-$gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
-$gcs_prefix = 'path/to/your/output/destination/';
+$videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
-$encodingProfile->name = 'MP4-Muxing-Example';
+$encodingProfile->name = 'Test Encoding';
 $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
 $videoStreamConfig_1080 = new H264VideoStreamConfig();
 $videoStreamConfig_1080->input = new HttpInput($videoInputPath);
 $videoStreamConfig_1080->width = 1920;
-$videoStreamConfig_1080->height = 1080;
+$videoStreamConfig_1080->height = 816;
 $videoStreamConfig_1080->bitrate = 4800000;
+$videoStreamConfig_1080->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
 
 // CREATE VIDEO STREAM CONFIG FOR 720p
 $videoStreamConfig_720 = new H264VideoStreamConfig();
 $videoStreamConfig_720->input = new HttpInput($videoInputPath);
 $videoStreamConfig_720->width = 1280;
-$videoStreamConfig_720->height = 720;
+$videoStreamConfig_720->height = 544;
 $videoStreamConfig_720->bitrate = 2400000;
+$videoStreamConfig_720->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
 
 // CREATE AUDIO STREAM CONFIG
 $audioConfig = new AudioStreamConfig();
 $audioConfig->input = new HttpInput($videoInputPath);
 $audioConfig->bitrate = 128000;
+$audioConfig->rate = 48000;
 $audioConfig->name = 'English';
 $audioConfig->lang = 'en';
 $audioConfig->position = 1;
@@ -56,23 +56,35 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
-$jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketName, $gcs_prefix);
+$bitmovinGcpOutput = new BitmovinGcpOutput(CloudRegion::GOOGLE_EUROPE_WEST_1);
+$bitmovinGcpOutput->prefix = "your/custom/path/";
+//$bitmovinAwsOutput = new BitmovinAwsOutput(CloudRegion::AWS_EU_WEST_1);
+//$bitmovinS3Output->prefix = "your/custom/path/";
+$jobConfig->output = $bitmovinGcpOutput;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
-
-// ADD DASH OUTPUT
+// ENABLE DASH OUTPUT
 $jobConfig->outputFormat[] = new DashOutputFormat();
-
-// ADD PROGRESSIVE MP4 OUTPUTS
-$mp4Muxing720 = new ProgressiveMp4OutputFormat();
-$mp4Muxing720->fileName = "720p_2400kbps.mp4";
-$mp4Muxing720->streamConfigs = array($videoStreamConfig_720, $audioConfig);
-$jobConfig->outputFormat[] = $mp4Muxing720;
-
-$mp4Muxing1080 = new ProgressiveMp4OutputFormat();
-$mp4Muxing1080->fileName = "1080p_4800kbps.mp4";
-$mp4Muxing1080->streamConfigs = array($videoStreamConfig_1080, $audioConfig);
-$jobConfig->outputFormat[] = $mp4Muxing1080;
+// ENABLE HLS OUTPUT
+$jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
-$client->runJobAndWaitForCompletion($jobConfig);
+$jobContainer = $client->runJobAndWaitForCompletion($jobConfig);
+
+//==================================================================================================================
+
+//TRANSFER OUTPUT CONFIGURATION
+$transferFtpHost = 'YOUR FTP HOST';
+$transferFtpUsername = 'YOUR FTP USERNAME';
+$transferFtpPassword = 'YOUR FTP PASSWORD';
+$transferFtpPrefix = 'YOUR/FTP/DESTINATION/PATH/';
+
+// CREATE TRANSFER CONFIG
+$transferConfig = new TransferConfig();
+$transferConfig->jobContainer = $jobContainer;
+$ftpOutput = new FtpOutput($transferFtpHost, $transferFtpUsername, $transferFtpPassword, $transferFtpPrefix);
+$ftpOutput->maxConcurrentConnections = 5;
+$transferConfig->output = $ftpOutput;
+
+// RUN JOB AND WAIT UNTIL IT HAS FINISHED
+$transferContainer = $client->runTransferJobAndWaitForCompletion($transferConfig);
