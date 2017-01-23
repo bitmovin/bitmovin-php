@@ -26,7 +26,7 @@ $gcs_prefix = 'path/to/your/output/destination/';
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
 $encodingProfile->name = 'MP4-Muxing-Example';
-$encodingProfile->cloudRegion = CloudRegion::AWS_EU_WEST_1;
+$encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
 $videoStreamConfig_1080 = new H264VideoStreamConfig();

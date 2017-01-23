@@ -13,7 +13,6 @@ use Bitmovin\api\container\TransferContainer;
 use Bitmovin\api\container\TransferJobContainer;
 use Bitmovin\api\enum\AclPermission;
 use Bitmovin\api\enum\CloudRegion;
-use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\exceptions\BitmovinException;
 use Bitmovin\api\factories\manifest\DashManifestFactory;
@@ -335,7 +334,7 @@ class BitmovinClient
                      */
                     $codec = $codecConfigContainer->apiCodecConfiguration;
                     $codecConfigContainer->stream = $this->createStream($encodingContainer->encoding, $encodingContainer->apiInput,
-                        $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, SelectionMode::POSITION_ABSOLUTE);
+                        $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, $codecConfigContainer->codecConfig->selectionMode);
                 }
                 // Create AAC configurations
                 if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
@@ -345,7 +344,7 @@ class BitmovinClient
                      */
                     $codec = $codecConfigContainer->apiCodecConfiguration;
                     $codecConfigContainer->stream = $this->createStream($encodingContainer->encoding, $encodingContainer->apiInput,
-                        $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, SelectionMode::POSITION_ABSOLUTE);
+                        $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, $codecConfigContainer->codecConfig->selectionMode);
                 }
             }
         }
@@ -437,6 +436,16 @@ class BitmovinClient
                 sleep(1);
             }
         }
+    }
+
+    /**
+     * @param string $encodingId
+     *
+     * @return string
+     */
+    public function getStatusOfEncoding($encodingId)
+    {
+        return $this->apiClient->encodings()->statusById($encodingId)->getStatus();
     }
 
     public function waitForTransferJobsToFinish(TransferJobContainer $transferJobContainer)
@@ -752,6 +761,15 @@ class BitmovinClient
     {
         $jobContainer = $this->startJob($job);
         $this->waitForJobsToFinish($jobContainer);
+
+        foreach ($jobContainer->encodingContainers as $encodingContainer)
+        {
+            if ($encodingContainer->status != Status::FINISHED)
+            {
+                $id = $encodingContainer->encoding->getId();
+                throw new BitmovinException("Encoding with id '$id' has not finished successfully. It's current state is '$encodingContainer->status'.");
+            }
+        }
 
         $this->createDashManifest($jobContainer);
         $this->createHlsManifest($jobContainer);

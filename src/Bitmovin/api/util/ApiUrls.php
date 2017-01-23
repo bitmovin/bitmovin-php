@@ -107,4 +107,9 @@ final class ApiUrls
     const MANIFEST_SMOOTH_REPRESENTATION = "encoding/manifests/smooth/{manifest_id}/representations/mp4";
     const MANIFEST_SMOOTH_CONTENT_PROTECTION = "encoding/manifests/smooth/{manifest_id}/contentprotection";
 
+    const WEBHOOK_ENCODING_FINISHED = "notifications/webhooks/encoding/encodings/finished";
+    const WEBHOOK_ENCODING_ERROR = "notifications/webhooks/encoding/encodings/error";
+    const WEBHOOK_TRANSFER_FINISHED = "notifications/webhooks/encoding/transfers/finished";
+    const WEBHOOK_TRANSFER_ERROR = "notifications/webhooks/encoding/transfers/error";
+
 }
