@@ -11,6 +11,11 @@ class PlayReadyDrm extends AbstractDrm
      * @JMS\Type("string")
      * @var  string
      */
+    private $key;
+    /**
+     * @JMS\Type("string")
+     * @var  string
+     */
     private $keySeed;
     /**
      * @JMS\Type("string")
@@ -40,6 +45,22 @@ class PlayReadyDrm extends AbstractDrm
     public function __construct(array $outputs)
     {
         parent::__construct($outputs);
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
     }
 
     /**
