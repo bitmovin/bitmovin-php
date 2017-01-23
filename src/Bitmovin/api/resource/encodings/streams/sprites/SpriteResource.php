@@ -1,6 +1,6 @@
 <?php
 
-namespace Bitmovin\api\resource\encodings\streams\thumbnails;
+namespace Bitmovin\api\resource\encodings\streams\sprites;
 
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\streams\sprites\Sprite;

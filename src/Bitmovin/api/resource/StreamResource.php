@@ -4,7 +4,7 @@ namespace Bitmovin\api\resource;
 
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\streams\Stream;
-use Bitmovin\api\resource\encodings\streams\thumbnails\SpriteResource;
+use Bitmovin\api\resource\encodings\streams\sprites\SpriteResource;
 use Bitmovin\api\resource\encodings\streams\thumbnails\ThumbnailResource;
 use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\RouteHelper;
