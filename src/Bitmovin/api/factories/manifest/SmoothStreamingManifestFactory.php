@@ -153,6 +153,7 @@ class SmoothStreamingManifestFactory
         $encodingOutput->setOutputPath($outputPath);
 
         $apiPlayReadyDrm = new \Bitmovin\api\model\encodings\drms\PlayReadyDrm([$encodingOutput]);
+        $apiPlayReadyDrm->setKey($playReadyDrm->key);
         $apiPlayReadyDrm->setKeySeed($playReadyDrm->keySeed);
         $apiPlayReadyDrm->setKid($playReadyDrm->kid);
         $apiPlayReadyDrm->setLaUrl($playReadyDrm->laUrl);
