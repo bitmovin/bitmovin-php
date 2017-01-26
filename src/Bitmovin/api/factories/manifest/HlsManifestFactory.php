@@ -73,6 +73,15 @@ class HlsManifestFactory
      */
     public static function createHlsFMP4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
     {
+        $audioGroupId = null;
+        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+        {
+            if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
+            {
+                $audioGroupId = 'audio';
+            }
+        }
+
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
@@ -87,7 +96,7 @@ class HlsManifestFactory
                     $playlistFileName = static::createPlaylistFileName($segmentPath);
                     static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null,
-                        'audio', null, $segmentPath, $manifest, $apiClient);
+                        $audioGroupId, null, $segmentPath, $manifest, $apiClient);
                 }
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
@@ -118,6 +127,15 @@ class HlsManifestFactory
      */
     public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
     {
+        $audioGroupId = null;
+        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+        {
+            if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
+            {
+                $audioGroupId = 'audio';
+            }
+        }
+
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
@@ -132,7 +150,7 @@ class HlsManifestFactory
                     $playlistFileName = static::createPlaylistFileName($segmentPath);
                     static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null,
-                        'audio', null, $segmentPath, $manifest, $apiClient);
+                        $audioGroupId, null, $segmentPath, $manifest, $apiClient);
                 }
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
