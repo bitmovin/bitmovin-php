@@ -14,4 +14,9 @@ class DashOutputFormat extends AbstractOutputFormat
      */
     public $cenc = null;
 
+    /**
+     * @var string
+     */
+    public $name = "stream.mpd";
+
 }
