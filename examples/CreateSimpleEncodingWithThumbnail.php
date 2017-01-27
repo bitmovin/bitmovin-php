@@ -35,7 +35,9 @@ $videoStreamConfig1080->width = 1920;
 $videoStreamConfig1080->height = 816;
 $videoStreamConfig1080->bitrate = 4800000;
 $videoStreamConfig1080->rate = 25.0;
-$videoStreamConfig1080->thumbnailConfigs[] = new ThumbnailConfig(320, array(5,15,25,35,60));
+$thumbnailConfiguration = new ThumbnailConfig(320, array(5,15,25,35,60));
+$thumbnailConfiguration->pattern = 'example_%number%.jpg'; // Customize pattern or use default settings
+$videoStreamConfig1080->thumbnailConfigs[] = $thumbnailConfiguration;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig1080;
 
 // CREATE VIDEO STREAM CONFIG FOR 720p
