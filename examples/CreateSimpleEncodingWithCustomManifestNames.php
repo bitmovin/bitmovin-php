@@ -1,36 +1,3 @@
-# [![bitmovin](https://cloudfront-prod.bitmovin.com/wp-content/themes/Bitmovin-V-0.1/images/logo3.png)](http://www.bitmovin.com)
-PHP-Client which enables you to seamlessly integrate the [Bitmovin API](https://bitmovin.com/video-infrastructure-service-bitmovin-api/) into your projects.
-Using this API client requires an active account. [Sign up for a Bitmovin API key](https://bitmovin.com/bitmovins-video-api/).
-
-The full [Bitmovin API reference](https://bitmovin.com/encoding-documentation/bitmovin-api/) can be found on our website.
-
-Installation 
-------------
-
-Requirements: PHP 5.6.0 or higher is required
-
-### Composer ###
- 
-  
-To install the api-client with composer, add the following to your `composer.json` file:  
-```json
-{
-"require": 
-  {
-    "bitmovin/bitmovin-php": "1.4.*"
-  }
-}
-```
-Then run `php composer.phar install`
-
-OR
-
-run the following command: `php composer.phar require bitmovin/bitmovin-php:1.4.*`
-
-Example
------
-The following example creates a simple transcoding job and transfers it to a GCS output location ([CreateSimpleEncoding.php](https://github.com/bitmovin/bitmovin-php/tree/master/examples/CreateSimpleEncoding.php)):
-```php
 <?php
 
 use Bitmovin\api\enum\CloudRegion;
@@ -39,12 +6,13 @@ use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
+use Bitmovin\configs\manifest\HlsConfigurationFileNaming;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\GcsOutput;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
@@ -64,7 +32,7 @@ $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 $videoStreamConfig_1080 = new H264VideoStreamConfig();
 $videoStreamConfig_1080->input = new HttpInput($videoInputPath);
 $videoStreamConfig_1080->width = 1920;
-$videoStreamConfig_1080->height = 1080;
+$videoStreamConfig_1080->height = 816;
 $videoStreamConfig_1080->bitrate = 4800000;
 $videoStreamConfig_1080->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
@@ -73,7 +41,7 @@ $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
 $videoStreamConfig_720 = new H264VideoStreamConfig();
 $videoStreamConfig_720->input = new HttpInput($videoInputPath);
 $videoStreamConfig_720->width = 1280;
-$videoStreamConfig_720->height = 720;
+$videoStreamConfig_720->height = 544;
 $videoStreamConfig_720->bitrate = 2400000;
 $videoStreamConfig_720->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
@@ -94,13 +62,18 @@ $jobConfig = new JobConfig();
 $jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketName, $gcs_prefix);
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
+
 // ENABLE DASH OUTPUT
-$jobConfig->outputFormat[] = new DashOutputFormat();
+$dashOutputFormat = new DashOutputFormat();
+$dashOutputFormat->name = 'dash.mpd';
+$jobConfig->outputFormat[] = $dashOutputFormat;
 // ENABLE HLS OUTPUT
-$jobConfig->outputFormat[] = new HlsOutputFormat();
+$hlsOutputFormat = new HlsOutputFormat();
+$hlsOutputFormat->name = 'hls.mpd';
+$hlsOutputFormat->hlsConfigurationFileNaming[] = new HlsConfigurationFileNaming($videoStreamConfig_1080, 'video_1080.m3u8');
+$hlsOutputFormat->hlsConfigurationFileNaming[] = new HlsConfigurationFileNaming($videoStreamConfig_720, 'video_720.m3u8');
+$hlsOutputFormat->hlsConfigurationFileNaming[] = new HlsConfigurationFileNaming($audioConfig, 'audio.m3u8');
+$jobConfig->outputFormat[] = $hlsOutputFormat;
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
 $client->runJobAndWaitForCompletion($jobConfig);
-```
-
-For more examples go to our [example page](https://github.com/bitmovin/bitmovin-php/tree/master/examples/).

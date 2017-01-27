@@ -14,7 +14,11 @@ use Bitmovin\api\model\encodings\muxing\TSMuxing;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
+use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
+use Bitmovin\configs\manifest\HlsConfigurationFileNaming;
+use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
+use Bitmovin\configs\manifest\HlsOutputFormat;
 
 class HlsManifestFactory
 {
@@ -66,12 +70,13 @@ class HlsManifestFactory
     }
 
     /**
-     * @param JobContainer      $jobContainer
-     * @param EncodingContainer $encodingContainer
-     * @param HlsManifest       $manifest
-     * @param ApiClient         $apiClient
+     * @param JobContainer        $jobContainer
+     * @param EncodingContainer   $encodingContainer
+     * @param HlsManifest         $manifest
+     * @param ApiClient           $apiClient
+     * @param HlsFMP4OutputFormat $hlsFMP4Format
      */
-    public static function createHlsFMP4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
+    public static function createHlsFMP4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient, HlsFMP4OutputFormat $hlsFMP4Format)
     {
         $audioGroupId = null;
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
@@ -93,7 +98,7 @@ class HlsManifestFactory
                         continue;
                     }
                     $segmentPath = static::createSegmentPath($jobContainer, $muxing);
-                    $playlistFileName = static::createPlaylistFileName($segmentPath);
+                    $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsFMP4Format->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null,
                         $audioGroupId, null, $segmentPath, $manifest, $apiClient);
@@ -110,7 +115,7 @@ class HlsManifestFactory
                     /** @var AudioStreamConfig $codec */
                     $codec = $codecConfigContainer->codecConfig;
                     $segmentPath = static::createSegmentPath($jobContainer, $muxing);
-                    $playlistFileName = static::createPlaylistFileName($segmentPath);
+                    $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsFMP4Format->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     $mediaInfo = static::getDefaultAudioMediaInfo($codec, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
                     $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
@@ -124,8 +129,9 @@ class HlsManifestFactory
      * @param EncodingContainer $encodingContainer
      * @param HlsManifest       $manifest
      * @param ApiClient         $apiClient
+     * @param HlsOutputFormat   $hlsOutputFormat
      */
-    public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient)
+    public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient, HlsOutputFormat $hlsOutputFormat)
     {
         $audioGroupId = null;
         foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
@@ -147,7 +153,7 @@ class HlsManifestFactory
                         continue;
                     }
                     $segmentPath = static::createSegmentPath($jobContainer, $muxing);
-                    $playlistFileName = static::createPlaylistFileName($segmentPath);
+                    $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null,
                         $audioGroupId, null, $segmentPath, $manifest, $apiClient);
@@ -164,7 +170,7 @@ class HlsManifestFactory
                     /** @var AudioStreamConfig $codec */
                     $codec = $codecConfigContainer->codecConfig;
                     $segmentPath = static::createSegmentPath($jobContainer, $muxing);
-                    $playlistFileName = static::createPlaylistFileName($segmentPath);
+                    $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     $mediaInfo = static::getDefaultAudioMediaInfo($codec, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
                     $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
@@ -190,11 +196,21 @@ class HlsManifestFactory
     }
 
     /**
-     * @param $segmentPath
+     * @param string                       $segmentPath
+     * @param HlsConfigurationFileNaming[] $hlsConfigurationFileNaming
+     * @param AbstractStreamConfig         $abstractStreamConfig
      * @return mixed|string
      */
-    private static function createPlaylistFileName($segmentPath)
+    private static function createPlaylistFileName($segmentPath, $hlsConfigurationFileNaming, $abstractStreamConfig)
     {
+        if (is_array($hlsConfigurationFileNaming) && $abstractStreamConfig != null)
+        {
+            foreach ($hlsConfigurationFileNaming as $item)
+            {
+                if ($item->configuration == $abstractStreamConfig && $item->name != null)
+                    return $item->name;
+            }
+        }
         $playlistFileName = substr($segmentPath, 0, -1);
         $playlistFileName = str_ireplace("/", "_", $playlistFileName);
         $playlistFileName .= '.m3u8';

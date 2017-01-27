@@ -4,10 +4,10 @@ use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
+use Bitmovin\configs\images\SpriteConfig;
 use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
-use Bitmovin\configs\images\ThumbnailConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\GcsOutput;
@@ -28,6 +28,7 @@ $encodingProfile = new EncodingProfileConfig();
 $encodingProfile->name = 'Test Encoding';
 $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
+
 // CREATE VIDEO STREAM CONFIG FOR 1080p
 $videoStreamConfig1080 = new H264VideoStreamConfig();
 $videoStreamConfig1080->input = new HttpInput($videoInputPath);
@@ -35,9 +36,14 @@ $videoStreamConfig1080->width = 1920;
 $videoStreamConfig1080->height = 816;
 $videoStreamConfig1080->bitrate = 4800000;
 $videoStreamConfig1080->rate = 25.0;
-$thumbnailConfiguration = new ThumbnailConfig(320, array(5,15,25,35,60));
-$thumbnailConfiguration->pattern = 'example_%number%.jpg'; // Customize pattern or use default settings
-$videoStreamConfig1080->thumbnailConfigs[] = $thumbnailConfiguration;
+
+$jpgSpriteConfig = new SpriteConfig(640, 360, "fullhd_640x360.jpg", "fullhd_640x360.vtt");
+$jpgSpriteConfig->distance = 10;
+$pngSpriteConfig = new SpriteConfig(640, 360, "fullhd_640x360.png", "fullhd_640x360.vtt");
+$pngSpriteConfig->distance = 10;
+$videoStreamConfig1080->spriteConfigs[] = $jpgSpriteConfig;
+$videoStreamConfig1080->spriteConfigs[] = $pngSpriteConfig;
+
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig1080;
 
 // CREATE VIDEO STREAM CONFIG FOR 720p

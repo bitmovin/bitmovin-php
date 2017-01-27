@@ -6,8 +6,7 @@ namespace Bitmovin\api\container;
 
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\TransferConfig;
-use Bitmovin\output\BitmovinGcpOutput;
-use Bitmovin\output\BitmovinAwsOutput;
+use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
@@ -33,8 +32,7 @@ class TransferJobContainer
     public function getOutputPath()
     {
         $output = $this->transferConfig->output;
-        if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof BitmovinGcpOutput
-            || $output instanceof BitmovinAwsOutput)
+        if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof AbstractBitmovinOutput)
         {
             $prefix = $this->stripSlashes($output->prefix);
             return $this->addTrailingSlash($prefix);

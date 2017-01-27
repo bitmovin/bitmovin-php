@@ -20,6 +20,8 @@ use Bitmovin\api\factories\manifest\DashProtectedManifestFactory;
 use Bitmovin\api\factories\manifest\HlsManifestFactory;
 use Bitmovin\api\factories\manifest\SmoothStreamingManifestFactory;
 use Bitmovin\api\factories\muxing\MuxingFactory;
+use Bitmovin\api\factories\sprite\SpriteFactory;
+use Bitmovin\api\factories\thumbnail\ThumbnailFactory;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\CodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
@@ -29,7 +31,6 @@ use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
 use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
 use Bitmovin\api\model\encodings\streams\Stream;
-use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\api\model\inputs\InputConverterFactory;
 use Bitmovin\api\model\manifests\dash\DashManifest;
@@ -538,7 +539,7 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $dashManifest = $this->createDashManifestItem("stream.mpd", $manifestOutput);
+        $dashManifest = $this->createDashManifestItem($dash->name, $manifestOutput);
         $period = $this->addPeriodToDashManifest("0", null, $dashManifest);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
@@ -587,11 +588,11 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $manifest = $this->createHlsManifestItem("streamFMP4.m3u8", $manifestOutput);
+        $manifest = $this->createHlsManifestItem($hlsFMP4Format->name, $manifestOutput);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            HlsManifestFactory::createHlsFMP4ManifestForEncoding($jobContainer, $encodingContainer, $manifest, $this->apiClient);
+            HlsManifestFactory::createHlsFMP4ManifestForEncoding($jobContainer, $encodingContainer, $manifest, $this->apiClient, $hlsFMP4Format);
         }
 
         $this->runHlsFmp4Creation($manifest, $hlsFMP4Format);
@@ -624,11 +625,11 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $hlsManifest = $this->createHlsManifestItem("stream.m3u8", $manifestOutput);
+        $hlsManifest = $this->createHlsManifestItem($hlsFormat->name, $manifestOutput);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            HlsManifestFactory::createHlsManifestForEncoding($jobContainer, $encodingContainer, $hlsManifest, $this->apiClient);
+            HlsManifestFactory::createHlsManifestForEncoding($jobContainer, $encodingContainer, $hlsManifest, $this->apiClient, $hlsFormat);
         }
 
         $this->runHlsCreation($hlsManifest, $hlsFormat);
@@ -809,6 +810,7 @@ class BitmovinClient
         $this->createConfigurations($jobContainer);
         $this->createStreams($jobContainer);
         $this->createThumbnails($jobContainer);
+        $this->createSprites($jobContainer);
         $this->createMuxings($jobContainer);
         $this->startEncodings($jobContainer);
         return $jobContainer;
@@ -818,32 +820,15 @@ class BitmovinClient
     {
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
-            {
-                $streamConfig = $codecConfigContainer->codecConfig;
+            ThumbnailFactory::createThumbnailsForEncoding($jobContainer, $encodingContainer, $this->apiClient);
+        }
+    }
 
-                if ($streamConfig instanceof H264VideoStreamConfig)
-                {
-                    foreach ($streamConfig->thumbnailConfigs as $thumbnailConfig)
-                    {
-                        $thumbnail = new Thumbnail($thumbnailConfig->height, $thumbnailConfig->positions);
-                        $thumbnail->setName($thumbnailConfig->name);
-                        $thumbnail->setDescription(($thumbnailConfig->description));
-                        $thumbnail->setPattern($thumbnailConfig->pattern);
-
-                        $encodingOutput = new EncodingOutput($jobContainer->apiOutput);
-                        $encodingOutput->setOutputPath($codecConfigContainer->getThumbnailOutputPath($jobContainer));
-                        $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
-                        $thumbnail->setOutputs(array($encodingOutput));
-
-                        $codecConfigContainer->thumbnails[] = $this->apiClient
-                            ->encodings()
-                            ->streams($encodingContainer->encoding)
-                            ->thumbnails($codecConfigContainer->stream)
-                            ->create($thumbnail);
-                    }
-                }
-            }
+    private function createSprites(JobContainer $jobContainer)
+    {
+        foreach ($jobContainer->encodingContainers as &$encodingContainer)
+        {
+            SpriteFactory::createSpritesForEncoding($jobContainer, $encodingContainer, $this->apiClient);
         }
     }
 
