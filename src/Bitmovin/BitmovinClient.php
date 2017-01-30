@@ -550,7 +550,7 @@ class BitmovinClient
             }
             else
             {
-                DashManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $dashManifest, $period, $this->apiClient);
+                DashManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $dashManifest, $period, $this->apiClient, $dash);
             }
         }
         $this->runDashCreation($dashManifest, $dash);

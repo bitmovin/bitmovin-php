@@ -363,7 +363,7 @@ class MuxingFactory
 
             $tmpCodecConfigContainer = new CodecConfigContainer();
             static::createMP4Muxing($encodingContainer->encoding, $streamsToMux,
-                $jobContainer->apiOutput, $tmpCodecConfigContainer->getMp4OutputPath($jobContainer), $progressiveMp4OutputFormat, $apiClient);
+                $jobContainer->apiOutput, $tmpCodecConfigContainer->getMp4OutputPath($jobContainer, $progressiveMp4OutputFormat), $progressiveMp4OutputFormat, $apiClient);
         }
     }
 
