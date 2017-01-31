@@ -29,6 +29,11 @@ class ThumbnailConfig
     /**
      * @var  string
      */
+    public $folder = 'thumbnails/';
+
+    /**
+     * @var  string
+     */
     public $pattern = "thumb_%number%.png";
 
     /**

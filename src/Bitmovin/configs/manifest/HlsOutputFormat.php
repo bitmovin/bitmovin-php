@@ -4,16 +4,6 @@
 namespace Bitmovin\configs\manifest;
 
 
-class HlsOutputFormat extends AbstractOutputFormat
+class HlsOutputFormat extends AbstractHlsOutput
 {
-    /**
-     * @var string
-     */
-    public $name = "stream.m3u8";
-
-    /**
-     * @var HlsConfigurationFileNaming[]
-     */
-    public $hlsConfigurationFileNaming = array();
-
 }

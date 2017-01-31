@@ -17,6 +17,7 @@ use Bitmovin\api\model\manifests\dash\DashRepresentation;
 use Bitmovin\api\model\manifests\dash\Period;
 use Bitmovin\api\model\manifests\dash\VideoAdaptationSet;
 use Bitmovin\configs\audio\AudioStreamConfig;
+use Bitmovin\configs\manifest\DashOutputFormat;
 
 class DashManifestFactory
 {
@@ -27,12 +28,15 @@ class DashManifestFactory
      * @param DashManifest      $manifest
      * @param Period            $period
      * @param ApiClient         $client
+     * @param DashOutputFormat  $dashOutputFormat
      */
-    public static function createDashManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, DashManifest $manifest, Period $period, ApiClient $client)
+    public static function createDashManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, DashManifest $manifest, Period $period,
+                                                         ApiClient $client, DashOutputFormat $dashOutputFormat)
     {
+        $configurations = self::getConfigurationsForEncoding($encodingContainer, $dashOutputFormat);
         $videoAdaptionSet = null;
         $audioAdaptionSet = null;
-        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+        foreach ($configurations as &$codecConfigContainer)
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
             {
@@ -56,6 +60,38 @@ class DashManifestFactory
                 static::addAdaptionSetToMuxing($jobContainer, $encodingContainer, $manifest, $period, $codecConfigContainer, $audioAdaptionSet, $client);
             }
         }
+    }
+
+    /**
+     * @param EncodingContainer $encodingContainer
+     * @param DashOutputFormat  $dashOutputFormat
+     * @return array
+     */
+    private static function getConfigurationsForEncoding(EncodingContainer $encodingContainer, DashOutputFormat $dashOutputFormat)
+    {
+        /**
+         * CodecConfigContainer[]
+         */
+        $configurations = array();
+        if ($dashOutputFormat->includedStreamConfigs == null)
+        {
+            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+            {
+                $configurations[] = $codecConfigContainer;
+            }
+        }
+        else
+        {
+            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+            {
+                foreach ($dashOutputFormat->includedStreamConfigs as $streamConfig)
+                {
+                    if ($streamConfig == $codecConfigContainer->codecConfig)
+                        $configurations[] = $codecConfigContainer;
+                }
+            }
+        }
+        return $configurations;
     }
 
     /**

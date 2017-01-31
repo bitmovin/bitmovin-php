@@ -10,6 +10,8 @@ use Bitmovin\api\model\encodings\streams\sprites\Sprite;
 use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
+use Bitmovin\configs\images\ThumbnailConfig;
+use Bitmovin\configs\manifest\ProgressiveMp4OutputFormat;
 use Bitmovin\configs\video\AbstractVideoStreamConfig;
 
 class CodecConfigContainer
@@ -87,9 +89,9 @@ class CodecConfigContainer
         return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/hls/');
     }
 
-    public function getThumbnailOutputPath(JobContainer $jobContainer)
+    public function getThumbnailOutputPath(JobContainer $jobContainer, ThumbnailConfig $thumbnailConfig)
     {
-        return $this->combinePath($jobContainer->getOutputPath(), static::THUMBNAILS);
+        return $this->combinePath($jobContainer->getOutputPath(), $thumbnailConfig->folder);
     }
 
     public function getSpriteOutputPath(JobContainer $jobContainer)
@@ -97,9 +99,9 @@ class CodecConfigContainer
         return $this->combinePath($jobContainer->getOutputPath(), static::SPRITES);
     }
 
-    public function getMp4OutputPath(JobContainer $jobContainer)
+    public function getMp4OutputPath(JobContainer $jobContainer, ProgressiveMp4OutputFormat $progressiveMp4OutputFormat)
     {
-        return $this->combinePath($jobContainer->getOutputPath(), 'mp4/');
+        return $this->combinePath($jobContainer->getOutputPath(), $progressiveMp4OutputFormat->folder);
     }
 
     public function getSmoothStreamingVideoOutputPath(JobContainer $jobContainer)

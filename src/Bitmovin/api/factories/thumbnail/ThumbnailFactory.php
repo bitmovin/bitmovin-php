@@ -23,7 +23,7 @@ class ThumbnailFactory
             {
                 foreach ($streamConfig->thumbnailConfigs as $thumbnailConfig)
                 {
-                    $outputPath = $codecConfigContainer->getThumbnailOutputPath($jobContainer);
+                    $outputPath = $codecConfigContainer->getThumbnailOutputPath($jobContainer, $thumbnailConfig);
                     $encodingOutput = EncodingOutputFactory::createPublicEncodingOutput($apiOutput, $outputPath);
 
                     $thumbnail = new Thumbnail($thumbnailConfig->height, $thumbnailConfig->positions);

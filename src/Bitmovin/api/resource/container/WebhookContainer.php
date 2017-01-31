@@ -2,18 +2,7 @@
 
 namespace Bitmovin\api\resource\container;
 
-use Bitmovin\api\model\outputs\AzureOutput;
-use Bitmovin\api\model\outputs\FtpOutput;
-use Bitmovin\api\model\outputs\GcsOutput;
-use Bitmovin\api\model\outputs\Output;
-use Bitmovin\api\model\outputs\S3Output;
-use Bitmovin\api\model\outputs\SftpOutput;
 use Bitmovin\api\model\webhooks\Webhook;
-use Bitmovin\api\resource\outputs\AzureOutputResource;
-use Bitmovin\api\resource\outputs\FtpOutputResource;
-use Bitmovin\api\resource\outputs\GcsOutputResource;
-use Bitmovin\api\resource\outputs\S3OutputResource;
-use Bitmovin\api\resource\outputs\SftpOutputResource;
 use Bitmovin\api\resource\webhooks\WebhookResource;
 use Bitmovin\api\util\ApiUrls;
 
