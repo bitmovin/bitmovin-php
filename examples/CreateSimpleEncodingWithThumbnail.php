@@ -36,6 +36,7 @@ $videoStreamConfig1080->height = 816;
 $videoStreamConfig1080->bitrate = 4800000;
 $videoStreamConfig1080->rate = 25.0;
 $thumbnailConfiguration = new ThumbnailConfig(320, array(5,15,25,35,60));
+$thumbnailConfiguration->folder = 'thumbnail_folder/'; // Customize thumbnail folder or use default settings
 $thumbnailConfiguration->pattern = 'example_%number%.jpg'; // Customize pattern or use default settings
 $videoStreamConfig1080->thumbnailConfigs[] = $thumbnailConfiguration;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig1080;

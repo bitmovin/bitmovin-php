@@ -13,5 +13,13 @@ class ProgressiveMp4OutputFormat extends AbstractOutputFormat
     /** @var ClearKeyDrm */
     public $clearKey = null;
 
+    /**
+     * @var string
+     */
+    public $folder = 'mp4/';
+
+    /**
+     * @var string
+     */
     public $fileName;
 }

@@ -16,6 +16,7 @@ use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
+use Bitmovin\configs\manifest\AbstractHlsOutput;
 use Bitmovin\configs\manifest\HlsConfigurationFileNaming;
 use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
@@ -78,16 +79,10 @@ class HlsManifestFactory
      */
     public static function createHlsFMP4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient, HlsFMP4OutputFormat $hlsFMP4Format)
     {
-        $audioGroupId = null;
-        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
-        {
-            if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
-            {
-                $audioGroupId = 'audio';
-            }
-        }
+        $configurations = self::getConfigurationsForEncoding($encodingContainer, $hlsFMP4Format);
+        $audioGroupId = self::getAudioGroupId($configurations);
 
-        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+        foreach ($configurations as &$codecConfigContainer)
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
             {
@@ -133,16 +128,10 @@ class HlsManifestFactory
      */
     public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient, HlsOutputFormat $hlsOutputFormat)
     {
-        $audioGroupId = null;
-        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
-        {
-            if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
-            {
-                $audioGroupId = 'audio';
-            }
-        }
+        $configurations = self::getConfigurationsForEncoding($encodingContainer, $hlsOutputFormat);
+        $audioGroupId = self::getAudioGroupId($configurations);
 
-        foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+        foreach ($configurations as &$codecConfigContainer)
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
             {
@@ -177,6 +166,38 @@ class HlsManifestFactory
                 }
             }
         }
+    }
+
+    /**
+     * @param EncodingContainer $encodingContainer
+     * @param AbstractHlsOutput $abstractHlsOutput
+     * @return array
+     */
+    private static function getConfigurationsForEncoding(EncodingContainer $encodingContainer, AbstractHlsOutput $abstractHlsOutput)
+    {
+        /**
+         * CodecConfigContainer[]
+         */
+        $configurations = array();
+        if ($abstractHlsOutput->includedStreamConfigs == null)
+        {
+            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+            {
+                $configurations[] = $codecConfigContainer;
+            }
+        }
+        else
+        {
+            foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
+            {
+                foreach ($abstractHlsOutput->includedStreamConfigs as $streamConfig)
+                {
+                    if ($streamConfig == $codecConfigContainer->codecConfig)
+                        $configurations[] = $codecConfigContainer;
+                }
+            }
+        }
+        return $configurations;
     }
 
     /**
@@ -219,6 +240,23 @@ class HlsManifestFactory
             $playlistFileName = substr($playlistFileName, 1);
         }
         return $playlistFileName;
+    }
+
+    /**
+     * @param $configurations
+     * @return string
+     */
+    private static function getAudioGroupId($configurations)
+    {
+        $audioGroupId = null;
+        foreach ($configurations as $codecConfigContainer)
+        {
+            if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
+            {
+                $audioGroupId = 'audio';
+            }
+        }
+        return $audioGroupId;
     }
 
 }

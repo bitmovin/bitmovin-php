@@ -1,19 +1,16 @@
 <?php
 
-
 namespace Bitmovin\configs\manifest;
 
 
 use Bitmovin\configs\AbstractStreamConfig;
-use Bitmovin\configs\drm\CencDrm;
 
-class DashOutputFormat extends AbstractOutputFormat
+abstract class AbstractHlsOutput extends AbstractOutputFormat
 {
-
     /**
-     * @var CencDrm
+     * @var string
      */
-    public $cenc = null;
+    public $name = "stream.m3u8";
 
     /**
      * @var AbstractStreamConfig[]
@@ -21,8 +18,8 @@ class DashOutputFormat extends AbstractOutputFormat
     public $includedStreamConfigs = null;
 
     /**
-     * @var string
+     * @var HlsConfigurationFileNaming[]
      */
-    public $name = "stream.mpd";
+    public $hlsConfigurationFileNaming = array();
 
 }
