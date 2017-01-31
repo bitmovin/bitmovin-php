@@ -170,16 +170,16 @@ class HlsManifestFactory
 
     /**
      * @param EncodingContainer $encodingContainer
-     * @param AbstractHlsOutput $hlsOutputFormat
+     * @param AbstractHlsOutput $abstractHlsOutput
      * @return array
      */
-    private static function getConfigurationsForEncoding(EncodingContainer $encodingContainer, AbstractHlsOutput $hlsOutputFormat)
+    private static function getConfigurationsForEncoding(EncodingContainer $encodingContainer, AbstractHlsOutput $abstractHlsOutput)
     {
         /**
          * CodecConfigContainer[]
          */
         $configurations = array();
-        if ($hlsOutputFormat->includedStreamConfigs == null)
+        if ($abstractHlsOutput->includedStreamConfigs == null)
         {
             foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
             {
@@ -190,7 +190,7 @@ class HlsManifestFactory
         {
             foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
             {
-                foreach ($hlsOutputFormat->includedStreamConfigs as $streamConfig)
+                foreach ($abstractHlsOutput->includedStreamConfigs as $streamConfig)
                 {
                     if ($streamConfig == $codecConfigContainer->codecConfig)
                         $configurations[] = $codecConfigContainer;

@@ -519,17 +519,17 @@ class BitmovinClient
     public function createDashManifest(JobContainer $jobContainer)
     {
 
-        /** @var DashOutputFormat $dash */
-        $dash = null;
+        /** @var DashOutputFormat $dashOutputFormat */
+        $dashOutputFormat = null;
         foreach ($jobContainer->job->outputFormat as &$format)
         {
             if ($format instanceof DashOutputFormat)
             {
-                $dash = $format;
+                $dashOutputFormat = $format;
                 break;
             }
         }
-        if ($dash == null)
+        if ($dashOutputFormat == null)
         {
             return Status::ERROR;
         }
@@ -539,24 +539,24 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $dashManifest = $this->createDashManifestItem($dash->name, $manifestOutput);
+        $dashManifest = $this->createDashManifestItem($dashOutputFormat->name, $manifestOutput);
         $period = $this->addPeriodToDashManifest("0", null, $dashManifest);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            if ($dash->cenc != null)
+            if ($dashOutputFormat->cenc != null)
             {
                 DashProtectedManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $dashManifest, $period, $this->apiClient);
             }
             else
             {
-                DashManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $dashManifest, $period, $this->apiClient, $dash);
+                DashManifestFactory::createDashManifestForEncoding($jobContainer, $encodingContainer, $dashManifest, $period, $this->apiClient, $dashOutputFormat);
             }
         }
-        $this->runDashCreation($dashManifest, $dash);
+        $this->runDashCreation($dashManifest, $dashOutputFormat);
         $jobContainer->manifestContainers[] = new ManifestContainer($this->apiClient, $dashManifest);
 
-        return $dash->status;
+        return $dashOutputFormat->status;
     }
 
     private function createHlsManifestItem($name, EncodingOutput $output)
@@ -569,16 +569,16 @@ class BitmovinClient
 
     public function createHlsFMP4Manifest(JobContainer $jobContainer)
     {
-        $hlsFMP4Format = null;
+        $hlsOutputFormat = null;
         foreach ($jobContainer->job->outputFormat as &$format)
         {
             if ($format instanceof HlsFMP4OutputFormat)
             {
-                $hlsFMP4Format = $format;
+                $hlsOutputFormat = $format;
                 break;
             }
         }
-        if ($hlsFMP4Format == null)
+        if ($hlsOutputFormat == null)
         {
             return Status::ERROR;
         }
@@ -588,15 +588,15 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $manifest = $this->createHlsManifestItem($hlsFMP4Format->name, $manifestOutput);
+        $manifest = $this->createHlsManifestItem($hlsOutputFormat->name, $manifestOutput);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            HlsManifestFactory::createHlsFMP4ManifestForEncoding($jobContainer, $encodingContainer, $manifest, $this->apiClient, $hlsFMP4Format);
+            HlsManifestFactory::createHlsFMP4ManifestForEncoding($jobContainer, $encodingContainer, $manifest, $this->apiClient, $hlsOutputFormat);
         }
 
-        $this->runHlsFmp4Creation($manifest, $hlsFMP4Format);
-        return $hlsFMP4Format->status;
+        $this->runHlsFmp4Creation($manifest, $hlsOutputFormat);
+        return $hlsOutputFormat->status;
     }
 
     /**
@@ -606,16 +606,16 @@ class BitmovinClient
      */
     public function createHlsManifest(JobContainer $jobContainer)
     {
-        $hlsFormat = null;
+        $hlsOutputFormat = null;
         foreach ($jobContainer->job->outputFormat as &$format)
         {
             if ($format instanceof HlsOutputFormat)
             {
-                $hlsFormat = $format;
+                $hlsOutputFormat = $format;
                 break;
             }
         }
-        if ($hlsFormat == null)
+        if ($hlsOutputFormat == null)
         {
             return Status::ERROR;
         }
@@ -625,17 +625,17 @@ class BitmovinClient
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
-        $hlsManifest = $this->createHlsManifestItem($hlsFormat->name, $manifestOutput);
+        $hlsManifest = $this->createHlsManifestItem($hlsOutputFormat->name, $manifestOutput);
 
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
-            HlsManifestFactory::createHlsManifestForEncoding($jobContainer, $encodingContainer, $hlsManifest, $this->apiClient, $hlsFormat);
+            HlsManifestFactory::createHlsManifestForEncoding($jobContainer, $encodingContainer, $hlsManifest, $this->apiClient, $hlsOutputFormat);
         }
 
-        $this->runHlsCreation($hlsManifest, $hlsFormat);
+        $this->runHlsCreation($hlsManifest, $hlsOutputFormat);
         $jobContainer->manifestContainers[] = new ManifestContainer($this->apiClient, $hlsManifest);
 
-        return $hlsFormat->status;
+        return $hlsOutputFormat->status;
     }
 
     private function createSmoothManifestItem($name, $serverManifestName, $clientManifestName, EncodingOutput $output)

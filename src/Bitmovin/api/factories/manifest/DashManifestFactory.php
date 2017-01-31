@@ -64,16 +64,16 @@ class DashManifestFactory
 
     /**
      * @param EncodingContainer $encodingContainer
-     * @param DashOutputFormat $dashManifest
+     * @param DashOutputFormat  $dashOutputFormat
      * @return array
      */
-    private static function getConfigurationsForEncoding(EncodingContainer $encodingContainer, DashOutputFormat $dashManifest)
+    private static function getConfigurationsForEncoding(EncodingContainer $encodingContainer, DashOutputFormat $dashOutputFormat)
     {
         /**
          * CodecConfigContainer[]
          */
         $configurations = array();
-        if ($dashManifest->includedStreamConfigs == null)
+        if ($dashOutputFormat->includedStreamConfigs == null)
         {
             foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
             {
@@ -84,7 +84,7 @@ class DashManifestFactory
         {
             foreach ($encodingContainer->codecConfigContainer as &$codecConfigContainer)
             {
-                foreach ($dashManifest->includedStreamConfigs as $streamConfig)
+                foreach ($dashOutputFormat->includedStreamConfigs as $streamConfig)
                 {
                     if ($streamConfig == $codecConfigContainer->codecConfig)
                         $configurations[] = $codecConfigContainer;
