@@ -67,6 +67,7 @@ $jobConfig->outputFormat[] = new DashOutputFormat();
 $mp4Muxing720 = new ProgressiveMp4OutputFormat();
 $mp4Muxing720->fileName = "720p_2400kbps.mp4";
 $mp4Muxing720->streamConfigs = array($videoStreamConfig_720, $audioConfig);
+$mp4Muxing720->folder = 'mp4/'; // Customize the folder the mp4 should be written to or use default settings
 $jobConfig->outputFormat[] = $mp4Muxing720;
 
 $mp4Muxing1080 = new ProgressiveMp4OutputFormat();
