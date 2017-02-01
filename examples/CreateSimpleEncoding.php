@@ -67,4 +67,4 @@ $jobConfig->outputFormat[] = new DashOutputFormat();
 $jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
-$jobContainer = $client->runJobAndWaitForCompletion($jobConfig);
+$client->runJobAndWaitForCompletion($jobConfig);
