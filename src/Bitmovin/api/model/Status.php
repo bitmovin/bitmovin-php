@@ -23,6 +23,16 @@ class Status extends AbstractModel
      * @var  string
      */
     private $status;
+    /**
+     * @JMS\Type("array")
+     * @var  array
+     */
+    private $messages;
+    /**
+     * @JMS\Type("array")
+     * @var  array
+     */
+    private $subtasks;
 
     /**
      * @return float
@@ -70,6 +80,38 @@ class Status extends AbstractModel
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     * @param array $messages
+     */
+    public function setMessages($messages)
+    {
+        $this->messages = $messages;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubtasks()
+    {
+        return $this->subtasks;
+    }
+
+    /**
+     * @param array $subtasks
+     */
+    public function setSubtasks($subtasks)
+    {
+        $this->subtasks = $subtasks;
     }
 
 
