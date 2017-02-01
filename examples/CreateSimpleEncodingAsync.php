@@ -77,6 +77,8 @@ do
     $client->updateEncodingJobStatus($jobContainer);
     foreach ($jobContainer->encodingContainers as $encodingContainer)
     {
+        // Print detailed status information
+        print_r($encodingContainer->statusObject);
         if ($encodingContainer->status != Status::FINISHED && $encodingContainer->status != Status::ERROR)
         {
             $allFinished = false;

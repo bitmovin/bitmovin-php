@@ -26,6 +26,11 @@ class TransferContainer
     public $transfer;
 
     /**
+     * @var \Bitmovin\api\model\Status
+     */
+    public $statusObject = null;
+
+    /**
      * @var  string
      */
     public $status;

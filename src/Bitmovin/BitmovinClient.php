@@ -385,6 +385,7 @@ class BitmovinClient
         foreach ($jobContainer->encodingContainers as &$encodingContainer)
         {
             $status = $this->apiClient->encodings()->status($encodingContainer->encoding);
+            $encodingContainer->statusObject = $status;
             $encodingContainer->status = $status->getStatus();
         }
     }
@@ -396,11 +397,13 @@ class BitmovinClient
             if ($transferContainer->transfer instanceof TransferEncoding)
             {
                 $status = $this->apiClient->transfers()->encoding()->status($transferContainer->transfer);
+                $transferContainer->statusObject = $status;
                 $transferContainer->status = $status->getStatus();
             }
             if ($transferContainer->transfer instanceof TransferManifest)
             {
                 $status = $this->apiClient->transfers()->manifest()->status($transferContainer->transfer);
+                $transferContainer->statusObject = $status;
                 $transferContainer->status = $status->getStatus();
             }
         }
@@ -428,6 +431,7 @@ class BitmovinClient
             while (true)
             {
                 $status = $this->apiClient->encodings()->status($encodingContainer->encoding);
+                $encodingContainer->statusObject = $status;
                 $encodingContainer->status = $status->getStatus();
                 if ($status->getStatus() == Status::ERROR || $status->getStatus() == $expectedStatus)
                 {
@@ -767,14 +771,12 @@ class BitmovinClient
             if ($encodingContainer->status != Status::FINISHED)
             {
                 $id = $encodingContainer->encoding->getId();
-                throw new BitmovinException("Encoding with id '$id' has not finished successfully. It's current state is '$encodingContainer->status'.");
+                $detailedStatusObject = print_r($encodingContainer->statusObject, true);
+                throw new BitmovinException("Encoding with id '$id' has not finished successfully. It's current state is '$encodingContainer->status'. Detailed error response:\n$detailedStatusObject");
             }
         }
 
-        $this->createDashManifest($jobContainer);
-        $this->createHlsManifest($jobContainer);
-        $this->createHlsFMP4Manifest($jobContainer);
-        $this->createSmoothStreamingManifest($jobContainer);
+        $this->createManifests($jobContainer);
 
         return $jobContainer;
     }
@@ -999,5 +1001,16 @@ class BitmovinClient
             sleep(1);
         }
         return $liveEncodingDetails;
+    }
+
+    /**
+     * @param $jobContainer JobContainer
+     */
+    public function createManifests($jobContainer)
+    {
+        $this->createDashManifest($jobContainer);
+        $this->createHlsManifest($jobContainer);
+        $this->createHlsFMP4Manifest($jobContainer);
+        $this->createSmoothStreamingManifest($jobContainer);
     }
 }

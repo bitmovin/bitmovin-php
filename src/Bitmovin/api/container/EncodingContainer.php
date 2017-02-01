@@ -40,6 +40,11 @@ class EncodingContainer
     public $encoding;
 
     /**
+     * @var \Bitmovin\api\model\Status
+     */
+    public $statusObject = null;
+
+    /**
      * @var string
      */
     public $status = Status::CREATED;
