@@ -82,6 +82,7 @@ final class ApiUrls
     const MANIFEST_DASH_PERIODS = "encoding/manifests/dash/{manifest_id}/periods";
     const MANIFEST_DASH_PERIODS_VIDEO_ADAPTION_SET = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/video";
     const MANIFEST_DASH_PERIODS_AUDIO_ADAPTION_SET = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/audio";
+    const MANIFEST_DASH_PERIODS_SUBTITLE_ADAPTATION_SET = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/subtitle";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_REPRESENTATION_FMP4 = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/fmp4";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_CONTENT_PROTECTION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/contentprotection";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_REPRESENTATION_FMP4_CONTENT_PROTECTION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/fmp4/{representation_id}/contentprotection";
@@ -93,6 +94,7 @@ final class ApiUrls
 
     const MANIFEST_HLS = "encoding/manifests/hls";
     const MANIFEST_HLS_MEDIA = "encoding/manifests/hls/{manifest_id}/media";
+    const MANIFEST_HLS_VTT_MEDIA = "encoding/manifests/hls/{manifest_id}/media";
     const MANIFEST_HLS_STREAMS = "encoding/manifests/hls/{manifest_id}/streams";
     const MANIFEST_HLS_START = "encoding/manifests/hls/{manifest_id}/start";
     const MANIFEST_HLS_STOP = "encoding/manifests/hls/{manifest_id}/stop";
