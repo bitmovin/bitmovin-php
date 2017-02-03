@@ -70,6 +70,7 @@ $jobConfig->outputFormat[] = $dashOutputFormat;
 // ENABLE HLS OUTPUT
 $hlsOutputFormat = new HlsOutputFormat();
 $hlsOutputFormat->name = 'hls.mpd';
+$hlsOutputFormat->folder = 'hls_sub_folder'; // Specify a folder or leave empty to use default
 $hlsOutputFormat->hlsConfigurationFileNaming[] = new HlsConfigurationFileNaming($videoStreamConfig_1080, 'video_1080.m3u8');
 $hlsOutputFormat->hlsConfigurationFileNaming[] = new HlsConfigurationFileNaming($videoStreamConfig_720, 'video_720.m3u8');
 $hlsOutputFormat->hlsConfigurationFileNaming[] = new HlsConfigurationFileNaming($audioConfig, 'audio.m3u8');

@@ -11,8 +11,10 @@ use Bitmovin\api\model\encodings\streams\thumbnails\Thumbnail;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\images\ThumbnailConfig;
+use Bitmovin\configs\manifest\AbstractOutputFormat;
 use Bitmovin\configs\manifest\ProgressiveMp4OutputFormat;
 use Bitmovin\configs\video\AbstractVideoStreamConfig;
+use Bitmovin\helper\PathHelper;
 
 class CodecConfigContainer
 {
@@ -47,117 +49,99 @@ class CodecConfigContainer
      */
     public $sprites = array();
 
-    /**
-     * @param string[] ...$paths
-     * @return string
-     */
-    private function combinePath(...$paths)
-    {
-        $path = '';
-        foreach ($paths as $item)
-        {
-            if (substr($item, 0, 1) != '/' && substr($path, -1) != '/')
-            {
-                $path .= '/';
-            }
-            $path .= $item;
-        }
-        return $path;
-    }
-
-    public function getDashCencVideoOutputPath(JobContainer $jobContainer)
+    public function getDashCencVideoOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AbstractVideoStreamConfig $codecConfigVideo */
         $codecConfigVideo = $this->codecConfig;
         $name = $codecConfigVideo->bitrate;
-        return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/dash_cenc/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::VIDEO, $name, '/dash_cenc/');
     }
 
-    public function getDashVideoOutputPath(JobContainer $jobContainer)
+    public function getDashVideoOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AbstractVideoStreamConfig $codecConfigVideo */
         $codecConfigVideo = $this->codecConfig;
         $name = $codecConfigVideo->bitrate;
-        return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/dash/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::VIDEO, $name, '/dash/');
     }
 
-    public function getHlsVideoOutputPath(JobContainer $jobContainer)
+    public function getHlsVideoOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AbstractVideoStreamConfig $codecConfigVideo */
         $codecConfigVideo = $this->codecConfig;
         $name = $codecConfigVideo->bitrate;
-        return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/hls/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::VIDEO, $name, '/hls/');
     }
 
     public function getThumbnailOutputPath(JobContainer $jobContainer, ThumbnailConfig $thumbnailConfig)
     {
-        return $this->combinePath($jobContainer->getOutputPath(), $thumbnailConfig->folder);
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $thumbnailConfig->folder);
     }
 
     public function getSpriteOutputPath(JobContainer $jobContainer)
     {
-        return $this->combinePath($jobContainer->getOutputPath(), static::SPRITES);
+        return PathHelper::combinePath($jobContainer->getOutputPath(), static::SPRITES);
     }
 
     public function getMp4OutputPath(JobContainer $jobContainer, ProgressiveMp4OutputFormat $progressiveMp4OutputFormat)
     {
-        return $this->combinePath($jobContainer->getOutputPath(), $progressiveMp4OutputFormat->folder);
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $progressiveMp4OutputFormat->folder);
     }
 
-    public function getSmoothStreamingVideoOutputPath(JobContainer $jobContainer)
+    public function getSmoothStreamingVideoOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AbstractVideoStreamConfig $codecConfigVideo */
         $codecConfigVideo = $this->codecConfig;
         $name = $codecConfigVideo->bitrate;
-        return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/smoothstreaming/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::VIDEO, $name, '/smoothstreaming/');
     }
 
-    public function getSmoothStreamingPlayReadyVideoOutputPath(JobContainer $jobContainer)
+    public function getSmoothStreamingPlayReadyVideoOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AbstractVideoStreamConfig $codecConfigVideo */
         $codecConfigVideo = $this->codecConfig;
         $name = $codecConfigVideo->bitrate;
-        return $this->combinePath($jobContainer->getOutputPath(), static::VIDEO, $name, '/smoothstreaming_playready/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::VIDEO, $name, '/smoothstreaming_playready/');
     }
 
-    public function getDashCencAudioOutputPath(JobContainer $jobContainer)
+    public function getDashCencAudioOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AudioStreamConfig $codecConfigAudio */
         $codecConfigAudio = $this->codecConfig;
         $name = $codecConfigAudio->bitrate . '_' . $codecConfigAudio->lang;
-        return $this->combinePath($jobContainer->getOutputPath(), static::AUDIO, $name, '/dash_cenc/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::AUDIO, $name, '/dash_cenc/');
     }
 
-    public function getDashAudioOutputPath(JobContainer $jobContainer)
+    public function getDashAudioOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AudioStreamConfig $codecConfigAudio */
         $codecConfigAudio = $this->codecConfig;
         $name = $codecConfigAudio->bitrate . '_' . $codecConfigAudio->lang;
-        return $this->combinePath($jobContainer->getOutputPath(), static::AUDIO, $name, '/dash/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::AUDIO, $name, '/dash/');
     }
 
-    public function getHlsAudioOutputPath(JobContainer $jobContainer)
+    public function getHlsAudioOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AudioStreamConfig $codecConfigAudio */
         $codecConfigAudio = $this->codecConfig;
         $name = $codecConfigAudio->bitrate . '_' . $codecConfigAudio->lang;
-        return $this->combinePath($jobContainer->getOutputPath(), static::AUDIO, $name, '/hls/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::AUDIO, $name, '/hls/');
     }
 
-    public function getSmoothStreamingAudioOutputPath(JobContainer $jobContainer)
+    public function getSmoothStreamingAudioOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AudioStreamConfig $codecConfigAudio */
         $codecConfigAudio = $this->codecConfig;
         $name = $codecConfigAudio->bitrate . '_' . $codecConfigAudio->lang;
-        return $this->combinePath($jobContainer->getOutputPath(), static::AUDIO, $name, '/smoothstreaming/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::AUDIO, $name, '/smoothstreaming/');
     }
 
-    public function getSmoothStreamingPlayReadyAudioOutputPath(JobContainer $jobContainer)
+    public function getSmoothStreamingPlayReadyAudioOutputPath(JobContainer $jobContainer, AbstractOutputFormat $outputFormat)
     {
         /** @var AudioStreamConfig $codecConfigAudio */
         $codecConfigAudio = $this->codecConfig;
         $name = $codecConfigAudio->bitrate . '_' . $codecConfigAudio->lang;
-        return $this->combinePath($jobContainer->getOutputPath(), static::AUDIO, $name, '/smoothstreaming_playready/');
+        return PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder, static::AUDIO, $name, '/smoothstreaming_playready/');
     }
 
 }
