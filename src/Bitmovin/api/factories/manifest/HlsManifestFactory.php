@@ -17,9 +17,11 @@ use Bitmovin\api\model\manifests\hls\StreamInfo;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\manifest\AbstractHlsOutput;
+use Bitmovin\configs\manifest\AbstractOutputFormat;
 use Bitmovin\configs\manifest\HlsConfigurationFileNaming;
 use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
+use Bitmovin\helper\PathHelper;
 
 class HlsManifestFactory
 {
@@ -92,7 +94,7 @@ class HlsManifestFactory
                     {
                         continue;
                     }
-                    $segmentPath = static::createSegmentPath($jobContainer, $muxing);
+                    $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsFMP4Format);
                     $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsFMP4Format->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null,
@@ -109,7 +111,7 @@ class HlsManifestFactory
                     }
                     /** @var AudioStreamConfig $codec */
                     $codec = $codecConfigContainer->codecConfig;
-                    $segmentPath = static::createSegmentPath($jobContainer, $muxing);
+                    $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsFMP4Format);
                     $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsFMP4Format->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     $mediaInfo = static::getDefaultAudioMediaInfo($codec, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
@@ -141,7 +143,7 @@ class HlsManifestFactory
                     {
                         continue;
                     }
-                    $segmentPath = static::createSegmentPath($jobContainer, $muxing);
+                    $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsOutputFormat);
                     $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null,
@@ -158,7 +160,7 @@ class HlsManifestFactory
                     }
                     /** @var AudioStreamConfig $codec */
                     $codec = $codecConfigContainer->codecConfig;
-                    $segmentPath = static::createSegmentPath($jobContainer, $muxing);
+                    $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsOutputFormat);
                     $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     $mediaInfo = static::getDefaultAudioMediaInfo($codec, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
@@ -201,14 +203,16 @@ class HlsManifestFactory
     }
 
     /**
-     * @param JobContainer   $jobContainer
-     * @param AbstractMuxing $muxing
+     * @param JobContainer         $jobContainer
+     * @param AbstractMuxing       $muxing
+     * @param AbstractOutputFormat $outputFormat
      * @return mixed|string
      */
-    private static function createSegmentPath(JobContainer $jobContainer, AbstractMuxing $muxing)
+    private static function createSegmentPath(JobContainer $jobContainer, AbstractMuxing $muxing, AbstractOutputFormat $outputFormat)
     {
         $segmentPath = $muxing->getOutputs()[0]->getOutputPath();
-        $segmentPath = str_ireplace($jobContainer->getOutputPath(), "", $segmentPath);
+        $pathToFind = PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder);
+        $segmentPath = str_ireplace($pathToFind, "", $segmentPath);
         if (substr($segmentPath, 0, 1) == '/')
         {
             $segmentPath = substr($segmentPath, 1);

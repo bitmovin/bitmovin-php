@@ -17,7 +17,9 @@ use Bitmovin\api\model\manifests\dash\DashRepresentation;
 use Bitmovin\api\model\manifests\dash\Period;
 use Bitmovin\api\model\manifests\dash\VideoAdaptationSet;
 use Bitmovin\configs\audio\AudioStreamConfig;
+use Bitmovin\configs\manifest\AbstractOutputFormat;
 use Bitmovin\configs\manifest\DashOutputFormat;
+use Bitmovin\helper\PathHelper;
 
 class DashManifestFactory
 {
@@ -45,7 +47,7 @@ class DashManifestFactory
                     $videoAdaptionSet = new VideoAdaptationSet();
                     $videoAdaptionSet = $client->manifests()->dash()->addVideoAdaptionSetToPeriod($manifest, $period, $videoAdaptionSet);
                 }
-                static::addAdaptionSetToMuxing($jobContainer, $encodingContainer, $manifest, $period, $codecConfigContainer, $videoAdaptionSet, $client);
+                static::addAdaptionSetToMuxing($jobContainer, $encodingContainer, $manifest, $period, $codecConfigContainer, $videoAdaptionSet, $client, $dashOutputFormat);
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
             {
@@ -57,7 +59,7 @@ class DashManifestFactory
                     $audioAdaptionSet->setLang($codec->lang);
                     $audioAdaptionSet = $client->manifests()->dash()->addAudioAdaptionSetToPeriod($manifest, $period, $audioAdaptionSet);
                 }
-                static::addAdaptionSetToMuxing($jobContainer, $encodingContainer, $manifest, $period, $codecConfigContainer, $audioAdaptionSet, $client);
+                static::addAdaptionSetToMuxing($jobContainer, $encodingContainer, $manifest, $period, $codecConfigContainer, $audioAdaptionSet, $client, $dashOutputFormat);
             }
         }
     }
@@ -95,14 +97,16 @@ class DashManifestFactory
     }
 
     /**
-     * @param JobContainer $jobContainer
-     * @param FMP4Muxing   $muxing
+     * @param JobContainer         $jobContainer
+     * @param FMP4Muxing           $muxing
+     * @param AbstractOutputFormat $outputFormat
      * @return string
      */
-    private static function createSegmentPath(JobContainer $jobContainer, FMP4Muxing $muxing)
+    private static function createSegmentPath(JobContainer $jobContainer, FMP4Muxing $muxing, AbstractOutputFormat $outputFormat)
     {
         $segmentPath = $muxing->getOutputs()[0]->getOutputPath();
-        $segmentPath = str_ireplace($jobContainer->getOutputPath(), "", $segmentPath);
+        $pathToFind = PathHelper::combinePath($jobContainer->getOutputPath(), $outputFormat->folder);
+        $segmentPath = str_ireplace($pathToFind, "", $segmentPath);
         if (substr($segmentPath, 0, 1) == '/')
         {
             $segmentPath = substr($segmentPath, 1);
@@ -118,9 +122,10 @@ class DashManifestFactory
      * @param CodecConfigContainer $codecConfigContainer
      * @param AdaptationSet        $adaptionSet
      * @param ApiClient            $client
+     * @param DashOutputFormat     $dashOutputFormat
      */
     private static function addAdaptionSetToMuxing(JobContainer $jobContainer, EncodingContainer $encodingContainer, DashManifest $manifest, Period $period, CodecConfigContainer $codecConfigContainer,
-                                                   AdaptationSet $adaptionSet, ApiClient $client)
+                                                   AdaptationSet $adaptionSet, ApiClient $client, DashOutputFormat $dashOutputFormat)
     {
         foreach ($codecConfigContainer->muxings as $muxing)
         {
@@ -128,7 +133,7 @@ class DashManifestFactory
             {
                 continue;
             }
-            $segmentPath = static::createSegmentPath($jobContainer, $muxing);
+            $segmentPath = static::createSegmentPath($jobContainer, $muxing, $dashOutputFormat);
 
 
             $r = new DashRepresentation();

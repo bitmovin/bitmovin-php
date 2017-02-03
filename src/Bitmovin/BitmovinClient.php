@@ -539,7 +539,7 @@ class BitmovinClient
         }
 
         $manifestOutput = new EncodingOutput($jobContainer->apiOutput);
-        $manifestOutput->setOutputPath($jobContainer->getOutputPath());
+        $manifestOutput->setOutputPath($jobContainer->getOutputPath($dashOutputFormat->folder));
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
@@ -588,7 +588,7 @@ class BitmovinClient
         }
 
         $manifestOutput = new EncodingOutput($jobContainer->apiOutput);
-        $manifestOutput->setOutputPath($jobContainer->getOutputPath());
+        $manifestOutput->setOutputPath($jobContainer->getOutputPath($hlsOutputFormat->folder));
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
@@ -625,7 +625,7 @@ class BitmovinClient
         }
 
         $manifestOutput = new EncodingOutput($jobContainer->apiOutput);
-        $manifestOutput->setOutputPath($jobContainer->getOutputPath());
+        $manifestOutput->setOutputPath($jobContainer->getOutputPath($hlsOutputFormat->folder));
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 
@@ -675,7 +675,7 @@ class BitmovinClient
         }
 
         $manifestOutput = new EncodingOutput($jobContainer->apiOutput);
-        $manifestOutput->setOutputPath($jobContainer->getOutputPath());
+        $manifestOutput->setOutputPath($jobContainer->getOutputPath($smoothStreamingFormat->folder));
         $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
         $manifestOutput->setAcl([$acl]);
 

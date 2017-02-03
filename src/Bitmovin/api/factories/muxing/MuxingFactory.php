@@ -228,7 +228,7 @@ class MuxingFactory
                 if ($hlsFMP4OutputFormat)
                 {
                     $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                        $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer),
+                        $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer, $hlsFMP4OutputFormat),
                         $apiClient);
                 }
                 if ($dashOutputFormat)
@@ -236,7 +236,7 @@ class MuxingFactory
                     if ($dashOutputFormat->cenc == null)
                     {
                         $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer),
+                            $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer, $dashOutputFormat),
                             $apiClient);
                     }
                     else
@@ -244,7 +244,7 @@ class MuxingFactory
                         $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                             null, null, $apiClient);
                         $muxing->addDrm(DashProtectedManifestFactory::addCencDrmToFmp4Muxing($encodingContainer->encoding, $muxing,
-                            $dashOutputFormat->cenc, $jobContainer->apiOutput, $codecConfigContainer->getDashCencVideoOutputPath($jobContainer),
+                            $dashOutputFormat->cenc, $jobContainer->apiOutput, $codecConfigContainer->getDashCencVideoOutputPath($jobContainer, $dashOutputFormat),
                             $apiClient));
                         $codecConfigContainer->muxings[] = $muxing;
                     }
@@ -252,14 +252,14 @@ class MuxingFactory
                 if ($hlsOutputFormat)
                 {
                     $codecConfigContainer->muxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
-                        $jobContainer->apiOutput, $codecConfigContainer->getHlsVideoOutputPath($jobContainer), $apiClient);
+                        $jobContainer->apiOutput, $codecConfigContainer->getHlsVideoOutputPath($jobContainer, $hlsOutputFormat), $apiClient);
                 }
                 if ($smoothStreamingOutputFormat)
                 {
                     if ($smoothStreamingOutputFormat->playReady == null)
                     {
                         $codecConfigContainer->muxings[] = static::createSmoothStreamingMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getSmoothStreamingVideoOutputPath($jobContainer),
+                            $jobContainer->apiOutput, $codecConfigContainer->getSmoothStreamingVideoOutputPath($jobContainer, $smoothStreamingOutputFormat),
                             $smoothStreamingOutputFormat, $apiClient);
                     }
                     else
@@ -268,7 +268,7 @@ class MuxingFactory
                             null, null, $smoothStreamingOutputFormat, $apiClient);
                         $muxing->addDrm(SmoothStreamingManifestFactory::addPlayReadyToMP4Muxing($encodingContainer->encoding, $muxing,
                             $smoothStreamingOutputFormat->playReady, $jobContainer->apiOutput,
-                            $codecConfigContainer->getSmoothStreamingPlayReadyVideoOutputPath($jobContainer),
+                            $codecConfigContainer->getSmoothStreamingPlayReadyVideoOutputPath($jobContainer, $smoothStreamingOutputFormat),
                             $apiClient));
                         $codecConfigContainer->muxings[] = $muxing;
                     }
@@ -281,21 +281,21 @@ class MuxingFactory
                 if ($hlsFMP4OutputFormat)
                 {
                     $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                        $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer), $apiClient);
+                        $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $hlsFMP4OutputFormat), $apiClient);
                 }
                 if ($dashOutputFormat)
                 {
                     if ($dashOutputFormat->cenc == null)
                     {
                         $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer), $apiClient);
+                            $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $dashOutputFormat), $apiClient);
                     }
                     else
                     {
                         $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                             null, null, $apiClient);
                         $muxing->addDrm(DashProtectedManifestFactory::addCencDrmToFmp4Muxing($encodingContainer->encoding, $muxing,
-                            $dashOutputFormat->cenc, $jobContainer->apiOutput, $codecConfigContainer->getDashCencAudioOutputPath($jobContainer),
+                            $dashOutputFormat->cenc, $jobContainer->apiOutput, $codecConfigContainer->getDashCencAudioOutputPath($jobContainer, $dashOutputFormat),
                             $apiClient));
                         $codecConfigContainer->muxings[] = $muxing;
                     }
@@ -303,14 +303,14 @@ class MuxingFactory
                 if ($hlsOutputFormat)
                 {
                     $codecConfigContainer->muxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
-                        $jobContainer->apiOutput, $codecConfigContainer->getHlsAudioOutputPath($jobContainer), $apiClient);
+                        $jobContainer->apiOutput, $codecConfigContainer->getHlsAudioOutputPath($jobContainer, $hlsOutputFormat), $apiClient);
                 }
                 if ($smoothStreamingOutputFormat)
                 {
                     if ($smoothStreamingOutputFormat->playReady == null)
                     {
                         $codecConfigContainer->muxings[] = static::createSmoothStreamingMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getSmoothStreamingAudioOutputPath($jobContainer),
+                            $jobContainer->apiOutput, $codecConfigContainer->getSmoothStreamingAudioOutputPath($jobContainer, $smoothStreamingOutputFormat),
                             $smoothStreamingOutputFormat, $apiClient);
                     }
                     else
@@ -319,7 +319,7 @@ class MuxingFactory
                             null, null, $smoothStreamingOutputFormat, $apiClient);
                         $muxing->addDrm(SmoothStreamingManifestFactory::addPlayReadyToMP4Muxing($encodingContainer->encoding, $muxing,
                             $smoothStreamingOutputFormat->playReady, $jobContainer->apiOutput,
-                            $codecConfigContainer->getSmoothStreamingPlayReadyAudioOutputPath($jobContainer),
+                            $codecConfigContainer->getSmoothStreamingPlayReadyAudioOutputPath($jobContainer, $smoothStreamingOutputFormat),
                             $apiClient));
                         $codecConfigContainer->muxings[] = $muxing;
                     }

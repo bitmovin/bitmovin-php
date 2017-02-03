@@ -7,6 +7,7 @@ namespace Bitmovin\api\container;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\JobConfig;
+use Bitmovin\helper\PathHelper;
 use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
@@ -105,19 +106,25 @@ class JobContainer
         return $prefix;
     }
 
-    public function getOutputPath()
+    public function getOutputPath($postfix = '')
     {
         $output = $this->job->output;
         if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof AbstractBitmovinOutput)
         {
-            $prefix = $this->stripSlashes($output->prefix);
-            return $this->addTrailingSlash($prefix);
+            $path = $output->prefix;
+            if ($postfix !== null && strlen($postfix) > 0)
+                $path = PathHelper::combinePath($path, $postfix);
+            $path = $this->stripSlashes($path);
+            return $this->addTrailingSlash($path);
         }
         else if ($output instanceof FtpOutput)
         {
-            $prefix = $this->stripSlashes($output->prefix);
-            $prefix = $this->addLeadingSlash($prefix);
-            return $this->addTrailingSlash($prefix);
+            $path = $output->prefix;
+            if ($postfix !== null && strlen($postfix) > 0)
+                $path = PathHelper::combinePath($path, $postfix);
+            $path = $this->stripSlashes($path);
+            $path = $this->addLeadingSlash($path);
+            return $this->addTrailingSlash($path);
         }
         throw new \InvalidArgumentException();
     }
