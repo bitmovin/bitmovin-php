@@ -12,4 +12,9 @@ abstract class AbstractOutputFormat
      */
     public $status;
 
+    /**
+     * @var string
+     */
+    public $folder = '';
+
 }
