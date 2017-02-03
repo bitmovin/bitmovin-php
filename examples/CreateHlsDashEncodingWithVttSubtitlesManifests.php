@@ -5,7 +5,8 @@ use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
-use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
+use Bitmovin\configs\manifest\DashOutputFormat;
+use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\S3Output;
@@ -58,18 +59,20 @@ $audioStreamConfig->lang = 'en';
 $audioStreamConfig->position = 1;
 $encodingProfileConfig->audioStreamConfigs[] = $audioStreamConfig;
 
-// CREATE OUTPUT FORMAT COLLECTION
-$outputFormats = array();
-$outputFormats[] = new HlsFMP4OutputFormat();
-
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
 // ASSIGN OUTPUT
 $jobConfig->output = $s3Output;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfileConfig;
-// ASSIGN SELECTED OUTPUT FORMATS
-$jobConfig->outputFormat = $outputFormats;
+// ENABLE DASH OUTPUT
+$dashOutputFormat = new DashOutputFormat();
+$dashOutputFormat->vttSubtitles = ["http://yourhost.com/path/to/web.vtt", "https://s3-amazonaws.com/path/to/web.vtt"];
+$jobConfig->outputFormat[] = $dashOutputFormat;
+// ENABLE HLS OUTPUT
+$hlsOutputFormat = new HlsOutputFormat();
+$hlsOutputFormat->vttSubtitles = ["https://yourhost.com/path/to/web.vtt"];
+$jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
-$client->runJobAndWaitForCompletion($jobConfig);
+$jobContainer = $client->runJobAndWaitForCompletion($jobConfig);

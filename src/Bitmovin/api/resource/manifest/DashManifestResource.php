@@ -11,6 +11,7 @@ use Bitmovin\api\model\manifests\dash\DashRepresentation;
 use Bitmovin\api\model\manifests\dash\Period;
 use Bitmovin\api\model\manifests\dash\SubtitleAdaptationSet;
 use Bitmovin\api\model\manifests\dash\VideoAdaptationSet;
+use Bitmovin\api\model\manifests\dash\VttRepresentation;
 use Bitmovin\api\model\Status;
 use Bitmovin\api\resource\AbstractResource;
 use Bitmovin\api\util\ApiUrls;
@@ -80,6 +81,14 @@ class DashManifestResource extends AbstractResource
      * @return SubtitleAdaptationSet
      */
     public function addSubtitleAdaptationSetToPeriod(DashManifest $manifest, Period $period, SubtitleAdaptationSet $adaptationSet)
+    {
+        $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_PERIOD_ID => $period->getId());
+        $baseUriEncoding = RouteHelper::buildURI(ApiUrls::MANIFEST_DASH_PERIODS_SUBTITLE_ADAPTATION_SET, $routeReplacementMap);
+
+        return parent::postResource($adaptationSet, $baseUriEncoding, SubtitleAdaptationSet::class);
+    }
+
+    public function addVttRepresentationToSubtitleAdaptationSet(DashManifest $manifest, Period $period, SubtitleAdaptationSet $adaptationSet, VttRepresentation $vttRepresentation)
     {
         $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_PERIOD_ID => $period->getId());
         $baseUriEncoding = RouteHelper::buildURI(ApiUrls::MANIFEST_DASH_PERIODS_SUBTITLE_ADAPTATION_SET, $routeReplacementMap);

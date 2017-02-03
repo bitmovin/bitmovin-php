@@ -25,4 +25,10 @@ class DashOutputFormat extends AbstractOutputFormat
      */
     public $name = "stream.mpd";
 
+
+    /**
+     * @var ExternalSubtitleFormat[]
+     */
+    public $vttSubtitles = null;
+
 }

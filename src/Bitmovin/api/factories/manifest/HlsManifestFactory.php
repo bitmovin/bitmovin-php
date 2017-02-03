@@ -14,6 +14,7 @@ use Bitmovin\api\model\encodings\muxing\TSMuxing;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
+use Bitmovin\api\model\manifests\hls\VttMedia;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\manifest\AbstractHlsOutput;
@@ -165,6 +166,28 @@ class HlsManifestFactory
                     $mediaInfo = static::getDefaultAudioMediaInfo($codec, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
                     $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
+                }
+            }
+        }
+
+        if($hlsOutputFormat->vttSubtitles != null)
+        {
+            foreach ($hlsOutputFormat->vttSubtitles as $vttSubtitle)
+            {
+                $groupId = uniqid();
+                $index = 0;
+                foreach ($vttSubtitle->subtitleUrls as $vttUrl)
+                {
+                    $vttMedia = new VttMedia();
+                    $vttMedia->setIsDefault($index == 0);
+                    $vttMedia->setGroupId($groupId);
+                    $vttMedia->setAssocLanguage($vttSubtitle->lang);
+                    $vttMedia->setLanguage($vttSubtitle->lang);
+                    $vttMedia->setForced(false);
+                    $vttMedia->setName(strtoupper($vttSubtitle->lang));
+                    $vttMedia->setVttUrl($vttUrl);
+                    $vttMedia->setUri(uniqid());
+                    $apiClient->manifests()->hls()->addSubtitleAdaptationSetToPeriod($manifest);
                 }
             }
         }

@@ -15,7 +15,9 @@ use Bitmovin\api\model\manifests\dash\AudioAdaptationSet;
 use Bitmovin\api\model\manifests\dash\DashManifest;
 use Bitmovin\api\model\manifests\dash\DashRepresentation;
 use Bitmovin\api\model\manifests\dash\Period;
+use Bitmovin\api\model\manifests\dash\SubtitleAdaptationSet;
 use Bitmovin\api\model\manifests\dash\VideoAdaptationSet;
+use Bitmovin\api\model\manifests\dash\VttRepresentation;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\manifest\AbstractOutputFormat;
 use Bitmovin\configs\manifest\DashOutputFormat;
@@ -60,6 +62,23 @@ class DashManifestFactory
                     $audioAdaptionSet = $client->manifests()->dash()->addAudioAdaptionSetToPeriod($manifest, $period, $audioAdaptionSet);
                 }
                 static::addAdaptionSetToMuxing($jobContainer, $encodingContainer, $manifest, $period, $codecConfigContainer, $audioAdaptionSet, $client, $dashOutputFormat);
+            }
+        }
+
+        if($dashOutputFormat->vttSubtitles != null)
+        {
+            foreach ($dashOutputFormat->vttSubtitles as $vttSubtitle)
+            {
+                $subtitleAdaptationSet = new SubtitleAdaptationSet();
+                $subtitleAdaptationSet->setLang($vttSubtitle->lang);
+                $client->manifests()->dash()->addSubtitleAdaptationSetToPeriod($manifest, $period, $subtitleAdaptationSet);
+
+                foreach ($vttSubtitle->subtitleUrls as $vttUrl)
+                {
+                    $vttRepresentation = new VttRepresentation();
+                    $vttRepresentation->vttUrl = $vttUrl;
+                    $client->manifests()->dash()->addVttRepresentationToSubtitleAdaptationSet($manifest, $period, $subtitleAdaptationSet, $vttRepresentation);
+                }
             }
         }
     }

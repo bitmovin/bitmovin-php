@@ -65,6 +65,11 @@ class VttMedia extends AbstractModel
      */
     private $forced;
 
+    /**
+     * @var string
+     */
+    private $uri;
+
 
     /**
      * @return string
@@ -209,4 +214,22 @@ class VttMedia extends AbstractModel
     {
         $this->forced = $forced;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @param mixed $uri
+     */
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
+    }
+
+
 }
