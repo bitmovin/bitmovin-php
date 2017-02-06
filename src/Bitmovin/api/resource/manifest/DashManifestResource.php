@@ -88,12 +88,19 @@ class DashManifestResource extends AbstractResource
         return parent::postResource($adaptationSet, $baseUriSubtitleAdaptationSet, SubtitleAdaptationSet::class);
     }
 
+    /**
+     * @param DashManifest $manifest
+     * @param Period $period
+     * @param SubtitleAdaptationSet $adaptationSet
+     * @param VttRepresentation $vttRepresentation
+     * @return VttRepresentation
+     */
     public function addVttRepresentationToSubtitleAdaptationSet(DashManifest $manifest, Period $period, SubtitleAdaptationSet $adaptationSet, VttRepresentation $vttRepresentation)
     {
         $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_PERIOD_ID => $period->getId(), ApiUrls::PH_ADAPTION_ID => $adaptationSet->getId());
         $baseUriVttRepresentation = RouteHelper::buildURI(ApiUrls::MANIFEST_DASH_PERIODS_VTT_REPRESENTATION, $routeReplacementMap);
 
-        return parent::postResource($vttRepresentation, $baseUriVttRepresentation, SubtitleAdaptationSet::class);
+        return parent::postResource($vttRepresentation, $baseUriVttRepresentation, VttRepresentation::class);
     }
 
     /**
