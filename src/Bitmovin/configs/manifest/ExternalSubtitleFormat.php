@@ -19,5 +19,5 @@ class ExternalSubtitleFormat
     /**
      * @var string[]
      */
-    var $subtitleUrls;
+    var $subtitleUrls = array();
 }

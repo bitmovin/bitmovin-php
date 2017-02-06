@@ -9,6 +9,8 @@
 namespace Bitmovin\api\model\manifests\hls;
 
 
+use Bitmovin\api\model\AbstractModel;
+
 class VttMedia extends AbstractModel
 {
     /**
@@ -48,8 +50,8 @@ class VttMedia extends AbstractModel
     private $autoSelect;
 
     /**
-     * @JMS\Type("array")
-     * @var array[string]
+     * @JMS\Type("array<string>")
+     * @var string[]
      */
     private $characteristics;
 

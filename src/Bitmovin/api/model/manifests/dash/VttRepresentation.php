@@ -8,10 +8,13 @@
 
 namespace Bitmovin\api\model\manifests\dash;
 
+use JMS\Serializer\Annotation as JMS;
+
 
 class VttRepresentation
 {
     /**
+     * @JMS\type("string")
      * @var string
      */
     var $vttUrl;
