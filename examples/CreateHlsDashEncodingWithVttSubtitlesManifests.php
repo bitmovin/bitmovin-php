@@ -93,7 +93,7 @@ echo "OK";
 echo "\nEnable hls output and add VTT subtitle...";
 $hlsOutputFormat = new HlsOutputFormat();
 $hlsOutputFormat->vttSubtitles[] = $subTitleFormat;
-$jobConfig->outputFormat[] = new HlsOutputFormat();
+$jobConfig->outputFormat[] = $hlsOutputFormat;
 echo "OK";
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED

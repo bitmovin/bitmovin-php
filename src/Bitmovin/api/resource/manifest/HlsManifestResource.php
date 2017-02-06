@@ -69,10 +69,17 @@ class HlsManifestResource extends AbstractResource
         return parent::postResource($streamInfo, $baseUriEncoding, StreamInfo::class);
     }
 
+    /**
+     * @param HlsManifest $manifest
+     * @param VttMedia $vttMedia
+     * @return VttMedia
+     */
     public function addVttMedia(HlsManifest $manifest, VttMedia $vttMedia)
     {
         $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId());
-        $baseUriEncoding = RouteHelper::buildURI(ApiUrls::MANIFEST_HLS_VTT_MEDIA, $routeReplacementMap);
+        $vttMediaBaseUri = RouteHelper::buildURI(ApiUrls::MANIFEST_HLS_VTT_MEDIA, $routeReplacementMap);
+
+        return parent::postResource($vttMedia, $vttMediaBaseUri, VttMedia::class);
     }
 
 

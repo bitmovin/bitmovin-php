@@ -10,6 +10,7 @@ namespace Bitmovin\api\model\manifests\hls;
 
 
 use Bitmovin\api\model\AbstractModel;
+use JMS\Serializer\Annotation as JMS;
 
 class VttMedia extends AbstractModel
 {
@@ -68,6 +69,7 @@ class VttMedia extends AbstractModel
     private $forced;
 
     /**
+     * @JMS\Type("string")
      * @var string
      */
     private $uri;
