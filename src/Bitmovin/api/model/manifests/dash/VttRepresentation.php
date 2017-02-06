@@ -8,10 +8,10 @@
 
 namespace Bitmovin\api\model\manifests\dash;
 
+use Bitmovin\api\model\AbstractModel;
 use JMS\Serializer\Annotation as JMS;
 
-
-class VttRepresentation
+class VttRepresentation extends AbstractModel
 {
     /**
      * @JMS\type("string")

@@ -83,17 +83,17 @@ class DashManifestResource extends AbstractResource
     public function addSubtitleAdaptationSetToPeriod(DashManifest $manifest, Period $period, SubtitleAdaptationSet $adaptationSet)
     {
         $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_PERIOD_ID => $period->getId());
-        $baseUriEncoding = RouteHelper::buildURI(ApiUrls::MANIFEST_DASH_PERIODS_SUBTITLE_ADAPTATION_SET, $routeReplacementMap);
+        $baseUriSubtitleAdaptationSet = RouteHelper::buildURI(ApiUrls::MANIFEST_DASH_PERIODS_SUBTITLE_ADAPTATION_SET, $routeReplacementMap);
 
-        return parent::postResource($adaptationSet, $baseUriEncoding, SubtitleAdaptationSet::class);
+        return parent::postResource($adaptationSet, $baseUriSubtitleAdaptationSet, SubtitleAdaptationSet::class);
     }
 
     public function addVttRepresentationToSubtitleAdaptationSet(DashManifest $manifest, Period $period, SubtitleAdaptationSet $adaptationSet, VttRepresentation $vttRepresentation)
     {
-        $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_PERIOD_ID => $period->getId());
-        $baseUriEncoding = RouteHelper::buildURI(ApiUrls::MANIFEST_DASH_PERIODS_SUBTITLE_ADAPTATION_SET, $routeReplacementMap);
+        $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_PERIOD_ID => $period->getId(), ApiUrls::PH_ADAPTION_ID => $adaptationSet->getId());
+        $baseUriVttRepresentation = RouteHelper::buildURI(ApiUrls::MANIFEST_DASH_PERIODS_VTT_REPRESENTATION, $routeReplacementMap);
 
-        return parent::postResource($adaptationSet, $baseUriEncoding, SubtitleAdaptationSet::class);
+        return parent::postResource($vttRepresentation, $baseUriVttRepresentation, SubtitleAdaptationSet::class);
     }
 
     /**

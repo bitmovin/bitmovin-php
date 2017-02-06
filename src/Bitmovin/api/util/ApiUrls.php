@@ -83,6 +83,7 @@ final class ApiUrls
     const MANIFEST_DASH_PERIODS_VIDEO_ADAPTION_SET = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/video";
     const MANIFEST_DASH_PERIODS_AUDIO_ADAPTION_SET = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/audio";
     const MANIFEST_DASH_PERIODS_SUBTITLE_ADAPTATION_SET = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/subtitle";
+    const MANIFEST_DASH_PERIODS_VTT_REPRESENTATION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/vtt";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_REPRESENTATION_FMP4 = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/fmp4";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_CONTENT_PROTECTION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/contentprotection";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_REPRESENTATION_FMP4_CONTENT_PROTECTION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/fmp4/{representation_id}/contentprotection";
