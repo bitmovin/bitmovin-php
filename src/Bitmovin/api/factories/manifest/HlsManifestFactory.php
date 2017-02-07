@@ -138,7 +138,12 @@ class HlsManifestFactory
                 $vttMedia->setForced(false);
                 $vttMedia->setName(strtoupper($vttSubtitle->lang));
                 $vttMedia->setVttUrl($vttUrl);
-                $vttMedia->setUri(uniqid("subs") . ".m3u8");
+
+                if(is_string($vttUrl->uri))
+                    $vttMedia->setUri($vttUrl->uri);
+                else
+                    $vttMedia->setUri(uniqid("subs") . ".m3u8");
+
                 $apiClient->manifests()->hls()->addVttMedia($manifest, $vttMedia);
                 $index++;
             }
@@ -210,7 +215,12 @@ class HlsManifestFactory
                 $vttMedia->setForced(false);
                 $vttMedia->setName(strtoupper($vttSubtitle->lang));
                 $vttMedia->setVttUrl($vttUrl);
-                $vttMedia->setUri(uniqid("subs") . ".m3u8");
+
+                if(is_string($vttUrl->uri))
+                    $vttMedia->setUri($vttUrl->uri);
+                else
+                    $vttMedia->setUri(uniqid("subs") . ".m3u8");
+
                 $apiClient->manifests()->hls()->addVttMedia($manifest, $vttMedia);
                 $index++;
             }

@@ -71,6 +71,7 @@ $jobConfig->encodingProfile = $encodingProfileConfig;
 $subTitleFormat = new ExternalSubtitleFormat();
 $subTitleFormat->subtitleUrls[] = "https://path/to/your/subtitle.vtt";
 $subTitleFormat->lang = "english";
+$subTitleFormat->uri = "en_subs.m3u8";
 
 // ENABLE DASH OUTPUT
 $dashOutputFormat = new DashOutputFormat();

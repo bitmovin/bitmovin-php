@@ -11,6 +11,11 @@ class ExternalSubtitleFormat
     var $lang;
 
     /**
+     * @var string
+     */
+    var $uri = null;
+
+    /**
      * @var string[]
      */
     var $subtitleUrls = array();
