@@ -133,7 +133,11 @@ class HlsManifestFactory
     {
         $configurations = self::getConfigurationsForEncoding($encodingContainer, $hlsOutputFormat);
         $audioGroupId = self::getAudioGroupId($configurations);
-        $subtitleGroupId = uniqid();
+
+        if(count($hlsOutputFormat->vttSubtitles) > 0)
+            $subtitleGroupId = uniqid();
+        else
+            $subtitleGroupId = null;
 
         foreach ($configurations as &$codecConfigContainer)
         {
