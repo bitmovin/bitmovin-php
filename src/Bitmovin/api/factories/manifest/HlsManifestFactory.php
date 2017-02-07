@@ -139,7 +139,7 @@ class HlsManifestFactory
                 $vttMedia->setName(strtoupper($vttSubtitle->lang));
                 $vttMedia->setVttUrl($vttInfo->vttUrl);
 
-                if(is_string($vttInfo->m3u8Uri))
+                if(is_string($vttInfo->m3u8Uri) && strlen($vttInfo->m3u8Uri) > 0)
                     $vttMedia->setUri($vttInfo->m3u8Uri);
                 else
                     $vttMedia->setUri(uniqid("subs") . ".m3u8");
@@ -216,7 +216,7 @@ class HlsManifestFactory
                 $vttMedia->setName(strtoupper($vttSubtitle->lang));
                 $vttMedia->setVttUrl($vttInfo->vttUrl);
 
-                if(is_string($vttInfo->m3u8Uri))
+                if(is_string($vttInfo->m3u8Uri) && strlen($vttInfo->m3u8Uri) > 0)
                     $vttMedia->setUri($vttInfo->m3u8Uri);
                 else
                     $vttMedia->setUri(uniqid("subs") . ".m3u8");
