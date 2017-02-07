@@ -3,7 +3,6 @@
 
 namespace Bitmovin\api\model\manifests\dash;
 
-use Bitmovin\api\enum\manifests\dash\Role;
 use Bitmovin\api\model\AbstractModel;
 
 use JMS\Serializer\Annotation as JMS;
