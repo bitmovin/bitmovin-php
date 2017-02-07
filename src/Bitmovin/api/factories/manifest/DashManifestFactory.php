@@ -65,20 +65,17 @@ class DashManifestFactory
             }
         }
 
-        if($dashOutputFormat->vttSubtitles != null)
+        foreach ($dashOutputFormat->vttSubtitles as $vttSubtitle)
         {
-            foreach ($dashOutputFormat->vttSubtitles as $vttSubtitle)
-            {
-                $subtitleAdaptationSet = new SubtitleAdaptationSet();
-                $subtitleAdaptationSet->setLang($vttSubtitle->lang);
-                $subtitleAdaptationSet = $client->manifests()->dash()->addSubtitleAdaptationSetToPeriod($manifest, $period, $subtitleAdaptationSet);
+            $subtitleAdaptationSet = new SubtitleAdaptationSet();
+            $subtitleAdaptationSet->setLang($vttSubtitle->lang);
+            $subtitleAdaptationSet = $client->manifests()->dash()->addSubtitleAdaptationSetToPeriod($manifest, $period, $subtitleAdaptationSet);
 
-                foreach ($vttSubtitle->subtitleUrls as $vttUrl)
-                {
-                    $vttRepresentation = new VttRepresentation();
-                    $vttRepresentation->vttUrl = $vttUrl;
-                    $client->manifests()->dash()->addVttRepresentationToSubtitleAdaptationSet($manifest, $period, $subtitleAdaptationSet, $vttRepresentation);
-                }
+            foreach ($vttSubtitle->subtitleUrls as $vttUrl)
+            {
+                $vttRepresentation = new VttRepresentation();
+                $vttRepresentation->vttUrl = $vttUrl;
+                $client->manifests()->dash()->addVttRepresentationToSubtitleAdaptationSet($manifest, $period, $subtitleAdaptationSet, $vttRepresentation);
             }
         }
     }

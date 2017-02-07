@@ -29,6 +29,6 @@ class DashOutputFormat extends AbstractOutputFormat
     /**
      * @var ExternalSubtitleFormat[]
      */
-    public $vttSubtitles = null;
+    public $vttSubtitles = array();
 
 }
