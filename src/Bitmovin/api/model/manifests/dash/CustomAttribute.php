@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dmoser
- * Date: 03.02.17
- * Time: 11:44
- */
 
 namespace Bitmovin\api\model\manifests\dash;
 

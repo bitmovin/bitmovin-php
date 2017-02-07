@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dmoser
- * Date: 03.02.17
- * Time: 11:31
- */
 
 namespace Bitmovin\api\model\manifests\hls;
 
@@ -156,7 +150,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function getAutoSelect()
     {
@@ -164,7 +158,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @param mixed $autoSelect
+     * @param boolean $autoSelect
      */
     public function setAutoSelect($autoSelect)
     {
@@ -172,7 +166,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @return mixed
+     * @return string[]
      */
     public function getCharacteristics()
     {
@@ -180,7 +174,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @param mixed $characteristics
+     * @param string[] $characteristics
      */
     public function setCharacteristics($characteristics)
     {
@@ -188,7 +182,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getVttUrl()
     {
@@ -196,7 +190,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @param mixed $vttUrl
+     * @param string $vttUrl
      */
     public function setVttUrl($vttUrl)
     {
@@ -204,7 +198,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
     public function getForced()
     {
@@ -212,7 +206,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @param mixed $forced
+     * @param boolean $forced
      */
     public function setForced($forced)
     {
@@ -220,7 +214,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUri()
     {
@@ -228,7 +222,7 @@ class VttMedia extends AbstractModel
     }
 
     /**
-     * @param mixed $uri
+     * @param string $uri
      */
     public function setUri($uri)
     {

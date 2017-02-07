@@ -74,7 +74,7 @@ class DashManifestFactory
             foreach ($vttSubtitle->subtitleUrls as $vttUrl)
             {
                 $vttRepresentation = new VttRepresentation();
-                $vttRepresentation->vttUrl = $vttUrl;
+                $vttRepresentation->setVttUrl($vttUrl);
                 $client->manifests()->dash()->addVttRepresentationToSubtitleAdaptationSet($manifest, $period, $subtitleAdaptationSet, $vttRepresentation);
             }
         }

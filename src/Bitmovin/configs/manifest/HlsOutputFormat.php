@@ -9,5 +9,5 @@ class HlsOutputFormat extends AbstractHlsOutput
     /**
      * @var ExternalSubtitleFormat[]
      */
-    var $vttSubtitles = array();
+    public $vttSubtitles = array();
 }

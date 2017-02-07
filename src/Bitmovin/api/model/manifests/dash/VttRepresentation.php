@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dmoser
- * Date: 03.02.17
- * Time: 14:47
- */
 
 namespace Bitmovin\api\model\manifests\dash;
 
@@ -17,5 +11,23 @@ class VttRepresentation extends AbstractModel
      * @JMS\type("string")
      * @var string
      */
-    var $vttUrl;
+    private $vttUrl;
+
+    /**
+     * @return string
+     */
+    public function getVttUrl()
+    {
+        return $this->vttUrl;
+    }
+
+    /**
+     * @param string $vttUrl
+     */
+    public function setVttUrl($vttUrl)
+    {
+        $this->vttUrl = $vttUrl;
+    }
+
+
 }

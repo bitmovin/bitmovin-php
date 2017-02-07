@@ -23,7 +23,7 @@ class AdaptationSet extends AbstractModel
     private $roles;
 
     /**
-     * @return array
+     * @return CustomAttribute[]
      */
     public function getCustomAttributes()
     {
@@ -31,7 +31,7 @@ class AdaptationSet extends AbstractModel
     }
 
     /**
-     * @param array $customAttributes
+     * @param CustomAttribute[] $customAttributes
      */
     public function setCustomAttributes($customAttributes)
     {
@@ -39,7 +39,7 @@ class AdaptationSet extends AbstractModel
     }
 
     /**
-     * @return array
+     * @return Role[]
      */
     public function getRoles()
     {
@@ -47,7 +47,7 @@ class AdaptationSet extends AbstractModel
     }
 
     /**
-     * @param array $roles
+     * @param Role[] $roles
      */
     public function setRoles($roles)
     {

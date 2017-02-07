@@ -3,6 +3,7 @@
 
 namespace Bitmovin\api\model\manifests\dash;
 
+
 use JMS\Serializer\Annotation as JMS;
 
 class AudioAdaptationSet extends AdaptationSet

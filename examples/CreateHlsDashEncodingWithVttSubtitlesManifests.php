@@ -21,23 +21,18 @@ $videoUrl = 'http://example.com/path/to/your/movie.mp4';
 $input = new HttpInput($videoUrl);
 
 // CREATE OUTPUT CONFIGURATION
-echo "\nCreating output...";
 $gcsAccessKey = 'INSERT_YOUR_ACCESS_KEY';
 $gcsSecretKey = 'INSERT_YOUR_SECRET_KEY';
 $gcsBucketName = 'INSERT_YOUR_BUCKET_NAME';
 $gcsPrefix = 'path/to/your/output/destination/';
 $gcsOutput = new GcsOutput($gcsAccessKey, $gcsSecretKey, $gcsBucketName, $gcsPrefix);
-echo "OK";
 
 // CREATE ENCODING PROFILE
-echo "\nCreating encoding configuration...";
 $encodingProfileConfig = new EncodingProfileConfig();
 $encodingProfileConfig->name = 'Test Encoding FMP4';
 $encodingProfileConfig->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
-echo "OK";
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
-echo "\nCreating video stream configurations...";
 $videoStreamConfig1080 = new H264VideoStreamConfig();
 $videoStreamConfig1080->input = $input;
 $videoStreamConfig1080->width = 1920;
@@ -54,9 +49,7 @@ $videoStreamConfig720->height = 720;
 $videoStreamConfig720->bitrate = 2400000;
 $videoStreamConfig720->rate = 25.0;
 $encodingProfileConfig->videoStreamConfigs[] = $videoStreamConfig720;
-echo "OK";
 
-echo "\nCreating audio configurations";
 // CREATE AUDIO STREAM CONFIG
 $audioStreamConfig = new AudioStreamConfig();
 $audioStreamConfig->input = $input;
@@ -66,7 +59,6 @@ $audioStreamConfig->name = 'English';
 $audioStreamConfig->lang = 'en';
 $audioStreamConfig->position = 1;
 $encodingProfileConfig->audioStreamConfigs[] = $audioStreamConfig;
-echo "OK";
 
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
@@ -76,27 +68,19 @@ $jobConfig->output = $gcsOutput;
 $jobConfig->encodingProfile = $encodingProfileConfig;
 
 // CREATING SUBTITLES
-echo "\nCreating subtitles...";
 $subTitleFormat = new ExternalSubtitleFormat();
 $subTitleFormat->subtitleUrls[] = "https://path/to/your/subtitle.vtt";
 $subTitleFormat->lang = "english";
-echo "OK";
 
 // ENABLE DASH OUTPUT
-echo "\nEnable dash output and add VTT subtitle...";
 $dashOutputFormat = new DashOutputFormat();
 $dashOutputFormat->vttSubtitles[] = $subTitleFormat;
 $jobConfig->outputFormat[] = $dashOutputFormat;
-echo "OK";
 
 // ENABLE HLS OUTPUT
-echo "\nEnable hls output and add VTT subtitle...";
 $hlsOutputFormat = new HlsOutputFormat();
 $hlsOutputFormat->vttSubtitles[] = $subTitleFormat;
 $jobConfig->outputFormat[] = $hlsOutputFormat;
-echo "OK";
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
-echo "\nStarting job and waiting for completion...";
 $jobContainer = $client->runJobAndWaitForCompletion($jobConfig);
-echo "\nJob FINISHED!";
