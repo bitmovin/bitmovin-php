@@ -17,8 +17,8 @@ class AdaptationSet extends AbstractModel
     private $customAttributes;
 
     /**
-     * @JMS\Type("array<Bitmovin\api\enum\AbstractEnum\Role>")
-     * @var Role[]
+     * @JMS\Type("array<string>")
+     * @var string[] Role enum
      */
     private $roles;
 
@@ -39,7 +39,7 @@ class AdaptationSet extends AbstractModel
     }
 
     /**
-     * @return Role[]
+     * @return string[] Role enum
      */
     public function getRoles()
     {
@@ -47,7 +47,7 @@ class AdaptationSet extends AbstractModel
     }
 
     /**
-     * @param Role[] $roles
+     * @param string[] Role enum $roles
      */
     public function setRoles($roles)
     {
