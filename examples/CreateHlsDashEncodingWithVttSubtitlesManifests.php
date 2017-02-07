@@ -8,6 +8,7 @@ use Bitmovin\configs\JobConfig;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\ExternalSubtitleFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
+use Bitmovin\configs\manifest\VttInfo;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\GcsOutput;
@@ -68,10 +69,13 @@ $jobConfig->output = $gcsOutput;
 $jobConfig->encodingProfile = $encodingProfileConfig;
 
 // CREATING SUBTITLES
+$vttInfo = new VttInfo();
+$vttInfo->vttUrl = "https://path/to/your/subtitle.vtt";
+$vttInfo->m3u8Uri = "en_subs.m3u8";
+
 $subTitleFormat = new ExternalSubtitleFormat();
-$subTitleFormat->subtitleUrls[] = "https://path/to/your/subtitle.vtt";
+$subTitleFormat->vttInfos[] = $vttInfo;
 $subTitleFormat->lang = "english";
-$subTitleFormat->uri = "en_subs.m3u8";
 
 // ENABLE DASH OUTPUT
 $dashOutputFormat = new DashOutputFormat();

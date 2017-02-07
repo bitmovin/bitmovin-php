@@ -2,16 +2,15 @@
 
 namespace Bitmovin\configs\manifest;
 
-
-class ExternalSubtitleFormat
+class VttInfo
 {
     /**
      * @var string
      */
-    var $lang;
+    var $vttUrl;
 
     /**
-     * @var VttInfo[]
+     * @var string
      */
-    var $vttInfos = array();
+    var $m3u8Uri = null;
 }

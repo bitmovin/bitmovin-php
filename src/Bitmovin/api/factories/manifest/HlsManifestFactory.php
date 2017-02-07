@@ -128,7 +128,7 @@ class HlsManifestFactory
         foreach ($hlsFMP4Format->vttSubtitles as $vttSubtitle)
         {
             $index = 0;
-            foreach ($vttSubtitle->subtitleUrls as $vttUrl)
+            foreach ($vttSubtitle->vttInfos as $vttInfo)
             {
                 $vttMedia = new VttMedia();
                 $vttMedia->setIsDefault($index == 0);
@@ -137,10 +137,10 @@ class HlsManifestFactory
                 $vttMedia->setLanguage($vttSubtitle->lang);
                 $vttMedia->setForced(false);
                 $vttMedia->setName(strtoupper($vttSubtitle->lang));
-                $vttMedia->setVttUrl($vttUrl);
+                $vttMedia->setVttUrl($vttInfo->vttUrl);
 
-                if(is_string($vttUrl->uri))
-                    $vttMedia->setUri($vttUrl->uri);
+                if(is_string($vttInfo->m3u8Uri))
+                    $vttMedia->setUri($vttInfo->m3u8Uri);
                 else
                     $vttMedia->setUri(uniqid("subs") . ".m3u8");
 
@@ -205,7 +205,7 @@ class HlsManifestFactory
         foreach ($hlsOutputFormat->vttSubtitles as $vttSubtitle)
         {
             $index = 0;
-            foreach ($vttSubtitle->subtitleUrls as $vttUrl)
+            foreach ($vttSubtitle->vttInfos as $vttInfo)
             {
                 $vttMedia = new VttMedia();
                 $vttMedia->setIsDefault($index == 0);
@@ -214,10 +214,10 @@ class HlsManifestFactory
                 $vttMedia->setLanguage($vttSubtitle->lang);
                 $vttMedia->setForced(false);
                 $vttMedia->setName(strtoupper($vttSubtitle->lang));
-                $vttMedia->setVttUrl($vttUrl);
+                $vttMedia->setVttUrl($vttInfo->vttUrl);
 
-                if(is_string($vttUrl->uri))
-                    $vttMedia->setUri($vttUrl->uri);
+                if(is_string($vttInfo->m3u8Uri))
+                    $vttMedia->setUri($vttInfo->m3u8Uri);
                 else
                     $vttMedia->setUri(uniqid("subs") . ".m3u8");
 

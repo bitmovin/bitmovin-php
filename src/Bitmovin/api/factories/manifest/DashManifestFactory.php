@@ -71,10 +71,10 @@ class DashManifestFactory
             $subtitleAdaptationSet->setLang($vttSubtitle->lang);
             $subtitleAdaptationSet = $client->manifests()->dash()->addSubtitleAdaptationSetToPeriod($manifest, $period, $subtitleAdaptationSet);
 
-            foreach ($vttSubtitle->subtitleUrls as $vttUrl)
+            foreach ($vttSubtitle->vttInfos as $vttInfo)
             {
                 $vttRepresentation = new VttRepresentation();
-                $vttRepresentation->setVttUrl($vttUrl);
+                $vttRepresentation->setVttUrl($vttInfo->vttUrl);
                 $client->manifests()->dash()->addVttRepresentationToSubtitleAdaptationSet($manifest, $period, $subtitleAdaptationSet, $vttRepresentation);
             }
         }
