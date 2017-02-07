@@ -1,16 +1,14 @@
 <?php
 
-
 namespace Bitmovin\api\model\manifests\dash;
-
 
 use JMS\Serializer\Annotation as JMS;
 
-class AudioAdaptationSet extends AdaptationSet
+class SubtitleAdaptationSet extends AdaptationSet
 {
     /**
-     * @JMS\Type("string")
-     * @var  string
+     * @JMS\type("string")
+     * @var string
      */
     private $lang;
 
@@ -29,6 +27,4 @@ class AudioAdaptationSet extends AdaptationSet
     {
         $this->lang = $lang;
     }
-
-
 }

@@ -14,6 +14,7 @@ use Bitmovin\api\model\encodings\muxing\TSMuxing;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
+use Bitmovin\api\model\manifests\hls\VttMedia;
 use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\manifest\AbstractHlsOutput;
@@ -83,6 +84,10 @@ class HlsManifestFactory
     {
         $configurations = self::getConfigurationsForEncoding($encodingContainer, $hlsFMP4Format);
         $audioGroupId = self::getAudioGroupId($configurations);
+        $subtitleGroupId = null;
+
+        if(count($hlsFMP4Format->vttSubtitles) > 0)
+            $subtitleGroupId = uniqid();
 
         foreach ($configurations as &$codecConfigContainer)
         {
@@ -98,7 +103,7 @@ class HlsManifestFactory
                     $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsFMP4Format->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null,
-                        $audioGroupId, null, $segmentPath, $manifest, $apiClient);
+                        $audioGroupId, $subtitleGroupId, $segmentPath, $manifest, $apiClient);
                 }
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
@@ -119,6 +124,30 @@ class HlsManifestFactory
                 }
             }
         }
+
+        foreach ($hlsFMP4Format->vttSubtitles as $vttSubtitle)
+        {
+            $index = 0;
+            foreach ($vttSubtitle->vttInfos as $vttInfo)
+            {
+                $vttMedia = new VttMedia();
+                $vttMedia->setIsDefault($index == 0);
+                $vttMedia->setGroupId($subtitleGroupId);
+                $vttMedia->setAssocLanguage($vttSubtitle->lang);
+                $vttMedia->setLanguage($vttSubtitle->lang);
+                $vttMedia->setForced(false);
+                $vttMedia->setName(strtoupper($vttSubtitle->lang));
+                $vttMedia->setVttUrl($vttInfo->vttUrl);
+
+                if(is_string($vttInfo->m3u8Uri) && strlen($vttInfo->m3u8Uri) > 0)
+                    $vttMedia->setUri($vttInfo->m3u8Uri);
+                else
+                    $vttMedia->setUri(uniqid("subs") . ".m3u8");
+
+                $apiClient->manifests()->hls()->addVttMedia($manifest, $vttMedia);
+                $index++;
+            }
+        }
     }
 
     /**
@@ -132,6 +161,10 @@ class HlsManifestFactory
     {
         $configurations = self::getConfigurationsForEncoding($encodingContainer, $hlsOutputFormat);
         $audioGroupId = self::getAudioGroupId($configurations);
+        $subtitleGroupId = null;
+
+        if(count($hlsOutputFormat->vttSubtitles) > 0)
+            $subtitleGroupId = uniqid();
 
         foreach ($configurations as &$codecConfigContainer)
         {
@@ -147,7 +180,7 @@ class HlsManifestFactory
                     $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
                     static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null,
-                        $audioGroupId, null, $segmentPath, $manifest, $apiClient);
+                        $audioGroupId, $subtitleGroupId, $segmentPath, $manifest, $apiClient);
                 }
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
@@ -166,6 +199,30 @@ class HlsManifestFactory
                         $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
                     $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
                 }
+            }
+        }
+
+        foreach ($hlsOutputFormat->vttSubtitles as $vttSubtitle)
+        {
+            $index = 0;
+            foreach ($vttSubtitle->vttInfos as $vttInfo)
+            {
+                $vttMedia = new VttMedia();
+                $vttMedia->setIsDefault($index == 0);
+                $vttMedia->setGroupId($subtitleGroupId);
+                $vttMedia->setAssocLanguage($vttSubtitle->lang);
+                $vttMedia->setLanguage($vttSubtitle->lang);
+                $vttMedia->setForced(false);
+                $vttMedia->setName(strtoupper($vttSubtitle->lang));
+                $vttMedia->setVttUrl($vttInfo->vttUrl);
+
+                if(is_string($vttInfo->m3u8Uri) && strlen($vttInfo->m3u8Uri) > 0)
+                    $vttMedia->setUri($vttInfo->m3u8Uri);
+                else
+                    $vttMedia->setUri(uniqid("subs") . ".m3u8");
+
+                $apiClient->manifests()->hls()->addVttMedia($manifest, $vttMedia);
+                $index++;
             }
         }
     }
