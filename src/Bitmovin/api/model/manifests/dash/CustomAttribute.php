@@ -34,7 +34,7 @@ class CustomAttribute
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getValue()
     {
@@ -42,7 +42,7 @@ class CustomAttribute
     }
 
     /**
-     * @param mixed $value
+     * @param string $value
      */
     public function setValue($value)
     {
