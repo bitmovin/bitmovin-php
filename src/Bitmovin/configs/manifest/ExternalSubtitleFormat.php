@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dmoser
- * Date: 03.02.17
- * Time: 14:38
- */
 
 namespace Bitmovin\configs\manifest;
 
