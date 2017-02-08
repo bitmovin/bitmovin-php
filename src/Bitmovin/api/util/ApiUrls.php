@@ -36,6 +36,7 @@ final class ApiUrls
 
     const ENCODING_STREAMS_SPRITES = "encoding/encodings/{encoding_id}/streams/{stream_id}/sprites";
     const ENCODING_STREAMS_THUMBNAILS = "encoding/encodings/{encoding_id}/streams/{stream_id}/thumbnails";
+    const ENCODING_STREAMS_FILTERS = "encoding/encodings/{encoding_id}/streams/{stream_id}/filters";
 
     const ENCODING_MUXINGS_MP4 = "encoding/encodings/{encoding_id}/muxings/mp4";
     const ENCODING_MUXINGS_FMP4 = "encoding/encodings/{encoding_id}/muxings/fmp4";
@@ -50,6 +51,9 @@ final class ApiUrls
     const ENCODING_MUXINGS_FMP4_DRM_CENC = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}/drm/cenc";
 
     const ENCODING_MUXINGS_MP4_DRM_PLAYREADY = "encoding/encodings/{encoding_id}/muxings/mp4/{muxing_id}/drm/playready";
+
+    const FILTERS = "encoding/filters";
+    const FILTERS_WATERMARK = "encoding/filters/watermark";
 
     const INPUTS = "encoding/inputs";
     const INPUT_RTMP = "encoding/inputs/rtmp";

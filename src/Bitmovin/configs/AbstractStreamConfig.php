@@ -5,6 +5,7 @@ namespace Bitmovin\configs;
 
 
 use Bitmovin\api\enum\SelectionMode;
+use Bitmovin\configs\filter\AbstractFilterConfig;
 use Bitmovin\input\AbstractInput;
 
 abstract class AbstractStreamConfig
@@ -28,10 +29,12 @@ abstract class AbstractStreamConfig
 
     public function __construct()
     {
-        $this->id = uniqid("bitmovin_",true);
+        $this->id = uniqid("bitmovin_", true);
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
+
 }
