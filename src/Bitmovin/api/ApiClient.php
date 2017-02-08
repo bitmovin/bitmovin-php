@@ -3,6 +3,7 @@
 namespace Bitmovin\api;
 
 use Bitmovin\api\resource\container\CodecConfigurationContainer;
+use Bitmovin\api\resource\container\FilterContainer;
 use Bitmovin\api\resource\container\InputContainer;
 use Bitmovin\api\resource\container\ManifestContainer;
 use Bitmovin\api\resource\container\OutputContainer;
@@ -25,6 +26,14 @@ class ApiClient
     public function encodings()
     {
         return new EncodingResource($this->getApiKey());
+    }
+
+    /**
+     * @return FilterContainer
+     */
+    public function filters()
+    {
+        return new FilterContainer($this->getApiKey());
     }
 
     /**

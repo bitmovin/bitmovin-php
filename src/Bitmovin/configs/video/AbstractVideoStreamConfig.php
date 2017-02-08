@@ -5,6 +5,7 @@ namespace Bitmovin\configs\video;
 
 
 use Bitmovin\configs\AbstractStreamConfig;
+use Bitmovin\configs\filter\AbstractFilterConfig;
 use Bitmovin\configs\images\SpriteConfig;
 use Bitmovin\configs\images\ThumbnailConfig;
 
@@ -40,6 +41,11 @@ abstract class AbstractVideoStreamConfig extends AbstractStreamConfig
      * @var SpriteConfig[]
      */
     public $spriteConfigs = array();
+
+    /**
+     * @var AbstractFilterConfig[]
+     */
+    public $filterConfigs = array();
 
     /**
      * AbstractVideoStreamConfig constructor.
