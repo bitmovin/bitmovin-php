@@ -15,6 +15,7 @@ use Bitmovin\api\enum\AclPermission;
 use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\exceptions\BitmovinException;
+use Bitmovin\api\factories\filter\FilterFactory;
 use Bitmovin\api\factories\manifest\DashManifestFactory;
 use Bitmovin\api\factories\manifest\DashProtectedManifestFactory;
 use Bitmovin\api\factories\manifest\HlsManifestFactory;
@@ -49,6 +50,7 @@ use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
 use Bitmovin\configs\TransferConfig;
+use Bitmovin\configs\video\AbstractVideoStreamConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
@@ -335,6 +337,11 @@ class BitmovinClient
                     $codec = $codecConfigContainer->apiCodecConfiguration;
                     $codecConfigContainer->stream = $this->createStream($encodingContainer->encoding, $encodingContainer->apiInput,
                         $encodingContainer->getInputPath(), $codecConfigContainer->codecConfig->position, $codec, $codecConfigContainer->codecConfig->selectionMode);
+                    $configuration = $codecConfigContainer->codecConfig;
+                    if ($configuration instanceof AbstractVideoStreamConfig)
+                    {
+                        FilterFactory::createFilterForStream($encodingContainer->encoding, $codecConfigContainer->stream, $configuration->filterConfigs, $this->apiClient);
+                    }
                 }
                 // Create AAC configurations
                 if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)

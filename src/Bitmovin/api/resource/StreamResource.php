@@ -4,6 +4,7 @@ namespace Bitmovin\api\resource;
 
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\streams\Stream;
+use Bitmovin\api\model\filters\AbstractFilter;
 use Bitmovin\api\resource\encodings\streams\sprites\SpriteResource;
 use Bitmovin\api\resource\encodings\streams\thumbnails\ThumbnailResource;
 use Bitmovin\api\util\ApiUrls;
@@ -40,6 +41,31 @@ class StreamResource extends AbstractResource
     public function thumbnails(Stream $stream)
     {
         return new ThumbnailResource($this->getEncoding(), $stream, parent::getApiKey());
+    }
+
+    /***
+     * @param Stream $stream
+     * @param AbstractFilter[]       $abstractFilters
+     * @internal param string $filterId
+     * @internal param int $position
+     */
+    public function addFilter(Stream $stream, $abstractFilters)
+    {
+        $routeReplacementMap = array(ApiUrls::PH_ENCODING_ID => $this->encoding->getId(), ApiUrls::PH_STREAM_ID => $stream->getId());
+        $baseUriEncoding = RouteHelper::buildURI(ApiUrls::ENCODING_STREAMS_FILTERS, $routeReplacementMap);
+
+        $array = array();
+        $position = 0;
+        foreach ($abstractFilters as $abstractFilter)
+        {
+            $array[] = array(
+                'id' => $abstractFilter->getId(),
+                'position' => $position
+            );
+            $position++;
+        }
+
+        parent::postRequest($baseUriEncoding, json_encode($array));
     }
 
     /**
