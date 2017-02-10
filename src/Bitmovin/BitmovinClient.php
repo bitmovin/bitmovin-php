@@ -60,6 +60,7 @@ use Bitmovin\output\BitmovinAwsOutput;
 use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
+use Bitmovin\output\GenericS3Output;
 use Bitmovin\output\S3Output;
 use Icecave\Parity\Parity;
 
@@ -941,6 +942,10 @@ class BitmovinClient
         else if ($output instanceof S3Output)
         {
             $transferJobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromS3Output($output));
+        }
+        else if ($output instanceof GenericS3Output)
+        {
+            $transferJobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromGenericS3Output($output));
         }
     }
 

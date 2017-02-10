@@ -10,6 +10,7 @@ use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
+use Bitmovin\output\GenericS3Output;
 
 class TransferJobContainer
 {
@@ -32,7 +33,7 @@ class TransferJobContainer
     public function getOutputPath()
     {
         $output = $this->transferConfig->output;
-        if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof AbstractBitmovinOutput)
+        if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof AbstractBitmovinOutput || $output instanceof GenericS3Output)
         {
             $prefix = $this->stripSlashes($output->prefix);
             return $this->addTrailingSlash($prefix);

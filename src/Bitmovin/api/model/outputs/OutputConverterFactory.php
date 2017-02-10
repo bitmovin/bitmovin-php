@@ -31,6 +31,16 @@ class OutputConverterFactory
     }
 
     /**
+     * @param \Bitmovin\output\GenericS3Output $output
+     * @return GenericS3Output
+     */
+    public static function createFromGenericS3Output(\Bitmovin\output\GenericS3Output $output)
+    {
+        $convertedOutput = new GenericS3Output($output->bucket, $output->accessKey, $output->secretKey, $output->host, $output->port);
+        return $convertedOutput;
+    }
+
+    /**
      * @param \Bitmovin\output\FtpOutput $output
      * @return FtpOutput
      */

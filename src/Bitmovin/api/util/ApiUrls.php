@@ -72,6 +72,7 @@ final class ApiUrls
     const OUTPUT_FTP = "encoding/outputs/ftp";
     const OUTPUT_SFTP = "encoding/outputs/sftp";
     const OUTPUT_AZURE = "encoding/outputs/azure";
+    const OUTPUT_GENERIC_S3 = "encoding/outputs/generic-s3";
 
     const OUTPUT_BITMOVIN_AWS = "encoding/outputs/bitmovin/aws";
     const OUTPUT_BITMOVIN_GCP = "encoding/outputs/bitmovin/gcp";
