@@ -79,7 +79,7 @@ $genericS3Port = 50123;
 $genericS3AccessKey = 'YOUR GENERIC S3 ACCESS KEY';
 $genericS3SecretKey = 'YOUR GENERIC S3 SECRET KEY';
 $genericS3bucketName = 'YOUR GENERIC S3 BUCKETNAME';
-$genericS3Prefix = "YOUR/DESTINGATION/PATH/";
+$genericS3Prefix = "path/to/your/destination/";
 
 // CREATE TRANSFER CONFIG
 $transferConfig = new TransferConfig();
