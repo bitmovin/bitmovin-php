@@ -28,13 +28,13 @@ class GenericS3Output extends Output
      * @JMS\Type("string")
      * @var string
      */
-    public $host;
+    private $host;
 
     /**
      * @JMS\Type("integer")
      * @var int
      */
-    public $port;
+    private $port;
 
     /**
      * GenericS3Output constructor.
