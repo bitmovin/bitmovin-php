@@ -54,7 +54,7 @@ class GenericS3Output extends Output
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getBucketName()
     {
@@ -62,7 +62,7 @@ class GenericS3Output extends Output
     }
 
     /**
-     * @param mixed $bucketName
+     * @param string $bucketName
      */
     public function setBucketName($bucketName)
     {
@@ -70,7 +70,7 @@ class GenericS3Output extends Output
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getAccessKey()
     {
@@ -78,7 +78,7 @@ class GenericS3Output extends Output
     }
 
     /**
-     * @param mixed $accessKey
+     * @param string $accessKey
      */
     public function setAccessKey($accessKey)
     {
@@ -86,7 +86,7 @@ class GenericS3Output extends Output
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getSecretKey()
     {
@@ -94,7 +94,7 @@ class GenericS3Output extends Output
     }
 
     /**
-     * @param mixed $secretKey
+     * @param string $secretKey
      */
     public function setSecretKey($secretKey)
     {

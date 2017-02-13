@@ -74,12 +74,12 @@ $jobContainer = $client->runJobAndWaitForCompletion($jobConfig);
 //==================================================================================================================
 
 //TRANSFER OUTPUT CONFIGURATION
-$scalityHost = 's3.yourdomain.com'; /* This can also be an ip address of your host where the scality server is running */
-$scalityPort = 50123; /* The port on which your scality s3 server is listening */
-$scalityAccessKey = 'YOURSCALITYS3ACCESSKEY'; /* This is the access key that is configured either via environment variables or in the scality configuration file. Refer to this guide https://github.com/scality/S3/blob/master/DOCKER.md#access_key-and-secret_key */
-$scalitySecretKey = 'YOURSCALITYS3SECRETKEY'; /* This is the secret key configured */
-$scalityBucketName = 'YOURSCALITYS3BUCKETNAME'; /* The name of the bucket. Make sure you have created this bucket before */
-$scalityPrefix = "path/to/your/destination/"; /* This is the path where your files will be transferred to. Subdirectories will be generated automatically */
+$scalityHost = 's3.yourdomain.com'; // This can also be an ip address of your host where the scality server is running
+$scalityPort = 50123; // The port on which your scality s3 server is listening
+$scalityAccessKey = 'YOURSCALITYS3ACCESSKEY'; // This is the access key that is configured either via environment variables or in the scality configuration file. Refer to this guide https://github.com/scality/S3/blob/master/DOCKER.md#access_key-and-secret_key
+$scalitySecretKey = 'YOURSCALITYS3SECRETKEY'; // This is the secret key configured
+$scalityBucketName = 'YOURSCALITYS3BUCKETNAME'; // The name of the bucket. Make sure you have created this bucket before
+$scalityPrefix = "path/to/your/destination/"; // This is the path where your files will be transferred to. Subdirectories will be generated automatically
 
 // CREATE TRANSFER CONFIG
 $transferConfig = new TransferConfig();
