@@ -207,6 +207,10 @@ class BitmovinClient
         {
             $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromS3Output($output));
         }
+        else if($output instanceof GenericS3Output)
+        {
+            $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromGenericS3Output($output));
+        }
     }
 
     /**

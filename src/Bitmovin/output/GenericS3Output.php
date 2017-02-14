@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dmoser
- * Date: 10.02.17
- * Time: 08:57
- */
 
 namespace Bitmovin\output;
 
