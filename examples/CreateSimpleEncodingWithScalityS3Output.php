@@ -25,7 +25,6 @@ $scalityAccessKey = 'YOURSCALITYS3ACCESSKEY'; // This is the access key that is 
 $scalitySecretKey = 'YOURSCALITYS3SECRETKEY'; // This is the secret key configured
 $scalityBucketName = 'YOURSCALITYS3BUCKETNAME'; // The name of the bucket. Make sure you have created this bucket before
 $scalityPrefix = "path/to/your/destination/"; // This is the path where your files will be transferred to. Subdirectories will be generated automatically
-$scalityOutput = new GenericS3Output($scalityAccessKey, $scalitySecretKey, $scalityHost, $scalityPort, $scalityBucketName, $scalityPrefix);
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
@@ -64,7 +63,7 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 $jobConfig = new JobConfig();
 
 // ASSIGN SCALITY OUTPUT
-$jobConfig->output = $scalityOutput;
+$jobConfig->output = new GenericS3Output($scalityAccessKey, $scalitySecretKey, $scalityHost, $scalityPort, $scalityBucketName, $scalityPrefix);
 $jobConfig->output->prefix = $scalityPrefix;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
