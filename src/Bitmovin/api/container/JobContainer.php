@@ -12,6 +12,7 @@ use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
+use Bitmovin\output\GenericS3Output;
 
 class JobContainer
 {
@@ -109,7 +110,7 @@ class JobContainer
     public function getOutputPath($postfix = '')
     {
         $output = $this->job->output;
-        if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof AbstractBitmovinOutput)
+        if ($output instanceof GcsOutput || $output instanceof S3Output || $output instanceof AbstractBitmovinOutput || $output instanceof GenericS3Output)
         {
             $path = $output->prefix;
             if ($postfix !== null && strlen($postfix) > 0)
