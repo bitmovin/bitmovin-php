@@ -5,12 +5,14 @@ namespace Bitmovin\api\resource\container;
 use Bitmovin\api\model\outputs\AzureOutput;
 use Bitmovin\api\model\outputs\FtpOutput;
 use Bitmovin\api\model\outputs\GcsOutput;
+use Bitmovin\api\model\outputs\GenericS3Output;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\api\model\outputs\S3Output;
 use Bitmovin\api\model\outputs\SftpOutput;
 use Bitmovin\api\resource\outputs\AzureOutputResource;
 use Bitmovin\api\resource\outputs\FtpOutputResource;
 use Bitmovin\api\resource\outputs\GcsOutputResource;
+use Bitmovin\api\resource\outputs\GenericS3OutputResource;
 use Bitmovin\api\resource\outputs\S3OutputResource;
 use Bitmovin\api\resource\outputs\SftpOutputResource;
 use Bitmovin\api\util\ApiUrls;
@@ -27,6 +29,8 @@ class OutputContainer
     private $ftp;
     /** @var  SftpOutputResource */
     private $sftp;
+    /** @var GenericS3OutputResource */
+    private $genericS3;
 
     /** @var  BitmovinOutputContainer */
     private $bitmovin;
@@ -45,6 +49,7 @@ class OutputContainer
         $this->azure = new AzureOutputResource(ApiUrls::OUTPUT_AZURE, AzureOutput::class, $apiKey);
         $this->ftp = new FtpOutputResource(ApiUrls::OUTPUT_FTP, FtpOutput::class, $apiKey);
         $this->sftp = new SftpOutputResource(ApiUrls::OUTPUT_SFTP, SftpOutput::class, $apiKey);
+        $this->genericS3 = new GenericS3OutputResource(ApiUrls::OUTPUT_GENERIC_S3, GenericS3Output::class, $apiKey);
     }
 
 
@@ -77,6 +82,10 @@ class OutputContainer
         if ($output instanceof SftpOutput)
         {
             return $this->sftp()->create($output);
+        }
+        if($output instanceof GenericS3Output)
+        {
+            return $this->genericS3()->create($output);
         }
         throw new \InvalidArgumentException();
     }
@@ -127,6 +136,14 @@ class OutputContainer
     public function sftp()
     {
         return $this->sftp;
+    }
+
+    /**
+     * @return GenericS3OutputResource
+     */
+    public function genericS3()
+    {
+        return $this->genericS3;
     }
 
 }
