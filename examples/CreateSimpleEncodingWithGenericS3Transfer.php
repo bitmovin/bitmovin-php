@@ -20,6 +20,14 @@ $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 // CONFIGURATION
 $videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
 
+//TRANSFER OUTPUT CONFIGURATION
+$genericS3Host = 'YOUR GENERIC S3 HOST';
+$genericS3Port = 50123;
+$genericS3AccessKey = 'YOUR GENERIC S3 ACCESS KEY';
+$genericS3SecretKey = 'YOUR GENERIC S3 SECRET KEY';
+$genericS3bucketName = 'YOUR GENERIC S3 BUCKETNAME';
+$genericS3Prefix = "path/to/your/destination/";
+
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
 $encodingProfile->name = 'Test Encoding';
@@ -72,14 +80,6 @@ $jobConfig->outputFormat[] = new HlsOutputFormat();
 $jobContainer = $client->runJobAndWaitForCompletion($jobConfig);
 
 //==================================================================================================================
-
-//TRANSFER OUTPUT CONFIGURATION
-$genericS3Host = 'YOUR GENERIC S3 HOST';
-$genericS3Port = 50123;
-$genericS3AccessKey = 'YOUR GENERIC S3 ACCESS KEY';
-$genericS3SecretKey = 'YOUR GENERIC S3 SECRET KEY';
-$genericS3bucketName = 'YOUR GENERIC S3 BUCKETNAME';
-$genericS3Prefix = "path/to/your/destination/";
 
 // CREATE TRANSFER CONFIG
 $transferConfig = new TransferConfig();
