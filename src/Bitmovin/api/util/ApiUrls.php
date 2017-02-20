@@ -65,6 +65,7 @@ final class ApiUrls
     const INPUT_SFTP = "encoding/inputs/sftp";
     const INPUT_AZURE = "encoding/inputs/azure";
     const INPUT_ASPERA = "encoding/inputs/aspera";
+    const INPUT_GENERIC_S3 = "encoding/inputs/genericS3";
 
     const OUTPUTS = "encoding/outputs";
     const OUTPUT_S3 = "encoding/outputs/s3";

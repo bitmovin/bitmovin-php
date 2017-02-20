@@ -53,6 +53,7 @@ use Bitmovin\configs\TransferConfig;
 use Bitmovin\configs\video\AbstractVideoStreamConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
+use Bitmovin\input\GenericS3Input;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\output\AbstractBitmovinOutput;
@@ -103,6 +104,10 @@ class BitmovinClient
         else if ($stream->input instanceof RtmpInput)
         {
             return InputConverterFactory::createRtmpInput($this->apiClient);
+        }
+        else if ($stream->input instanceof GenericS3Input)
+        {
+            return InputConverterFactory::createFromGenericS3Input($stream->input);
         }
 
         return null;

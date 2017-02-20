@@ -29,7 +29,7 @@ abstract class InputResource extends AbstractResource
      */
     protected function createInput(Input $input)
     {
-        return $this->createResource($input);
+        return $this->createInput($input);
     }
 
     /**

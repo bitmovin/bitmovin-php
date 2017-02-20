@@ -8,6 +8,10 @@ use Bitmovin\api\ApiClient;
 class InputConverterFactory
 {
 
+    /**
+     * @param \Bitmovin\input\HttpInput $input
+     * @return HttpInput|HttpsInput
+     */
     public static function createFromHttpInput(\Bitmovin\input\HttpInput $input)
     {
         $url = parse_url($input->url);
@@ -40,6 +44,10 @@ class InputConverterFactory
         throw new \InvalidArgumentException();
     }
 
+    /**
+     * @param \Bitmovin\input\FtpInput $input
+     * @return FtpInput
+     */
     public static function createFromFtpInput(\Bitmovin\input\FtpInput $input)
     {
         $url = parse_url($input->url);
@@ -70,6 +78,19 @@ class InputConverterFactory
         throw new \InvalidArgumentException();
     }
 
+    /**
+     * @param \Bitmovin\input\GenericS3Input $input
+     * @return GenericS3Input
+     */
+    public static function createFromGenericS3Input(\Bitmovin\input\GenericS3Input $input)
+    {
+        return new GenericS3Input($input->getBucketName(), $input->getAccessKey(), $input->getSecretKey(), $input->getHost(), $input->getPort());
+    }
+
+    /**
+     * @param ApiClient $client
+     * @return RtmpInput
+     */
     public static function createRtmpInput(ApiClient $client)
     {
         return $client->inputs()->rtmp()->listPage()[0];
