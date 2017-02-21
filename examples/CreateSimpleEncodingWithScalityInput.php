@@ -16,8 +16,6 @@ require_once __DIR__ . "/../vendor/autoload.php";
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
 // CONFIGURATION
-$videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
-
 //INPUT CONFIGURATION
 $scalityInputHost = 's3.yourdomain.com'; // This can also be an ip address of your host where the scality server is running
 $scalityInputPort = 50123; // The port on which your scality s3 server is listening
