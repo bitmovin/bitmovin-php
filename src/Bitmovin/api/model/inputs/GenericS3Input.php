@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: dmoser
- * Date: 20.02.17
- * Time: 18:42
- */
 
 namespace Bitmovin\api\model\inputs;
 
