@@ -20,6 +20,8 @@ use Bitmovin\api\model\encodings\muxing\MuxingStream;
 use Bitmovin\api\model\encodings\muxing\TSMuxing;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\outputs\Output;
+use Bitmovin\configs\AbstractStreamConfig;
+use Bitmovin\configs\manifest\AbstractHlsOutput;
 use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
@@ -178,6 +180,26 @@ class MuxingFactory
     }
 
     /**
+     * @param CodecConfigContainer $codecConfigContainer
+     * @param AbstractHlsOutput    $abstractHlsOutput
+     * @return bool
+     */
+    private static function shouldMuxingForHlsOutputBeCreated(CodecConfigContainer $codecConfigContainer, $abstractHlsOutput)
+    {
+        if ($abstractHlsOutput == null)
+            return false;
+        if ($abstractHlsOutput->includedStreamConfigs == null)
+            return true;
+        /** @var AbstractStreamConfig $streamConfig */
+        foreach ($abstractHlsOutput->includedStreamConfigs as $streamConfig)
+        {
+            if ($codecConfigContainer->codecConfig == $streamConfig)
+                return true;
+        }
+        return false;
+    }
+
+    /**
      * @param JobContainer      $jobContainer
      * @param EncodingContainer $encodingContainer
      * @param ApiClient         $apiClient
@@ -225,7 +247,7 @@ class MuxingFactory
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
             {
                 $stream = $codecConfigContainer->stream;
-                if ($hlsFMP4OutputFormat)
+                if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsFMP4OutputFormat))
                 {
                     $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer, $hlsFMP4OutputFormat),
@@ -249,7 +271,7 @@ class MuxingFactory
                         $codecConfigContainer->muxings[] = $muxing;
                     }
                 }
-                if ($hlsOutputFormat)
+                if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsOutputFormat))
                 {
                     $codecConfigContainer->muxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getHlsVideoOutputPath($jobContainer, $hlsOutputFormat), $apiClient);
@@ -278,7 +300,7 @@ class MuxingFactory
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
             {
                 $stream = $codecConfigContainer->stream;
-                if ($hlsFMP4OutputFormat)
+                if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsFMP4OutputFormat))
                 {
                     $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $hlsFMP4OutputFormat), $apiClient);
@@ -300,7 +322,7 @@ class MuxingFactory
                         $codecConfigContainer->muxings[] = $muxing;
                     }
                 }
-                if ($hlsOutputFormat)
+                if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsOutputFormat))
                 {
                     $codecConfigContainer->muxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getHlsAudioOutputPath($jobContainer, $hlsOutputFormat), $apiClient);
