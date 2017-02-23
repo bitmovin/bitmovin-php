@@ -6,6 +6,7 @@ use Bitmovin\api\model\inputs\AsperaInput;
 use Bitmovin\api\model\inputs\AzureInput;
 use Bitmovin\api\model\inputs\FtpInput;
 use Bitmovin\api\model\inputs\GcsInput;
+use Bitmovin\api\model\inputs\GenericS3Input;
 use Bitmovin\api\model\inputs\HttpInput;
 use Bitmovin\api\model\inputs\HttpsInput;
 use Bitmovin\api\model\inputs\Input;
@@ -16,6 +17,7 @@ use Bitmovin\api\resource\inputs\AsperaInputResource;
 use Bitmovin\api\resource\inputs\AzureInputResource;
 use Bitmovin\api\resource\inputs\FtpInputResource;
 use Bitmovin\api\resource\inputs\GcsInputResource;
+use Bitmovin\api\resource\inputs\GenericS3InputResource;
 use Bitmovin\api\resource\inputs\HttpInputResource;
 use Bitmovin\api\resource\inputs\HttpsInputResource;
 use Bitmovin\api\resource\inputs\RtmpInputResource;
@@ -34,6 +36,7 @@ class InputContainer
     private $rtmp;
     private $ftp;
     private $sftp;
+    private $genericS3;
 
     /**
      * InputContainer constructor.
@@ -51,6 +54,7 @@ class InputContainer
         $this->rtmp = new RtmpInputResource(ApiUrls::INPUT_RTMP, RtmpInput::class, $apiKey);
         $this->s3 = new S3InputResource(ApiUrls::INPUT_S3, S3Input::class, $apiKey);
         $this->sftp = new SftpInputResource(ApiUrls::INPUT_SFTP, SftpInput::class, $apiKey);
+        $this->genericS3 = new GenericS3InputResource(ApiUrls::INPUT_GENERIC_S3, GenericS3Input::class, $apiKey);
     }
 
     /**
@@ -96,6 +100,10 @@ class InputContainer
         {
             return $this->rtmp()->listPage()[0];
         }
+        if ($input instanceof GenericS3Input)
+        {
+            return $this->genericS3()->create($input);
+        }
         throw new \InvalidArgumentException();
     }
 
@@ -129,6 +137,14 @@ class InputContainer
     public function s3()
     {
         return $this->s3;
+    }
+
+    /**
+     * @return GenericS3InputResource
+     */
+    public function genericS3()
+    {
+        return $this->genericS3;
     }
 
     /**

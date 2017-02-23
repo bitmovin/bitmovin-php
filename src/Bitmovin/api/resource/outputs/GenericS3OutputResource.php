@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dmoser
- * Date: 10.02.17
- * Time: 09:29
- */
 
 namespace Bitmovin\api\resource\outputs;
 
