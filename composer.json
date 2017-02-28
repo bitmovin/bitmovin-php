@@ -1,7 +1,7 @@
 {
   "name": "bitmovin/bitmovin-php",
   "description": "PHP-Client which enables you to seamlessly integrate the Bitmovin API into your existing projects",
-  "version": "v1.4.13",
+  "version": "v1.4.14",
   "homepage": "https://bitmovin.com/support",
   "license": "Unlicense",
   "keywords": [
