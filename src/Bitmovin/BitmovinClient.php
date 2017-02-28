@@ -3,7 +3,6 @@
 
 namespace Bitmovin;
 
-
 use Bitmovin\api\ApiClient;
 use Bitmovin\api\container\CodecConfigContainer;
 use Bitmovin\api\container\EncodingContainer;
@@ -63,6 +62,7 @@ use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\GenericS3Output;
 use Bitmovin\output\S3Output;
+use Bitmovin\output\SftpOutput;
 use Icecave\Parity\Parity;
 
 class BitmovinClient
@@ -207,6 +207,10 @@ class BitmovinClient
         else if ($output instanceof FtpOutput)
         {
             $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromFtpOutput($output));
+        }
+        else if ($output instanceof SFtpOutput)
+        {
+            $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromSftpOutput($output));
         }
         else if ($output instanceof S3Output)
         {
@@ -947,6 +951,10 @@ class BitmovinClient
         else if ($output instanceof FtpOutput)
         {
             $transferJobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromFtpOutput($output));
+        }
+        else if ($output instanceof SftpOutput)
+        {
+            $transferJobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromSftpOutput($output));
         }
         else if ($output instanceof S3Output)
         {

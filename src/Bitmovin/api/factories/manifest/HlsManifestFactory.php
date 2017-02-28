@@ -3,6 +3,7 @@
 namespace Bitmovin\api\factories\manifest;
 
 use Bitmovin\api\ApiClient;
+use Bitmovin\api\container\CodecConfigContainer;
 use Bitmovin\api\container\EncodingContainer;
 use Bitmovin\api\container\JobContainer;
 use Bitmovin\api\enum\manifests\hls\MediaInfoType;
@@ -19,6 +20,7 @@ use Bitmovin\configs\AbstractStreamConfig;
 use Bitmovin\configs\audio\AudioStreamConfig;
 use Bitmovin\configs\manifest\AbstractHlsOutput;
 use Bitmovin\configs\manifest\AbstractOutputFormat;
+use Bitmovin\configs\manifest\HlsConfigurationAudioVideoGroup;
 use Bitmovin\configs\manifest\HlsConfigurationFileNaming;
 use Bitmovin\configs\manifest\HlsFMP4OutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
@@ -44,6 +46,7 @@ class HlsManifestFactory
 
     /**
      * @param AudioStreamConfig $config
+     * @param                   $groupId
      * @param                   $encodingId
      * @param                   $streamId
      * @param                   $muxingId
@@ -52,10 +55,10 @@ class HlsManifestFactory
      * @param                   $uri
      * @return MediaInfo
      */
-    private static function getDefaultAudioMediaInfo(AudioStreamConfig $config, $encodingId, $streamId, $muxingId, $drmId, $segmentPath, $uri)
+    private static function getDefaultAudioMediaInfo(AudioStreamConfig $config, $groupId, $encodingId, $streamId, $muxingId, $drmId, $segmentPath, $uri)
     {
         $audioMediaInfo = new MediaInfo();
-        $audioMediaInfo->setGroupId('audio');
+        $audioMediaInfo->setGroupId($groupId);
         $audioMediaInfo->setName($config->name);
         $audioMediaInfo->setUri($uri);
         $audioMediaInfo->setType(MediaInfoType::AUDIO);
@@ -83,10 +86,10 @@ class HlsManifestFactory
     public static function createHlsFMP4ManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient, HlsFMP4OutputFormat $hlsFMP4Format)
     {
         $configurations = self::getConfigurationsForEncoding($encodingContainer, $hlsFMP4Format);
-        $audioGroupId = self::getAudioGroupId($configurations);
+        $audioGroupIds = self::getAudioGroupIds($jobContainer, $hlsFMP4Format);
         $subtitleGroupId = null;
 
-        if(count($hlsFMP4Format->vttSubtitles) > 0)
+        if (count($hlsFMP4Format->vttSubtitles) > 0)
             $subtitleGroupId = uniqid();
 
         foreach ($configurations as &$codecConfigContainer)
@@ -96,14 +99,8 @@ class HlsManifestFactory
                 foreach ($codecConfigContainer->muxings as $muxing)
                 {
                     if (!$muxing instanceof FMP4Muxing)
-                    {
                         continue;
-                    }
-                    $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsFMP4Format);
-                    $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsFMP4Format->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
-                    static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
-                        $codecConfigContainer->stream->getId(), $muxing->getId(), null,
-                        $audioGroupId, $subtitleGroupId, $segmentPath, $manifest, $apiClient);
+                    self::createStreamInfoForVideoConfiguration($jobContainer, $encodingContainer, $manifest, $apiClient, $hlsFMP4Format, $muxing, $codecConfigContainer, $audioGroupIds, $subtitleGroupId);
                 }
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
@@ -111,16 +108,8 @@ class HlsManifestFactory
                 foreach ($codecConfigContainer->muxings as $muxing)
                 {
                     if (!$muxing instanceof FMP4Muxing)
-                    {
                         continue;
-                    }
-                    /** @var AudioStreamConfig $codec */
-                    $codec = $codecConfigContainer->codecConfig;
-                    $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsFMP4Format);
-                    $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsFMP4Format->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
-                    $mediaInfo = static::getDefaultAudioMediaInfo($codec, $encodingContainer->encoding->getId(),
-                        $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
-                    $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
+                    self::createMediaInfoForAudio($jobContainer, $encodingContainer, $manifest, $apiClient, $hlsFMP4Format, $codecConfigContainer, $muxing, $audioGroupIds);
                 }
             }
         }
@@ -139,7 +128,7 @@ class HlsManifestFactory
                 $vttMedia->setName(strtoupper($vttSubtitle->lang));
                 $vttMedia->setVttUrl($vttInfo->vttUrl);
 
-                if(is_string($vttInfo->m3u8Uri) && strlen($vttInfo->m3u8Uri) > 0)
+                if (is_string($vttInfo->m3u8Uri) && strlen($vttInfo->m3u8Uri) > 0)
                     $vttMedia->setUri($vttInfo->m3u8Uri);
                 else
                     $vttMedia->setUri(uniqid("subs") . ".m3u8");
@@ -160,10 +149,10 @@ class HlsManifestFactory
     public static function createHlsManifestForEncoding(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient, HlsOutputFormat $hlsOutputFormat)
     {
         $configurations = self::getConfigurationsForEncoding($encodingContainer, $hlsOutputFormat);
-        $audioGroupId = self::getAudioGroupId($configurations);
+        $audioGroupIds = self::getAudioGroupIds($jobContainer, $hlsOutputFormat);
         $subtitleGroupId = null;
 
-        if(count($hlsOutputFormat->vttSubtitles) > 0)
+        if (count($hlsOutputFormat->vttSubtitles) > 0)
             $subtitleGroupId = uniqid();
 
         foreach ($configurations as &$codecConfigContainer)
@@ -173,14 +162,8 @@ class HlsManifestFactory
                 foreach ($codecConfigContainer->muxings as $muxing)
                 {
                     if (!$muxing instanceof TSMuxing)
-                    {
                         continue;
-                    }
-                    $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsOutputFormat);
-                    $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
-                    static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
-                        $codecConfigContainer->stream->getId(), $muxing->getId(), null,
-                        $audioGroupId, $subtitleGroupId, $segmentPath, $manifest, $apiClient);
+                    self::createStreamInfoForVideoConfiguration($jobContainer, $encodingContainer, $manifest, $apiClient, $hlsOutputFormat, $muxing, $codecConfigContainer, $audioGroupIds, $subtitleGroupId);
                 }
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
@@ -188,16 +171,8 @@ class HlsManifestFactory
                 foreach ($codecConfigContainer->muxings as $muxing)
                 {
                     if (!$muxing instanceof TSMuxing)
-                    {
                         continue;
-                    }
-                    /** @var AudioStreamConfig $codec */
-                    $codec = $codecConfigContainer->codecConfig;
-                    $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsOutputFormat);
-                    $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
-                    $mediaInfo = static::getDefaultAudioMediaInfo($codec, $encodingContainer->encoding->getId(),
-                        $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
-                    $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
+                    self::createMediaInfoForAudio($jobContainer, $encodingContainer, $manifest, $apiClient, $hlsOutputFormat, $codecConfigContainer, $muxing, $audioGroupIds);
                 }
             }
         }
@@ -216,7 +191,7 @@ class HlsManifestFactory
                 $vttMedia->setName(strtoupper($vttSubtitle->lang));
                 $vttMedia->setVttUrl($vttInfo->vttUrl);
 
-                if(is_string($vttInfo->m3u8Uri) && strlen($vttInfo->m3u8Uri) > 0)
+                if (is_string($vttInfo->m3u8Uri) && strlen($vttInfo->m3u8Uri) > 0)
                     $vttMedia->setUri($vttInfo->m3u8Uri);
                 else
                     $vttMedia->setUri(uniqid("subs") . ".m3u8");
@@ -304,20 +279,111 @@ class HlsManifestFactory
     }
 
     /**
-     * @param $configurations
-     * @return string
+     * @param JobContainer      $jobContainer
+     * @param AbstractHlsOutput $output
+     * @return array|null|string
      */
-    private static function getAudioGroupId($configurations)
+    private static function getAudioGroupIds($jobContainer, AbstractHlsOutput $output)
     {
-        $audioGroupId = null;
-        foreach ($configurations as $codecConfigContainer)
+        $configurations = array();
+        foreach ($jobContainer->encodingContainers as $container)
         {
-            if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
+            $configurations = array_merge($configurations, self::getConfigurationsForEncoding($container, $output));
+        }
+        if ($output->audioVideoGroups == null)
+        {
+            $audioGroupId = null;
+            foreach ($configurations as $codecConfigContainer)
             {
-                $audioGroupId = 'audio';
+                if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
+                {
+                    $audioGroupId = 'audio';
+                }
             }
+            return $audioGroupId;
+        }
+        $audioGroupId = array();
+        foreach ($output->audioVideoGroups as $group)
+        {
+            $name = 'audio_' . $group->audioStreams[0]->bitrate;
+            $audioGroupId[$name] = $group;
         }
         return $audioGroupId;
+    }
+
+    /**
+     * @param JobContainer         $jobContainer
+     * @param EncodingContainer    $encodingContainer
+     * @param HlsManifest          $manifest
+     * @param ApiClient            $apiClient
+     * @param AbstractHlsOutput    $hlsOutputFormat
+     * @param AbstractMuxing       $muxing
+     * @param CodecConfigContainer $codecConfigContainer
+     * @param                      $audioGroupIds
+     * @param string               $subtitleGroupId
+     */
+    private static function createStreamInfoForVideoConfiguration(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient, AbstractHlsOutput $hlsOutputFormat, $muxing, $codecConfigContainer, $audioGroupIds, $subtitleGroupId)
+    {
+        $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsOutputFormat);
+        $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
+        if (is_array($audioGroupIds))
+        {
+            /** @var string $groupId */
+            /** @var HlsConfigurationAudioVideoGroup $audioVideoGroup */
+            foreach ($audioGroupIds as $groupId => $audioVideoGroup)
+            {
+                if (in_array($codecConfigContainer->codecConfig, $audioVideoGroup->videoStreams))
+                {
+                    static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
+                        $codecConfigContainer->stream->getId(), $muxing->getId(), null,
+                        $groupId, $subtitleGroupId, $segmentPath, $manifest, $apiClient);
+                }
+            }
+        }
+        else
+        {
+            static::addStreamInfoToHlsManifest($playlistFileName, $encodingContainer->encoding->getId(),
+                $codecConfigContainer->stream->getId(), $muxing->getId(), null,
+                $audioGroupIds, $subtitleGroupId, $segmentPath, $manifest, $apiClient);
+        }
+    }
+
+    /**
+     * @param JobContainer         $jobContainer
+     * @param EncodingContainer    $encodingContainer
+     * @param HlsManifest          $manifest
+     * @param ApiClient            $apiClient
+     * @param AbstractHlsOutput    $hlsOutputFormat
+     * @param CodecConfigContainer $codecConfigContainer
+     * @param AbstractMuxing       $muxing
+     * @param                      $audioGroupIds
+     */
+    private static function createMediaInfoForAudio(JobContainer $jobContainer, EncodingContainer $encodingContainer, HlsManifest $manifest, ApiClient $apiClient, AbstractHlsOutput $hlsOutputFormat, $codecConfigContainer, $muxing, $audioGroupIds)
+    {
+        /** @var AudioStreamConfig $codec */
+        $codec = $codecConfigContainer->codecConfig;
+        $segmentPath = static::createSegmentPath($jobContainer, $muxing, $hlsOutputFormat);
+        $playlistFileName = static::createPlaylistFileName($segmentPath, $hlsOutputFormat->hlsConfigurationFileNaming, $codecConfigContainer->codecConfig);
+        if (is_array($audioGroupIds))
+        {
+            /** @var string $groupId */
+            /** @var HlsConfigurationAudioVideoGroup $audioVideoGroup */
+            foreach ($audioGroupIds as $groupId => $audioVideoGroup)
+            {
+                if (in_array($codecConfigContainer->codecConfig, $audioVideoGroup->audioStreams))
+                {
+                    $mediaInfo = static::getDefaultAudioMediaInfo($codec, $groupId, $encodingContainer->encoding->getId(),
+                        $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
+                    $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
+                }
+            }
+        }
+        else
+        {
+            $mediaInfo = static::getDefaultAudioMediaInfo($codec, $audioGroupIds, $encodingContainer->encoding->getId(),
+                $codecConfigContainer->stream->getId(), $muxing->getId(), null, $segmentPath, $playlistFileName);
+            $apiClient->manifests()->hls()->createMediaInfo($manifest, $mediaInfo);
+        }
     }
 
 }

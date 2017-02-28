@@ -3,7 +3,6 @@
 namespace Bitmovin\api\model\filters;
 
 use Bitmovin\api\model\AbstractModel;
-use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use JMS\Serializer\Annotation as JMS;
 
 class AbstractFilter extends AbstractModel
