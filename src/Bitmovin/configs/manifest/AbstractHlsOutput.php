@@ -23,6 +23,11 @@ abstract class AbstractHlsOutput extends AbstractOutputFormat
     public $hlsConfigurationFileNaming = array();
 
     /**
+     * @var HlsConfigurationAudioVideoGroup[]
+     */
+    public $audioVideoGroups = null;
+
+        /**
      * @var ExternalSubtitleFormat[]
      */
     public $vttSubtitles = array();

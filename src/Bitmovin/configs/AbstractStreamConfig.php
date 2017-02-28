@@ -5,7 +5,6 @@ namespace Bitmovin\configs;
 
 
 use Bitmovin\api\enum\SelectionMode;
-use Bitmovin\configs\filter\AbstractFilterConfig;
 use Bitmovin\input\AbstractInput;
 
 abstract class AbstractStreamConfig
