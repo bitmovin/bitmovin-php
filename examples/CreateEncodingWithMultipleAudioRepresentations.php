@@ -31,28 +31,25 @@ $encodingProfile->encoderVersion = 'STABLE';
 // CREATE VIDEO STREAM CONFIG FOR 1080p
 $videoStreamConfig_1080 = new H264VideoStreamConfig();
 $videoStreamConfig_1080->input = new HttpInput($videoInputPath);
-$videoStreamConfig_1080->width = 1920;
-$videoStreamConfig_1080->height = 816;
+$videoStreamConfig_1080->height = 1080;
 $videoStreamConfig_1080->bitrate = 4800000;
-$videoStreamConfig_1080->rate = 25.0;
+$videoStreamConfig_1080->rate = 24.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
 
 // CREATE VIDEO STREAM CONFIG FOR 720p
 $videoStreamConfig_720 = new H264VideoStreamConfig();
 $videoStreamConfig_720->input = new HttpInput($videoInputPath);
-$videoStreamConfig_720->width = 1280;
-$videoStreamConfig_720->height = 544;
+$videoStreamConfig_720->height = 720;
 $videoStreamConfig_720->bitrate = 2400000;
-$videoStreamConfig_720->rate = 25.0;
+$videoStreamConfig_1080->rate = 24.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
 
 // CREATE VIDEO STREAM CONFIG FOR 480p
 $videoStreamConfig_480 = new H264VideoStreamConfig();
 $videoStreamConfig_480->input = new HttpInput($videoInputPath);
-$videoStreamConfig_480->width = 854;
 $videoStreamConfig_480->height = 480;
 $videoStreamConfig_480->bitrate = 1200000;
-$videoStreamConfig_480->rate = 25.0;
+$videoStreamConfig_1080->rate = 24.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_480;
 
 $audioConfig_128 = new AudioStreamConfig();
