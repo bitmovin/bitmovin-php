@@ -57,4 +57,16 @@ class OutputConverterFactory
         return $convertedOutput;
     }
 
+    /**
+     * @param \Bitmovin\output\SftpOutput $output
+     * @return SftpOutput
+     */
+    public static function createFromSftpOutput(\Bitmovin\output\SftpOutput $output)
+    {
+        $convertedOutput = new SftpOutput($output->host, $output->username, $output->password);
+        $convertedOutput->setPassive($output->passive);
+        $convertedOutput->setPort($output->port);
+        return $convertedOutput;
+    }
+
 }
