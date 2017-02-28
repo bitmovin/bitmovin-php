@@ -13,6 +13,7 @@ use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
 use Bitmovin\output\GenericS3Output;
+use Bitmovin\output\SftpOutput;
 
 class JobContainer
 {
@@ -118,7 +119,7 @@ class JobContainer
             $path = $this->stripSlashes($path);
             return $this->addTrailingSlash($path);
         }
-        else if ($output instanceof FtpOutput)
+        else if ($output instanceof FtpOutput || $output instanceof SftpOutput)
         {
             $path = $output->prefix;
             if ($postfix !== null && strlen($postfix) > 0)

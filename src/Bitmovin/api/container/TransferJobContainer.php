@@ -11,6 +11,7 @@ use Bitmovin\output\FtpOutput;
 use Bitmovin\output\GcsOutput;
 use Bitmovin\output\S3Output;
 use Bitmovin\output\GenericS3Output;
+use Bitmovin\output\SftpOutput;
 
 class TransferJobContainer
 {
@@ -38,7 +39,7 @@ class TransferJobContainer
             $prefix = $this->stripSlashes($output->prefix);
             return $this->addTrailingSlash($prefix);
         }
-        else if ($output instanceof FtpOutput)
+        else if ($output instanceof FtpOutput || $output instanceof SftpOutput)
         {
             $prefix = $this->stripSlashes($output->prefix);
             $prefix = $this->addLeadingSlash($prefix);

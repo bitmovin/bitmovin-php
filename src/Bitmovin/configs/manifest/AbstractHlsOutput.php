@@ -14,6 +14,7 @@ abstract class AbstractHlsOutput extends AbstractOutputFormat
 
     /**
      * @var AbstractStreamConfig[]
+     * @deprecated Please use $audioVideoGroups
      */
     public $includedStreamConfigs = null;
 
