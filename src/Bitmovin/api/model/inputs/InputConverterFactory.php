@@ -79,6 +79,15 @@ class InputConverterFactory
     }
 
     /**
+     * @param \Bitmovin\input\GenericS3Input $input
+     * @return GenericS3Input
+     */
+    public static function createFromGenericS3Input(\Bitmovin\input\GenericS3Input $input)
+    {
+        return new GenericS3Input($input->getBucketName(), $input->getAccessKey(), $input->getSecretKey(), $input->getHost(), $input->getPort());
+    }
+
+    /**
      * @param ApiClient $client
      * @return RtmpInput
      */

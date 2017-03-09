@@ -8,6 +8,7 @@ use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\inputs\Input;
 use Bitmovin\input\AbstractInput;
 use Bitmovin\input\FtpInput;
+use Bitmovin\input\GenericS3Input;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
 use Bitmovin\input\S3Input;
@@ -98,6 +99,10 @@ class EncodingContainer
         if ($this->input instanceof RtmpInput)
         {
             return 'live';
+        }
+        if ($this->input instanceof GenericS3Input)
+        {
+            return $this->input->getPath();
         }
         throw new \InvalidArgumentException();
     }
