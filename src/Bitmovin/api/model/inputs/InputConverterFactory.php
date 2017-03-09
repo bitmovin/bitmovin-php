@@ -96,4 +96,14 @@ class InputConverterFactory
         return $client->inputs()->rtmp()->listPage()[0];
     }
 
+    /**
+     * @param \Bitmovin\input\S3Input $input
+     * @return S3Input
+     */
+    public static function createFromS3Input(\Bitmovin\input\S3Input $input)
+    {
+        $s3Input = new S3Input($input->bucket, $input->accessKey, $input->secretKey);
+        $s3Input->setCloudRegion($input->cloudRegion);
+        return $s3Input;
+    }
 }
