@@ -10,6 +10,7 @@ use Bitmovin\input\AbstractInput;
 use Bitmovin\input\FtpInput;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
+use Bitmovin\input\S3Input;
 
 class EncodingContainer
 {
@@ -51,7 +52,7 @@ class EncodingContainer
 
 
     /**
-     * InputContainer constructor.
+     * EncodingContainer constructor.
      * @param ApiClient     $apiClient
      * @param Input         $apiInput
      * @param AbstractInput $input
@@ -89,6 +90,10 @@ class EncodingContainer
                 $path .= $url['fragment'];
             }
             return $path;
+        }
+        if ($this->input instanceof S3Input)
+        {
+            return $this->input->prefix;
         }
         if ($this->input instanceof RtmpInput)
         {
