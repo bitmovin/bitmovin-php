@@ -54,6 +54,7 @@ final class ApiUrls
 
     const FILTERS = "encoding/filters";
     const FILTERS_WATERMARK = "encoding/filters/watermark";
+    const FILTERS_DEINTERLACE = "encoding/filters/deinterlace";
 
     const INPUTS = "encoding/inputs";
     const INPUT_RTMP = "encoding/inputs/rtmp";

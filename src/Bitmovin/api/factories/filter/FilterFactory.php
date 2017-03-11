@@ -28,8 +28,12 @@ class FilterFactory
         $apiFilters = array();
         foreach ($abstractFilterConfigs as $abstractFilterConfig)
         {
-            if ($abstractFilterConfig instanceof WatermarkFilterConfig)
+            if ($abstractFilterConfig instanceof WatermarkFilterConfig) {
                 $apiFilters[] = self::createWatermarkFilterForStream($abstractFilterConfig, $apiClient);
+            }
+            if ($abstractFilterConfig instanceof DeinterlaceFilterConfig) {
+                $apiFilters[] = self::createDeinterlaceFilterForStream($abstractFilterConfig, $apiClient);
+            }
         }
         if (sizeof($apiFilters) > 0)
             $apiClient->encodings()->streams($encoding)->addFilter($stream, $apiFilters);
@@ -44,6 +48,14 @@ class FilterFactory
         $watermarkFilter->setLeft($watermarkFilterConfig->left);
         $watermarkFilter->setImage($watermarkFilterConfig->image);
         return $apiClient->filters()->watermark()->create($watermarkFilter);
+    }
+
+    private static function createDeinterlaceFilterForStream(DeinterlaceFilterConfig $deinterlaceFilterConfig, ApiClient $apiClient)
+    {
+        $deinterlaceFilter = new WatermarkFilter();
+        $deinterlaceFilter->setMode($deinterlaceFilterConfig->mode);
+        $deinterlaceFilter->setParity($deinterlaceFilterConfig->parity);
+        return $apiClient->filters()->deinterlace()->create($deinterlaceFilter);
     }
 
 }

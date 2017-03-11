@@ -9,6 +9,7 @@ use Bitmovin\api\resource\filters\WatermarkFilterResource;
 class FilterContainer
 {
     private $watermark;
+    private $deinterlace;
 
     /**
      * InputContainer constructor.
@@ -18,6 +19,7 @@ class FilterContainer
     public function __construct($apiKey)
     {
         $this->watermark = new WatermarkFilterResource($apiKey);
+        $this->deinterlace = new DeinterlaceFilterResource($apiKey);
     }
 
     /**
@@ -26,6 +28,14 @@ class FilterContainer
     public function watermark()
     {
         return $this->watermark;
+    }
+
+    /**
+     * @return DeinterlaceFilterResource
+     */
+    public function deinterlace()
+    {
+        return $this->deinterlace;
     }
 
 }
