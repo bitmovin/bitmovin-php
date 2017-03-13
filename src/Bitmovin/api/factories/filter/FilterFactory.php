@@ -9,7 +9,9 @@ use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\filters\AbstractFilter;
 use Bitmovin\api\model\filters\WatermarkFilter;
+use Bitmovin\api\model\filters\DeinterlaceFilter;
 use Bitmovin\configs\filter\WatermarkFilterConfig;
+use Bitmovin\configs\filter\DeinterlaceFilterConfig;
 
 class FilterFactory
 {
@@ -52,7 +54,7 @@ class FilterFactory
 
     private static function createDeinterlaceFilterForStream(DeinterlaceFilterConfig $deinterlaceFilterConfig, ApiClient $apiClient)
     {
-        $deinterlaceFilter = new WatermarkFilter();
+        $deinterlaceFilter = new DeinterlaceFilter();
         $deinterlaceFilter->setMode($deinterlaceFilterConfig->mode);
         $deinterlaceFilter->setParity($deinterlaceFilterConfig->parity);
         return $apiClient->filters()->deinterlace()->create($deinterlaceFilter);

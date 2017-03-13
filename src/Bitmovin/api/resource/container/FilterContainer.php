@@ -5,6 +5,7 @@ namespace Bitmovin\api\resource\container;
 
 
 use Bitmovin\api\resource\filters\WatermarkFilterResource;
+use Bitmovin\api\resource\filters\DeinterlaceFilterResource;
 
 class FilterContainer
 {

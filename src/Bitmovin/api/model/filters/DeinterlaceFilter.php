@@ -4,7 +4,7 @@ namespace Bitmovin\api\model\filters;
 
 use JMS\Serializer\Annotation as JMS;
 
-class WatermarkFilter extends AbstractFilter
+class DeinterlaceFilter extends AbstractFilter
 {
 
     /**
