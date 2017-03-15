@@ -10,8 +10,12 @@ use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\filters\AbstractFilter;
 use Bitmovin\api\model\filters\WatermarkFilter;
 use Bitmovin\api\model\filters\DeinterlaceFilter;
+use Bitmovin\api\model\filters\CropFilter;
+use Bitmovin\api\model\filters\RotateFilter;
 use Bitmovin\configs\filter\WatermarkFilterConfig;
 use Bitmovin\configs\filter\DeinterlaceFilterConfig;
+use Bitmovin\configs\filter\CropFilterConfig;
+use Bitmovin\configs\filter\RotateFilterConfig;
 
 class FilterFactory
 {
@@ -36,6 +40,12 @@ class FilterFactory
             if ($abstractFilterConfig instanceof DeinterlaceFilterConfig) {
                 $apiFilters[] = self::createDeinterlaceFilterForStream($abstractFilterConfig, $apiClient);
             }
+            if ($abstractFilterConfig instanceof CropFilterConfig) {
+                $apiFilters[] = self::createCropFilterForStream($abstractFilterConfig, $apiClient);
+            }
+            if ($abstractFilterConfig instanceof RotateFilterConfig) {
+                $apiFilters[] = self::createRotateFilterForStream($abstractFilterConfig, $apiClient);
+            }
         }
         if (sizeof($apiFilters) > 0)
             $apiClient->encodings()->streams($encoding)->addFilter($stream, $apiFilters);
@@ -58,6 +68,23 @@ class FilterFactory
         $deinterlaceFilter->setMode($deinterlaceFilterConfig->mode);
         $deinterlaceFilter->setParity($deinterlaceFilterConfig->parity);
         return $apiClient->filters()->deinterlace()->create($deinterlaceFilter);
+    }
+
+    private static function createCropFilterForStream(CropFilterConfig $cropFilterConfig, ApiClient $apiClient)
+    {
+        $cropFilter = new CropFilter();
+        $cropFilter->setBottom($cropFilterConfig->bottom);
+        $cropFilter->setTop($cropFilterConfig->top);
+        $cropFilter->setRight($cropFilterConfig->right);
+        $cropFilter->setLeft($cropFilterConfig->left);
+        return $apiClient->filters()->crop()->create($cropFilter);
+    }
+
+    private static function createRotateFilterForStream(RotateFilterConfig $rotateFilterConfig, ApiClient $apiClient)
+    {
+        $rotateFilter = new RotateFilter();
+        $rotateFilter->setRotation($rotateFilterConfig->rotation);
+        return $apiClient->filters()->rotate()->create($rotateFilter);
     }
 
 }
