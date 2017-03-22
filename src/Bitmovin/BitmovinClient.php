@@ -275,6 +275,7 @@ class BitmovinClient
             $encoding->setEncoderVersion($jobContainer->job->encodingProfile->encoderVersion);
             $encoding->setCloudRegion($jobContainer->job->encodingProfile->cloudRegion);
             $encoding->setDescription($jobContainer->job->encodingProfile->name);
+            $encoding->setInfrastructureId($jobContainer->job->encodingProfile->infrastructureId);
             $encodingContainer->encoding = $this->apiClient->encodings()->create($encoding);
         }
     }

@@ -22,6 +22,7 @@ class CloudRegion
     const GOOGLE_US_EAST_1 = 'GOOGLE_US_EAST_1';
     const GOOGLE_US_CENTRAL_1 = 'GOOGLE_US_CENTRAL_1';
     const GOOGLE_ASIA_EAST_1 = 'GOOGLE_ASIA_EAST_1';
+    const KUBERNETES = 'KUBERNETES';
 
     /**
      * @return array(string)

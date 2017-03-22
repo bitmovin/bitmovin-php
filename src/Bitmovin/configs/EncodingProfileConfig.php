@@ -15,6 +15,11 @@ class EncodingProfileConfig
      */
     public $name;
 
+    /**
+     * @var string
+     */
+    public $infrastructureId;
+
     /** @var  string */
     public $encoderVersion;
 

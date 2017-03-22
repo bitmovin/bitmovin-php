@@ -246,12 +246,14 @@ class MuxingFactory
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
             {
+                $fmp4MuxingCreated = false;
                 $stream = $codecConfigContainer->stream;
                 if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsFMP4OutputFormat))
                 {
-                    $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
+                    $codecConfigContainer->muxings[] = $codecConfigContainer->hlsMuxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer, $hlsFMP4OutputFormat),
                         $apiClient);
+                    $fmp4MuxingCreated = true;
                 }
                 if ($dashOutputFormat)
                 {
@@ -261,7 +263,7 @@ class MuxingFactory
                             $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer, $dashOutputFormat),
                             $apiClient);
                     }
-                    else
+                    else if (!$fmp4MuxingCreated)
                     {
                         $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                             null, null, $apiClient);
@@ -273,7 +275,7 @@ class MuxingFactory
                 }
                 if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsOutputFormat))
                 {
-                    $codecConfigContainer->muxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
+                    $codecConfigContainer->muxings[] = $codecConfigContainer->hlsMuxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getHlsVideoOutputPath($jobContainer, $hlsOutputFormat), $apiClient);
                 }
                 if ($smoothStreamingOutputFormat)
@@ -299,11 +301,13 @@ class MuxingFactory
 
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
             {
+                $fmp4MuxingCreated = false;
                 $stream = $codecConfigContainer->stream;
                 if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsFMP4OutputFormat))
                 {
-                    $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
+                    $codecConfigContainer->muxings[] = $codecConfigContainer->hlsMuxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $hlsFMP4OutputFormat), $apiClient);
+                    $fmp4MuxingCreated = true;
                 }
                 if ($dashOutputFormat)
                 {
@@ -312,7 +316,7 @@ class MuxingFactory
                         $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                             $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $dashOutputFormat), $apiClient);
                     }
-                    else
+                    else if (!$fmp4MuxingCreated)
                     {
                         $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                             null, null, $apiClient);
@@ -324,7 +328,7 @@ class MuxingFactory
                 }
                 if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsOutputFormat))
                 {
-                    $codecConfigContainer->muxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
+                    $codecConfigContainer->muxings[] = $codecConfigContainer->hlsMuxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
                         $jobContainer->apiOutput, $codecConfigContainer->getHlsAudioOutputPath($jobContainer, $hlsOutputFormat), $apiClient);
                 }
                 if ($smoothStreamingOutputFormat)
