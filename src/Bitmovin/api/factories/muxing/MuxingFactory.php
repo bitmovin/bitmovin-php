@@ -259,11 +259,14 @@ class MuxingFactory
                 {
                     if ($dashOutputFormat->cenc == null)
                     {
-                        $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer, $dashOutputFormat),
-                            $apiClient);
+                        if (!$fmp4MuxingCreated)
+                        {
+                            $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
+                                $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer, $dashOutputFormat),
+                                $apiClient);
+                        }
                     }
-                    else if (!$fmp4MuxingCreated)
+                    else
                     {
                         $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                             null, null, $apiClient);
@@ -313,10 +316,13 @@ class MuxingFactory
                 {
                     if ($dashOutputFormat->cenc == null)
                     {
-                        $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                            $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $dashOutputFormat), $apiClient);
+                        if (!$fmp4MuxingCreated)
+                        {
+                            $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
+                                $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $dashOutputFormat), $apiClient);
+                        }
                     }
-                    else if (!$fmp4MuxingCreated)
+                    else
                     {
                         $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                             null, null, $apiClient);
