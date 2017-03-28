@@ -627,6 +627,8 @@ class BitmovinClient
         }
 
         $this->runHlsFmp4Creation($manifest, $hlsOutputFormat);
+        $jobContainer->manifestContainers[] = new ManifestContainer($this->apiClient, $manifest);
+
         return $hlsOutputFormat->status;
     }
 
