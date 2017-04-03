@@ -4,10 +4,13 @@ namespace Bitmovin\api\resource;
 
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\helper\LiveEncodingDetails;
+use Bitmovin\api\model\encodings\LiveDashManifest;
+use Bitmovin\api\model\encodings\StartLiveEncodingRequest;
 use Bitmovin\api\model\Status;
 use Bitmovin\api\resource\encodings\streams\muxings\MuxingContainer;
 use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\RouteHelper;
+use JMS\Serializer\SerializerBuilder;
 
 class EncodingResource extends AbstractResource
 {
@@ -100,6 +103,18 @@ class EncodingResource extends AbstractResource
         $baseUriEncoding = RouteHelper::buildURI(ApiUrls::ENCODING_START_LIVE, $routeReplacementMap);
 
         parent::postRequest($baseUriEncoding, json_encode(array("streamKey" => $streamKey)));
+    }
+
+    /***
+     * @param Encoding                 $encoding
+     * @param StartLiveEncodingRequest $startLiveEncodingRequest
+     */
+    public function startLivestreamWithManifests(Encoding $encoding, $startLiveEncodingRequest)
+    {
+        $routeReplacementMap = array(ApiUrls::PH_ENCODING_ID => $encoding->getId());
+        $baseUriEncoding = RouteHelper::buildURI(ApiUrls::ENCODING_START_LIVE, $routeReplacementMap);
+
+        parent::postCustomModel($baseUriEncoding, $startLiveEncodingRequest);
     }
 
     /**
