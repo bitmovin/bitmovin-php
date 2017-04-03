@@ -62,6 +62,19 @@ abstract class AbstractResource extends AbstractHttpClient
         return $this->apiKey;
     }
 
+    protected function postCustomModel($uri, $model)
+    {
+        try
+        {
+            $jsonString = $this->getSerializer()->serialize($model, 'json');
+            $this->postRequest($uri, $jsonString);
+        }
+        catch (BitmovinException $e)
+        {
+            throw $this->updateException($e);
+        }
+    }
+
     /**
      * @param ModelInterface $model
      * @param string         $uri
