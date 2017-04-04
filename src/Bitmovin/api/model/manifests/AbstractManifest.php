@@ -3,12 +3,19 @@
 namespace Bitmovin\api\model\manifests;
 
 use Bitmovin\api\model\AbstractModel;
+use Bitmovin\api\model\connection\ResponseEnvelope;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\Transferable;
 use JMS\Serializer\Annotation as JMS;
 
 class AbstractManifest extends AbstractModel implements Transferable
 {
+    /**
+     * @JMS\Type("string")
+     * @var  string
+     */
+    private $name;
+
     /**
      * @JMS\Type("string")
      * @var  string
@@ -26,6 +33,22 @@ class AbstractManifest extends AbstractModel implements Transferable
      * @var  EncodingOutput[]
      */
     private $outputs;
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 
     /**
      * @return string
