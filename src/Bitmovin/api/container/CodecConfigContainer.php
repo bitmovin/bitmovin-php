@@ -39,6 +39,10 @@ class CodecConfigContainer
     /**
      * @var AbstractMuxing[]
      */
+    public $hlsMuxings = array();
+    /**
+     * @var AbstractMuxing[]
+     */
     public $muxings = array();
     /**
      * @var Thumbnail[]

@@ -52,8 +52,10 @@ use Bitmovin\configs\TransferConfig;
 use Bitmovin\configs\video\AbstractVideoStreamConfig;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\FtpInput;
+use Bitmovin\input\GenericS3Input;
 use Bitmovin\input\HttpInput;
 use Bitmovin\input\RtmpInput;
+use Bitmovin\input\S3Input;
 use Bitmovin\output\AbstractBitmovinOutput;
 use Bitmovin\output\BitmovinAwsOutput;
 use Bitmovin\output\BitmovinGcpOutput;
@@ -103,6 +105,14 @@ class BitmovinClient
         else if ($stream->input instanceof RtmpInput)
         {
             return InputConverterFactory::createRtmpInput($this->apiClient);
+        }
+        else if ($stream->input instanceof GenericS3Input)
+        {
+            return InputConverterFactory::createFromGenericS3Input($stream->input);
+        }
+        else if ($stream->input instanceof S3Input)
+        {
+            return InputConverterFactory::createFromS3Input($stream->input);
         }
 
         return null;
@@ -203,7 +213,7 @@ class BitmovinClient
         {
             $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromFtpOutput($output));
         }
-        else if ($output instanceof SFtpOutput)
+        else if ($output instanceof SftpOutput)
         {
             $jobContainer->apiOutput = $this->apiClient->outputs()->create(OutputConverterFactory::createFromSftpOutput($output));
         }
@@ -265,6 +275,7 @@ class BitmovinClient
             $encoding->setEncoderVersion($jobContainer->job->encodingProfile->encoderVersion);
             $encoding->setCloudRegion($jobContainer->job->encodingProfile->cloudRegion);
             $encoding->setDescription($jobContainer->job->encodingProfile->name);
+            $encoding->setInfrastructureId($jobContainer->job->encodingProfile->infrastructureId);
             $encodingContainer->encoding = $this->apiClient->encodings()->create($encoding);
         }
     }
@@ -630,6 +641,8 @@ class BitmovinClient
         }
 
         $this->runHlsFmp4Creation($manifest, $hlsOutputFormat);
+        $jobContainer->manifestContainers[] = new ManifestContainer($this->apiClient, $manifest);
+
         return $hlsOutputFormat->status;
     }
 

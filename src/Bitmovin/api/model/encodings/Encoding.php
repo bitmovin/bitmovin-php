@@ -30,6 +30,12 @@ class Encoding extends AbstractModel implements Transferable
      * @JMS\Type("string")
      * @var string
      */
+    private $infrastructureId;
+
+    /**
+     * @JMS\Type("string")
+     * @var string
+     */
     private $cloudRegion;
 
     public function __construct($name)
@@ -99,6 +105,22 @@ class Encoding extends AbstractModel implements Transferable
     public function setCloudRegion($cloudRegion)
     {
         $this->cloudRegion = $cloudRegion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInfrastructureId()
+    {
+        return $this->infrastructureId;
+    }
+
+    /**
+     * @param string $infrastructureId
+     */
+    public function setInfrastructureId($infrastructureId)
+    {
+        $this->infrastructureId = $infrastructureId;
     }
 
 }
