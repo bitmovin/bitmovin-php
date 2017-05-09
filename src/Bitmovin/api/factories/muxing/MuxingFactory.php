@@ -150,11 +150,12 @@ class MuxingFactory
      * @param Output    $output
      * @param           $outputPath
      * @param ApiClient $apiClient
+     * @param float     $segmentLength
      *
      * @return TSMuxing
      * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    private static function createTSMuxing(Encoding $encoding, Stream $stream, Output $output, $outputPath, ApiClient $apiClient)
+    private static function createTSMuxing(Encoding $encoding, Stream $stream, Output $output, $outputPath, ApiClient $apiClient, $segmentLength = 4.0)
     {
         $encodingOutput = null;
         if ($output != null && $outputPath != null)
@@ -171,7 +172,7 @@ class MuxingFactory
             $muxing->setOutputs([$encodingOutput]);
         }
         $muxing->setSegmentNaming("segment_%number%.ts");
-        $muxing->setSegmentLength(4.0);
+        $muxing->setSegmentLength($segmentLength);
         $streamMuxing = new MuxingStream();
         $streamMuxing->setStreamId($stream->getId());
         $muxing->setStreams([$streamMuxing]);
@@ -278,8 +279,9 @@ class MuxingFactory
                 }
                 if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsOutputFormat))
                 {
+                    $segmentLength = is_numeric($hlsOutputFormat->segmentLength) ? $hlsOutputFormat->segmentLength : 4.0;
                     $codecConfigContainer->muxings[] = $codecConfigContainer->hlsMuxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
-                        $jobContainer->apiOutput, $codecConfigContainer->getHlsVideoOutputPath($jobContainer, $hlsOutputFormat), $apiClient);
+                        $jobContainer->apiOutput, $codecConfigContainer->getHlsVideoOutputPath($jobContainer, $hlsOutputFormat), $apiClient, $segmentLength);
                 }
                 if ($smoothStreamingOutputFormat)
                 {
@@ -334,8 +336,9 @@ class MuxingFactory
                 }
                 if (self::shouldMuxingForHlsOutputBeCreated($codecConfigContainer, $hlsOutputFormat))
                 {
+                    $segmentLength = is_numeric($hlsOutputFormat->segmentLength) ? $hlsOutputFormat->segmentLength : 4.0;
                     $codecConfigContainer->muxings[] = $codecConfigContainer->hlsMuxings[] = static::createTSMuxing($encodingContainer->encoding, $stream,
-                        $jobContainer->apiOutput, $codecConfigContainer->getHlsAudioOutputPath($jobContainer, $hlsOutputFormat), $apiClient);
+                        $jobContainer->apiOutput, $codecConfigContainer->getHlsAudioOutputPath($jobContainer, $hlsOutputFormat), $apiClient, $segmentLength);
                 }
                 if ($smoothStreamingOutputFormat)
                 {
