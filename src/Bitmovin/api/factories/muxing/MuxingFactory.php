@@ -41,7 +41,7 @@ class MuxingFactory
      * @return FMP4Muxing
      * @throws \Bitmovin\api\exceptions\BitmovinException
      */
-    private static function createFMP4Muxing(Encoding $encoding, Stream $stream, $output, $outputPath, ApiClient $apiClient)
+    private static function createFMP4Muxing(Encoding $encoding, Stream $stream, $output, $outputPath, ApiClient $apiClient, $segmentLength = 4.0)
     {
         $encodingOutput = null;
         if ($output != null && $outputPath != null)
@@ -58,7 +58,7 @@ class MuxingFactory
             $muxing->setOutputs([$encodingOutput]);
         }
         $muxing->setSegmentNaming("segment_%number%.m4s");
-        $muxing->setSegmentLength(4.0);
+        $muxing->setSegmentLength($segmentLength);
         $muxing->setInitSegmentName("init.mp4");
         $streamMuxing = new MuxingStream();
         $streamMuxing->setStreamId($stream->getId());
@@ -258,19 +258,20 @@ class MuxingFactory
                 }
                 if ($dashOutputFormat)
                 {
+                    $segmentLength = is_numeric($dashOutputFormat->segmentLength) ? $dashOutputFormat->segmentLength : 4.0;
                     if ($dashOutputFormat->cenc == null)
                     {
                         if (!$fmp4MuxingCreated)
                         {
                             $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
                                 $jobContainer->apiOutput, $codecConfigContainer->getDashVideoOutputPath($jobContainer, $dashOutputFormat),
-                                $apiClient);
+                                $apiClient, $segmentLength);
                         }
                     }
                     else
                     {
                         $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                            null, null, $apiClient);
+                            null, null, $apiClient, $segmentLength);
                         $muxing->addDrm(DashProtectedManifestFactory::addCencDrmToFmp4Muxing($encodingContainer->encoding, $muxing,
                             $dashOutputFormat->cenc, $jobContainer->apiOutput, $codecConfigContainer->getDashCencVideoOutputPath($jobContainer, $dashOutputFormat),
                             $apiClient));
@@ -316,18 +317,19 @@ class MuxingFactory
                 }
                 if ($dashOutputFormat)
                 {
+                    $segmentLength = is_numeric($dashOutputFormat->segmentLength) ? $dashOutputFormat->segmentLength : 4.0;
                     if ($dashOutputFormat->cenc == null)
                     {
                         if (!$fmp4MuxingCreated)
                         {
                             $codecConfigContainer->muxings[] = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                                $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $dashOutputFormat), $apiClient);
+                                $jobContainer->apiOutput, $codecConfigContainer->getDashAudioOutputPath($jobContainer, $dashOutputFormat), $apiClient,$segmentLength);
                         }
                     }
                     else
                     {
                         $muxing = static::createFMP4Muxing($encodingContainer->encoding, $stream,
-                            null, null, $apiClient);
+                            null, null, $apiClient,$segmentLength);
                         $muxing->addDrm(DashProtectedManifestFactory::addCencDrmToFmp4Muxing($encodingContainer->encoding, $muxing,
                             $dashOutputFormat->cenc, $jobContainer->apiOutput, $codecConfigContainer->getDashCencAudioOutputPath($jobContainer, $dashOutputFormat),
                             $apiClient));
