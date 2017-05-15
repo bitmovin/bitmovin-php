@@ -304,6 +304,20 @@ class BitmovinClient
                     $config->setDescription($name);
                     $config->setWidth($codec->width);
                     $config->setHeight($codec->height);
+                    $config->setBFrames($codec->bFrames);
+                    $config->setRefFrames($codec->refFrames);
+                    $config->setQpMin($codec->qpMin);
+                    $config->setQpMax($codec->qpMax);
+                    $config->setMvPredictionMode($codec->mvPredictionMode);
+                    $config->setMvSearchRangeMax($codec->mvSearchRangeMax);
+                    $config->setCabac($codec->cabac);
+                    $config->setMinBitrate($codec->minBitrate);
+                    $config->setMaxBitrate($codec->maxBitrate);
+                    $config->setBufsize($codec->bufsize);
+                    $config->setMinGop($codec->minGop);
+                    $config->setMaxGop($codec->maxGop);
+                    $config->setLevel($codec->level);
+
                     $codecConfigContainer->apiCodecConfiguration = $this->apiClient->codecConfigurations()->videoH264()->create($config);
                 }
                 if ($codecConfigContainer->codecConfig instanceof AudioStreamConfig)
