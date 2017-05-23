@@ -22,23 +22,23 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 // INPUT INFORMATION FROM LIVE STREAM
 $encoding_id = 'COPY AND PASTE';
+$stream_audio_id = 'COPY AND PASTE';
+$stream_1080p_id = 'COPY AND PASTE';
+$stream_720p_id = 'COPY AND PASTE';
+$stream_480p_id = 'COPY AND PASTE';
+$stream_360_id = 'COPY AND PASTE';
+$stream_240_id = 'COPY AND PASTE';
 $fmp4_muxing_audio_id = 'COPY AND PASTE';
 $fmp4_muxing_1080p_id = 'COPY AND PASTE';
 $fmp4_muxing_720p_id = 'COPY AND PASTE';
 $fmp4_muxing_480p_id = 'COPY AND PASTE';
 $fmp4_muxing_360p_id = 'COPY AND PASTE';
 $fmp4_muxing_240p_id = 'COPY AND PASTE';
-$ts_stream_audio_id = 'COPY AND PASTE';
 $ts_muxing_audio_id = 'COPY AND PASTE';
-$ts_stream_1080p_id = 'COPY AND PASTE';
 $ts_muxing_1080p_id = 'COPY AND PASTE';
-$ts_stream_720p_id = 'COPY AND PASTE';
 $ts_muxing_720p_id = 'COPY AND PASTE';
-$ts_stream_480p_id = 'COPY AND PASTE';
 $ts_muxing_480p_id = 'COPY AND PASTE';
-$ts_stream_360_id = 'COPY AND PASTE';
 $ts_muxing_360_id = 'COPY AND PASTE';
-$ts_stream_240_id = 'COPY AND PASTE';
 $ts_muxing_240_id = 'COPY AND PASTE';
 
 // Set the start segment number. If it is set to null the first segment is taken as start segment
@@ -148,7 +148,7 @@ $mediaInfo->setUri('audio_vod.m3u8');
 $mediaInfo->setType(MediaInfoType::AUDIO);
 $mediaInfo->setSegmentPath('audio/128kbps_hls/');
 $mediaInfo->setMuxingId($ts_muxing_audio_id);
-$mediaInfo->setStreamId($ts_stream_audio_id);
+$mediaInfo->setStreamId($stream_audio_id);
 $mediaInfo->setEncodingId($encoding_id);
 $mediaInfo->setLanguage('en');
 $mediaInfo->setAssocLanguage('en');
@@ -162,7 +162,7 @@ $mediaInfo = $apiClient->manifests()->hls()->createMediaInfo($hlsManifest, $medi
 $streamInfo_240p = new StreamInfo();
 $streamInfo_240p->setUri('video_240p_vod.m3u8');
 $streamInfo_240p->setEncodingId($encoding_id);
-$streamInfo_240p->setStreamId($ts_stream_240_id);
+$streamInfo_240p->setStreamId($stream_240_id);
 $streamInfo_240p->setMuxingId($ts_muxing_240_id);
 $streamInfo_240p->setAudio('audio');
 $streamInfo_240p->setSegmentPath('video/240p_hls');
@@ -173,7 +173,7 @@ $streamInfo_240p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest
 $streamInfo_360p = new StreamInfo();
 $streamInfo_360p->setUri('video_360p_vod.m3u8');
 $streamInfo_360p->setEncodingId($encoding_id);
-$streamInfo_360p->setStreamId($ts_stream_360_id);
+$streamInfo_360p->setStreamId($stream_360_id);
 $streamInfo_360p->setMuxingId($ts_muxing_360_id);
 $streamInfo_360p->setAudio('audio');
 $streamInfo_360p->setSegmentPath('video/360p_hls');
@@ -184,7 +184,7 @@ $streamInfo_360p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest
 $streamInfo_480p = new StreamInfo();
 $streamInfo_480p->setUri('video_480p_vod.m3u8');
 $streamInfo_480p->setEncodingId($encoding_id);
-$streamInfo_480p->setStreamId($ts_stream_480p_id);
+$streamInfo_480p->setStreamId($stream_480p_id);
 $streamInfo_480p->setMuxingId($ts_muxing_480p_id);
 $streamInfo_480p->setAudio('audio');
 $streamInfo_480p->setSegmentPath('video/480p_hls');
@@ -195,7 +195,7 @@ $streamInfo_480p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest
 $streamInfo_720p = new StreamInfo();
 $streamInfo_720p->setUri('video_720p_vod.m3u8');
 $streamInfo_720p->setEncodingId($encoding_id);
-$streamInfo_720p->setStreamId($ts_stream_720p_id);
+$streamInfo_720p->setStreamId($stream_720p_id);
 $streamInfo_720p->setMuxingId($ts_muxing_720p_id);
 $streamInfo_720p->setAudio('audio');
 $streamInfo_720p->setSegmentPath('video/720p_hls');
@@ -206,7 +206,7 @@ $streamInfo_720p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest
 $streamInfo_1080p = new StreamInfo();
 $streamInfo_1080p->setUri('video_1080p_vod.m3u8');
 $streamInfo_1080p->setEncodingId($encoding_id);
-$streamInfo_1080p->setStreamId($ts_stream_1080p_id);
+$streamInfo_1080p->setStreamId($stream_1080p_id);
 $streamInfo_1080p->setMuxingId($ts_muxing_1080p_id);
 $streamInfo_1080p->setAudio('audio');
 $streamInfo_1080p->setSegmentPath('video/1080p_hls');
