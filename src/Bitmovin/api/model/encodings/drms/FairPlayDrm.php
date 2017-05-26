@@ -33,6 +33,9 @@ class FairPlayDrm extends AbstractDrm
     public function __construct($key, $iv, $uri, array $outputs = [])
     {
         parent::__construct($outputs);
+        $this->key = $key;
+        $this->iv = $iv;
+        $this->uri = $uri;
     }
 
     /**
