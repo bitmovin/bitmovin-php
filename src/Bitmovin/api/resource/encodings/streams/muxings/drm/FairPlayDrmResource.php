@@ -2,7 +2,6 @@
 
 namespace Bitmovin\api\resource\encodings\streams\muxings\drm;
 
-use Bitmovin\api\model\encodings\drms\CencDrm;
 use Bitmovin\api\model\encodings\drms\FairPlayDrm;
 
 class FairPlayDrmResource extends DrmResource
@@ -45,7 +44,8 @@ class FairPlayDrmResource extends DrmResource
     /**
      * @param integer $offset
      * @param integer $limit
-     * @return CencDrm[]
+     * @return FairPlayDrm[]
+     * @throws \Bitmovin\api\exceptions\BitmovinException
      */
     public function listPage($offset = 0, $limit = 25)
     {
