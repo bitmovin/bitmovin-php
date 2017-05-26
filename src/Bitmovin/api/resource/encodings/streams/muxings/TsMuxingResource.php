@@ -23,6 +23,7 @@ class TsMuxingResource extends MuxingResource
     public function __construct(Encoding $encoding, $baseUri, $modelClassName, $apiKey)
     {
         parent::__construct($baseUri, $modelClassName, $apiKey);
+        $this->encoding = $encoding;
     }
 
     /**
