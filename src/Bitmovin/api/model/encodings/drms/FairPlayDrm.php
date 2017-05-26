@@ -25,9 +25,12 @@ class FairPlayDrm extends AbstractDrm
 
     /**
      * AbstractDrm constructor.
+     * @param string (32char hex format)                            $key
+     * @param string (32char hex format)                            $iv
+     * @param string                                                $uri
      * @param \Bitmovin\api\model\encodings\helper\EncodingOutput[] $outputs
      */
-    public function __construct(array $outputs)
+    public function __construct($key, $iv, $uri, array $outputs = [])
     {
         parent::__construct($outputs);
     }
