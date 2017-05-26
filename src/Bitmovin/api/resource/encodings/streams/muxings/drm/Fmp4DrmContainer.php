@@ -8,7 +8,7 @@ use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\RouteHelper;
 
-class DrmContainer
+class Fmp4DrmContainer
 {
 
     /**

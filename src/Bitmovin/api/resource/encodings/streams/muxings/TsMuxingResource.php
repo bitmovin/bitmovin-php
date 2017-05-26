@@ -2,21 +2,37 @@
 
 namespace Bitmovin\api\resource\encodings\streams\muxings;
 
+use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\muxing\TSMuxing;
+use Bitmovin\api\resource\encodings\streams\muxings\drm\TsDrmContainer;
 
 class TsMuxingResource extends MuxingResource
 {
 
+    /** @var Encoding */
+    private $encoding;
+
     /**
      * TsMuxingResource constructor.
      *
-     * @param string $baseUri
-     * @param string $modelClassName
-     * @param string $apiKey
+     * @param Encoding $encoding
+     * @param string   $baseUri
+     * @param string   $modelClassName
+     * @param string   $apiKey
      */
-    public function __construct($baseUri, $modelClassName, $apiKey)
+    public function __construct(Encoding $encoding, $baseUri, $modelClassName, $apiKey)
     {
         parent::__construct($baseUri, $modelClassName, $apiKey);
+        $this->encoding = $encoding;
+    }
+
+    /**
+     * @param TSMuxing $muxing
+     * @return TsDrmContainer
+     */
+    public function drm(TSMuxing $muxing)
+    {
+        return new TsDrmContainer($this->encoding, $muxing, $this->getApiKey());
     }
 
     /**
