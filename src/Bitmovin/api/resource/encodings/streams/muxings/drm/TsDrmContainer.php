@@ -12,7 +12,7 @@ class TsDrmContainer
 {
 
     /**
-     * @var CencDrmResource
+     * @var FairPlayDrmResource
      */
     private $fairplayDrm;
 
