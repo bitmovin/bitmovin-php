@@ -39,7 +39,7 @@ class MuxingContainer
         $this->mp4Muxing = new Mp4MuxingResource($encoding, $baseUriMp4, MP4Muxing::class, $apiKey);
         $this->fmp4Muxing = new Fmp4MuxingResource($encoding, $baseUriFmp4, FMP4Muxing::class, $apiKey);
         $this->tsMuxing = new TsMuxingResource($encoding, $baseUriTs, TSMuxing::class, $apiKey);
-        $this->tsMuxing = new WebmMuxingResource($encoding, $baseUriWebm, TSMuxing::class, $apiKey);
+        $this->webmMuxing = new WebmMuxingResource($encoding, $baseUriWebm, TSMuxing::class, $apiKey);
     }
 
     /**
