@@ -84,6 +84,7 @@ final class ApiUrls
     const CODEC_CONFIGURATIONS_TYPE = "encoding/configurations/{configuration_id}/type";
     const CODEC_CONFIGURATION_H264 = "encoding/configurations/video/h264";
     const CODEC_CONFIGURATION_H265 = "encoding/configurations/video/h265";
+    const CODEC_CONFIGURATION_VP9 = "encoding/configurations/video/vp9";
     const CODEC_CONFIGURATION_AAC = "encoding/configurations/audio/aac";
 
     const MANIFEST_DASH = "encoding/manifests/dash";
