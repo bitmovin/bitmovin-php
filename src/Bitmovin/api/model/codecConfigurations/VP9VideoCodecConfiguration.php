@@ -118,7 +118,6 @@ class VP9VideoCodecConfiguration extends VideoConfiguration
      * Constructor.
      *
      * @param string $name
-     * @param string $profile H264Profile ENUM available
      * @param int    $bitrate Target bitrate for the encoded video in bps (bits per second)
      * @param float  $rate    Target frame rate of the encoded video
      */
