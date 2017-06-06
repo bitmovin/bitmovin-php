@@ -57,11 +57,11 @@ $output = $apiClient->outputs()->create($sftpOutput);
 
 //CREATE INPUT STREAMS
 //video stream of input file
-$inputStreamVideo = new InputStream($input, $videoInputPath, SelectionMode::POSITION_ABSOLUTE);
+$inputStreamVideo = new InputStream($input, $videoInputPath, SelectionMode::AUTO);
 $inputStreamVideo->setPosition(0);
 
 //audio stream of input file
-$inputStreamAudio = new InputStream($input, $videoInputPath, SelectionMode::POSITION_ABSOLUTE);
+$inputStreamAudio = new InputStream($input, $videoInputPath, SelectionMode::AUTO);
 $inputStreamAudio->setPosition(1);
 
 // CREATE VIDEO CODEC CONFIGURATIONS
