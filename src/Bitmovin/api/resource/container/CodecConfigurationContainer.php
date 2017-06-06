@@ -47,7 +47,7 @@ class CodecConfigurationContainer
         );
 
         $this->videoVP9 = new VP9VideoCodecConfigurationResource(
-            ApiUrls::CODEC_CONFIGURATION_H265,
+            ApiUrls::CODEC_CONFIGURATION_VP9,
             VP9VideoCodecConfiguration::class,
             $apiKey
         );
