@@ -6,6 +6,7 @@ use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\model\encodings\muxing\MP4Muxing;
 use Bitmovin\api\model\encodings\muxing\TSMuxing;
+use Bitmovin\api\model\encodings\muxing\WebmMuxing;
 use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\RouteHelper;
 
@@ -17,6 +18,8 @@ class MuxingContainer
     private $fmp4Muxing;
     /** @var  TsMuxingResource */
     private $tsMuxing;
+    /** @var  WebmMuxingResource */
+    private $webmMuxing;
 
     /**
      * MuxingContainer constructor.
@@ -32,10 +35,12 @@ class MuxingContainer
         $baseUriMp4 = RouteHelper::buildURI(ApiUrls::ENCODING_MUXINGS_MP4, $routeReplacementMap);
         $baseUriFmp4 = RouteHelper::buildURI(ApiUrls::ENCODING_MUXINGS_FMP4, $routeReplacementMap);
         $baseUriTs = RouteHelper::buildURI(ApiUrls::ENCODING_MUXINGS_TS, $routeReplacementMap);
+        $baseUriWebm = RouteHelper::buildURI(ApiUrls::ENCODING_MUXINGS_WEBM, $routeReplacementMap);
 
         $this->mp4Muxing = new Mp4MuxingResource($encoding, $baseUriMp4, MP4Muxing::class, $apiKey);
         $this->fmp4Muxing = new Fmp4MuxingResource($encoding, $baseUriFmp4, FMP4Muxing::class, $apiKey);
         $this->tsMuxing = new TsMuxingResource($encoding, $baseUriTs, TSMuxing::class, $apiKey);
+        $this->webmMuxing = new WebmMuxingResource($encoding, $baseUriWebm, WebmMuxing::class, $apiKey);
     }
 
     /**
@@ -60,5 +65,13 @@ class MuxingContainer
     public function tsMuxing()
     {
         return $this->tsMuxing;
+    }
+
+    /**
+     * @return WebmMuxingResource
+     */
+    public function webmMuxing()
+    {
+        return $this->webmMuxing;
     }
 }
