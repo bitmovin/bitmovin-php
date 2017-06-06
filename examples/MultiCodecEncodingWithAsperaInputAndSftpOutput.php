@@ -276,7 +276,7 @@ function createWebmMuxing(Stream $stream, EncodingOutput $encodingOutput = null,
     $encodingOutputs = null;
     if ($encodingOutput instanceof EncodingOutput)
     {
-        $encodingOutputs[] = $encodingOutput;
+        $encodingOutputs = array($encodingOutput);
     }
 
     $webmMuxing = new WebmMuxing();
@@ -306,7 +306,7 @@ function createFmp4Muxing(Stream $stream, EncodingOutput $encodingOutput = null,
     $encodingOutputs = null;
     if ($encodingOutput instanceof EncodingOutput)
     {
-        $encodingOutputs[] = $encodingOutput;
+        $encodingOutputs = array($encodingOutput);
     }
 
     $fmp4Muxing = new FMP4Muxing();
