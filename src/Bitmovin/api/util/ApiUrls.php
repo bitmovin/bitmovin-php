@@ -41,6 +41,7 @@ final class ApiUrls
     const ENCODING_MUXINGS_MP4 = "encoding/encodings/{encoding_id}/muxings/mp4";
     const ENCODING_MUXINGS_FMP4 = "encoding/encodings/{encoding_id}/muxings/fmp4";
     const ENCODING_MUXINGS_TS = "encoding/encodings/{encoding_id}/muxings/ts";
+    const ENCODING_MUXINGS_WEBM = "encoding/encodings/{encoding_id}/muxings/webm";
 
     const ENCODING_MUXINGS_FMP4_DRM_WIDEVINE = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}/drm/widevine";
     const ENCODING_MUXINGS_FMP4_DRM_PLAYREADY = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}/drm/playready";
@@ -84,6 +85,7 @@ final class ApiUrls
     const CODEC_CONFIGURATIONS_TYPE = "encoding/configurations/{configuration_id}/type";
     const CODEC_CONFIGURATION_H264 = "encoding/configurations/video/h264";
     const CODEC_CONFIGURATION_H265 = "encoding/configurations/video/h265";
+    const CODEC_CONFIGURATION_VP9 = "encoding/configurations/video/vp9";
     const CODEC_CONFIGURATION_AAC = "encoding/configurations/audio/aac";
 
     const MANIFEST_DASH = "encoding/manifests/dash";
@@ -93,6 +95,7 @@ final class ApiUrls
     const MANIFEST_DASH_PERIODS_SUBTITLE_ADAPTATION_SET = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/subtitle";
     const MANIFEST_DASH_PERIODS_VTT_REPRESENTATION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/vtt";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_REPRESENTATION_FMP4 = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/fmp4";
+    const MANIFEST_DASH_PERIODS_ADAPTION_SET_REPRESENTATION_WEBM = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/webm";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_CONTENT_PROTECTION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/contentprotection";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_REPRESENTATION_FMP4_CONTENT_PROTECTION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/fmp4/{representation_id}/contentprotection";
     const MANIFEST_DASH_PERIODS_ADAPTION_SET_REPRESENTATION_FMP4_DRM_CONTENT_PROTECTION = "encoding/manifests/dash/{manifest_id}/periods/{period_id}/adaptationsets/{adaption_id}/representations/fmp4/drm/{representation_id}/contentprotection";
