@@ -41,6 +41,7 @@ final class ApiUrls
     const ENCODING_MUXINGS_MP4 = "encoding/encodings/{encoding_id}/muxings/mp4";
     const ENCODING_MUXINGS_FMP4 = "encoding/encodings/{encoding_id}/muxings/fmp4";
     const ENCODING_MUXINGS_TS = "encoding/encodings/{encoding_id}/muxings/ts";
+    const ENCODING_MUXINGS_PROGRESSIVE_TS = "encoding/encodings/{encoding_id}/muxings/progressive-ts";
     const ENCODING_MUXINGS_WEBM = "encoding/encodings/{encoding_id}/muxings/webm";
 
     const ENCODING_MUXINGS_FMP4_DRM_WIDEVINE = "encoding/encodings/{encoding_id}/muxings/fmp4/{muxing_id}/drm/widevine";
