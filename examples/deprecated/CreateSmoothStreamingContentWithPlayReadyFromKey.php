@@ -1,50 +1,17 @@
-# [![bitmovin](https://cloudfront-prod.bitmovin.com/wp-content/themes/Bitmovin-V-0.1/images/logo3.png)](http://www.bitmovin.com)
-PHP-Client which enables you to seamlessly integrate the [Bitmovin API](https://bitmovin.com/video-infrastructure-service-bitmovin-api/) into your projects.
-Using this API client requires an active account. [Sign up for a Bitmovin API key](https://bitmovin.com/bitmovins-video-api/).
-
-The full [Bitmovin API reference](https://bitmovin.com/encoding-documentation/bitmovin-api/) can be found on our website.
-
-Installation 
-------------
-
-Requirements: PHP 5.6.0 or higher is required
-
-### Composer ###
- 
-  
-To install the api-client with composer, add the following to your `composer.json` file:  
-```json
-{
-"require": 
-  {
-    "bitmovin/bitmovin-php": "1.5.*"
-  }
-}
-```
-Then run `php composer.phar install`
-
-OR
-
-run the following command: `php composer.phar require bitmovin/bitmovin-php:1.5.*`
-
-Example
------
-The following example creates a simple transcoding job and transfers it to a GCS output location ([CreateSimpleEncoding.php](https://github.com/bitmovin/bitmovin-php/tree/master/examples/CreateSimpleEncoding.php)):
-```php
 <?php
 
 use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\BitmovinClient;
 use Bitmovin\configs\audio\AudioStreamConfig;
+use Bitmovin\configs\drm\PlayReadyDrm;
 use Bitmovin\configs\EncodingProfileConfig;
 use Bitmovin\configs\JobConfig;
-use Bitmovin\configs\manifest\DashOutputFormat;
-use Bitmovin\configs\manifest\HlsOutputFormat;
+use Bitmovin\configs\manifest\SmoothStreamingOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
 use Bitmovin\output\GcsOutput;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
@@ -54,10 +21,13 @@ $gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
 $gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
 $gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
 $gcs_prefix = 'path/to/your/output/destination/';
+$playready_kid = 'INSERT YOUR PLAYREADY KID HERE';
+$playready_key = 'INSERT YOUR PLAYREADY KEY HERE';
+$playready_laUrl = 'INSERT YOUR PLAYREADY LAURL HERE';
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
-$encodingProfile->name = 'Test Encoding';
+$encodingProfile->name = 'TestEncodingSmooth';
 $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 
 // CREATE VIDEO STREAM CONFIG FOR 1080p
@@ -94,13 +64,13 @@ $jobConfig = new JobConfig();
 $jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketName, $gcs_prefix);
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
-// ENABLE DASH OUTPUT
-$jobConfig->outputFormat[] = new DashOutputFormat();
-// ENABLE HLS OUTPUT
-$jobConfig->outputFormat[] = new HlsOutputFormat();
+// ENABLE SMOOTH STREAMING OUTPUT
+$smoothStreamingOutput = new SmoothStreamingOutputFormat();
+$smoothStreamingOutput->playReady = new PlayReadyDrm();
+$smoothStreamingOutput->playReady->kid = $playready_kid;
+$smoothStreamingOutput->playReady->key = $playready_key;
+$smoothStreamingOutput->playReady->laUrl = $playready_laUrl;
+$jobConfig->outputFormat[] = $smoothStreamingOutput;
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
 $client->runJobAndWaitForCompletion($jobConfig);
-```
-
-For more examples go to our [example page](https://github.com/bitmovin/bitmovin-php/tree/master/examples/).

@@ -65,18 +65,18 @@ $inputStreamAudio = new InputStream($input, $videoInputPath, SelectionMode::AUTO
 $inputStreamAudio->setPosition(1);
 
 // CREATE VIDEO CODEC CONFIGURATIONS
-$codecConfigVideo1080p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo1080p', H264Profile::HIGH, 4800000, 1920);
-$codecConfigVideo720p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo720p', H264Profile::HIGH, 2400000, 1280);
-$codecConfigVideo480p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo480p', H264Profile::MAIN, 1200000, 854);
-$codecConfigVideo360p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo360p', H264Profile::MAIN, 800000, 640);
-$codecConfigVideo240p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo240p', H264Profile::BASELINE, 400000, 426);
+$codecConfigVideo1080p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo1080p', H264Profile::HIGH, 4800000, null, 1080);
+$codecConfigVideo720p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo720p', H264Profile::HIGH, 2400000, null, 720);
+$codecConfigVideo480p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo480p', H264Profile::MAIN, 1200000, null, 480);
+$codecConfigVideo360p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo360p', H264Profile::MAIN, 800000, null, 360);
+$codecConfigVideo240p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo240p', H264Profile::BASELINE, 400000, null, 240);
 
 // CREATE VP9 VIDEO CODEC CONFIGURATIONS
-$vp9CodecConfigVideo1080p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo1080p', 4800000, 1920);
-$vp9CodecConfigVideo720p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo720p', 2400000, 1280);
-$vp9CodecConfigVideo480p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo480p', 1200000, 854);
-$vp9CodecConfigVideo360p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo360p', 800000, 640);
-$vp9CodecConfigVideo240p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo240p', 400000, 426);
+$vp9CodecConfigVideo1080p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo1080p', 3360000, null, 1080);
+$vp9CodecConfigVideo720p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo720p', 1680000, null, 720);
+$vp9CodecConfigVideo480p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo480p', 840000, null, 480);
+$vp9CodecConfigVideo360p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo360p', 560000, null, 360);
+$vp9CodecConfigVideo240p = createVP9VideoCodecConfiguration($apiClient, 'VP9StreamDemo240p', 280000, null, 240);
 
 // CREATE AAC AUDIO CODEC CONFIGURATIONS
 $codecConfigAudio128 = createAACAudioCodecConfiguration($apiClient, 'StreamDemoAAC128k', 128000);

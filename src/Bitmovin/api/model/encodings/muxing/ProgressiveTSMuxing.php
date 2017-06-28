@@ -4,7 +4,7 @@ namespace Bitmovin\api\model\encodings\muxing;
 
 use JMS\Serializer\Annotation as JMS;
 
-class TSMuxing extends AbstractMuxing
+class ProgressiveTSMuxing extends AbstractMuxing
 {
     /**
      * @JMS\Type("double")
@@ -15,10 +15,10 @@ class TSMuxing extends AbstractMuxing
      * @JMS\Type("string")
      * @var  string
      */
-    private $segmentNaming;
+    private $filename;
 
     /**
-     * TSMuxing constructor.
+     * ProgressiveTSMuxing constructor.
      */
     public function __construct()
     {
@@ -43,17 +43,17 @@ class TSMuxing extends AbstractMuxing
     /**
      * @return string
      */
-    public function getSegmentNaming()
+    public function getFileName()
     {
-        return $this->segmentNaming;
+        return $this->filename;
     }
 
     /**
      * @param string $segmentNaming
      */
-    public function setSegmentNaming($segmentNaming)
+    public function setFileName($fileName)
     {
-        $this->segmentNaming = $segmentNaming;
+        $this->filename = $fileName;
     }
 
 }

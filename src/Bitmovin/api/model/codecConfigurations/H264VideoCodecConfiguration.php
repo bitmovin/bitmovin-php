@@ -119,6 +119,11 @@ class H264VideoCodecConfiguration extends VideoConfiguration
      */
     private $interlaceMode;
 
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $crf;
 
 
     /**
@@ -487,4 +492,19 @@ class H264VideoCodecConfiguration extends VideoConfiguration
         $this->interlaceMode = $interlaceMode;
     }
 
+    /**
+     * @return int
+     */
+    public function getCrf()
+    {
+        return $this->crf;
+    }
+
+    /**
+     * @param int $crf
+     */
+    public function setCrf($crf)
+    {
+        $this->crf = $crf;
+    }
 }

@@ -7,8 +7,8 @@ use JMS\Serializer\Annotation as JMS;
 class WebmMuxing extends AbstractMuxing
 {
     /**
-     * @JMS\Type("integer")
-     * @var  integer
+     * @JMS\Type("double")
+     * @var  double
      */
     private $segmentLength;
     /**
@@ -30,7 +30,7 @@ class WebmMuxing extends AbstractMuxing
     }
 
     /**
-     * @return int
+     * @return double
      */
     public function getSegmentLength()
     {
@@ -38,7 +38,7 @@ class WebmMuxing extends AbstractMuxing
     }
 
     /**
-     * @param int $segmentLength
+     * @param double $segmentLength
      */
     public function setSegmentLength($segmentLength)
     {

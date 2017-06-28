@@ -1,36 +1,3 @@
-# [![bitmovin](https://cloudfront-prod.bitmovin.com/wp-content/themes/Bitmovin-V-0.1/images/logo3.png)](http://www.bitmovin.com)
-PHP-Client which enables you to seamlessly integrate the [Bitmovin API](https://bitmovin.com/video-infrastructure-service-bitmovin-api/) into your projects.
-Using this API client requires an active account. [Sign up for a Bitmovin API key](https://bitmovin.com/bitmovins-video-api/).
-
-The full [Bitmovin API reference](https://bitmovin.com/encoding-documentation/bitmovin-api/) can be found on our website.
-
-Installation 
-------------
-
-Requirements: PHP 5.6.0 or higher is required
-
-### Composer ###
- 
-  
-To install the api-client with composer, add the following to your `composer.json` file:  
-```json
-{
-"require": 
-  {
-    "bitmovin/bitmovin-php": "1.5.*"
-  }
-}
-```
-Then run `php composer.phar install`
-
-OR
-
-run the following command: `php composer.phar require bitmovin/bitmovin-php:1.5.*`
-
-Example
------
-The following example creates a simple transcoding job and transfers it to a GCS output location ([CreateSimpleEncoding.php](https://github.com/bitmovin/bitmovin-php/tree/master/examples/CreateSimpleEncoding.php)):
-```php
 <?php
 
 use Bitmovin\api\enum\CloudRegion;
@@ -42,18 +9,22 @@ use Bitmovin\configs\manifest\DashOutputFormat;
 use Bitmovin\configs\manifest\HlsOutputFormat;
 use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\HttpInput;
-use Bitmovin\output\GcsOutput;
+use Bitmovin\output\GenericS3Output;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
 // CONFIGURATION
 $videoInputPath = 'http://eu-storage.bitcodin.com/inputs/Sintel.2010.720p.mkv';
-$gcs_accessKey = 'INSERT YOUR GCS OUTPUT ACCESS KEY HERE';
-$gcs_secretKey = 'INSERT YOUR GCS OUTPUT SECRET KEY HERE';
-$gcs_bucketName = 'INSERT YOUR GCS OUTPUT BUCKET NAME HERE';
-$gcs_prefix = 'path/to/your/output/destination/';
+
+//TRANSFER OUTPUT CONFIGURATION
+$scalityHost = 's3.yourdomain.com'; // This can also be an ip address of your host where the scality server is running
+$scalityPort = 50123; // The port on which your scality s3 server is listening
+$scalityAccessKey = 'YOURSCALITYS3ACCESSKEY'; // This is the access key that is configured either via environment variables or in the scality configuration file. Refer to this guide https://github.com/scality/S3/blob/master/DOCKER.md#access_key-and-secret_key
+$scalitySecretKey = 'YOURSCALITYS3SECRETKEY'; // This is the secret key configured
+$scalityBucketName = 'YOURSCALITYS3BUCKETNAME'; // The name of the bucket. Make sure you have created this bucket before
+$scalityPrefix = "path/to/your/destination/"; // This is the path where your files will be transferred to. Subdirectories will be generated automatically
 
 // CREATE ENCODING PROFILE
 $encodingProfile = new EncodingProfileConfig();
@@ -64,7 +35,7 @@ $encodingProfile->cloudRegion = CloudRegion::GOOGLE_EUROPE_WEST_1;
 $videoStreamConfig_1080 = new H264VideoStreamConfig();
 $videoStreamConfig_1080->input = new HttpInput($videoInputPath);
 $videoStreamConfig_1080->width = 1920;
-$videoStreamConfig_1080->height = 1080;
+$videoStreamConfig_1080->height = 816;
 $videoStreamConfig_1080->bitrate = 4800000;
 $videoStreamConfig_1080->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
@@ -73,7 +44,7 @@ $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_1080;
 $videoStreamConfig_720 = new H264VideoStreamConfig();
 $videoStreamConfig_720->input = new HttpInput($videoInputPath);
 $videoStreamConfig_720->width = 1280;
-$videoStreamConfig_720->height = 720;
+$videoStreamConfig_720->height = 544;
 $videoStreamConfig_720->bitrate = 2400000;
 $videoStreamConfig_720->rate = 25.0;
 $encodingProfile->videoStreamConfigs[] = $videoStreamConfig_720;
@@ -90,8 +61,10 @@ $encodingProfile->audioStreamConfigs[] = $audioConfig;
 
 // CREATE JOB CONFIG
 $jobConfig = new JobConfig();
-// ASSIGN OUTPUT
-$jobConfig->output = new GcsOutput($gcs_accessKey, $gcs_secretKey, $gcs_bucketName, $gcs_prefix);
+
+// ASSIGN SCALITY OUTPUT
+$jobConfig->output = new GenericS3Output($scalityAccessKey, $scalitySecretKey, $scalityHost, $scalityPort, $scalityBucketName, $scalityPrefix);
+$jobConfig->output->prefix = $scalityPrefix;
 // ASSIGN ENCODING PROFILES TO JOB
 $jobConfig->encodingProfile = $encodingProfile;
 // ENABLE DASH OUTPUT
@@ -100,7 +73,4 @@ $jobConfig->outputFormat[] = new DashOutputFormat();
 $jobConfig->outputFormat[] = new HlsOutputFormat();
 
 // RUN JOB AND WAIT UNTIL IT HAS FINISHED
-$client->runJobAndWaitForCompletion($jobConfig);
-```
-
-For more examples go to our [example page](https://github.com/bitmovin/bitmovin-php/tree/master/examples/).
+$jobContainer = $client->runJobAndWaitForCompletion($jobConfig);
