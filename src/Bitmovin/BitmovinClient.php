@@ -66,6 +66,9 @@ use Bitmovin\output\S3Output;
 use Bitmovin\output\SftpOutput;
 use Icecave\Parity\Parity;
 
+/**
+ * @deprecated Please use ApiClient instead of BitmovinClient, as this one will be no longer supported
+ */
 class BitmovinClient
 {
     /**
