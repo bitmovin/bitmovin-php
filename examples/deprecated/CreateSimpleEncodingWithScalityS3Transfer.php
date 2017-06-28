@@ -13,7 +13,7 @@ use Bitmovin\input\HttpInput;
 use Bitmovin\output\BitmovinGcpOutput;
 use Bitmovin\output\GenericS3Output;
 
-require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 

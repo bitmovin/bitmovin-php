@@ -11,7 +11,7 @@ use Bitmovin\configs\video\H264VideoStreamConfig;
 use Bitmovin\input\S3Input;
 use Bitmovin\output\S3Output;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 $client = new BitmovinClient('INSERT YOUR API KEY HERE');
 
