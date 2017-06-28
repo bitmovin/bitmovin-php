@@ -18,6 +18,7 @@ use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\model\encodings\muxing\MP4Muxing;
 use Bitmovin\api\model\encodings\muxing\MuxingStream;
 use Bitmovin\api\model\encodings\muxing\TSMuxing;
+use Bitmovin\api\model\encodings\muxing\ProgressiveTSMuxing;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\configs\AbstractStreamConfig;
@@ -178,6 +179,42 @@ class MuxingFactory
         $muxing->setStreams([$streamMuxing]);
 
         return $apiClient->encodings()->muxings($encoding)->tsMuxing()->create($muxing);
+    }
+
+    /**
+     * @param Encoding  $encoding
+     * @param Stream    $stream
+     * @param Output    $output
+     * @param           $outputPath
+     * @param ApiClient $apiClient
+     * @param float     $segmentLength
+     *
+     * @return TSMuxing
+     * @throws \Bitmovin\api\exceptions\BitmovinException
+     */
+    private static function createProgressiveTSMuxing(Encoding $encoding, Stream $stream, Output $output, $outputPath, ApiClient $apiClient, $segmentLength = 4.0)
+    {
+        $encodingOutput = null;
+        if ($output != null && $outputPath != null)
+        {
+            $encodingOutput = new EncodingOutput($output);
+            $encodingOutput->setOutputPath($outputPath);
+            $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
+            $encodingOutput->setAcl([$acl]);
+        }
+
+        $muxing = new ProgressiveTSMuxing();
+        if ($encodingOutput != null)
+        {
+            $muxing->setOutputs([$encodingOutput]);
+        }
+        $muxing->setFileName("index.ts");
+        $muxing->setSegmentLength($segmentLength);
+        $streamMuxing = new MuxingStream();
+        $streamMuxing->setStreamId($stream->getId());
+        $muxing->setStreams([$streamMuxing]);
+
+        return $apiClient->encodings()->muxings($encoding)->progressiveTsMuxing()->create($muxing);
     }
 
     /**
