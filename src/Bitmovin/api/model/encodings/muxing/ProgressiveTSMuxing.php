@@ -7,8 +7,8 @@ use JMS\Serializer\Annotation as JMS;
 class ProgressiveTSMuxing extends AbstractMuxing
 {
     /**
-     * @JMS\Type("integer")
-     * @var  integer
+     * @JMS\Type("double")
+     * @var  double
      */
     private $segmentLength;
     /**
@@ -25,7 +25,7 @@ class ProgressiveTSMuxing extends AbstractMuxing
     }
 
     /**
-     * @return int
+     * @return double
      */
     public function getSegmentLength()
     {
@@ -33,7 +33,7 @@ class ProgressiveTSMuxing extends AbstractMuxing
     }
 
     /**
-     * @param int $segmentLength
+     * @param double $segmentLength
      */
     public function setSegmentLength($segmentLength)
     {

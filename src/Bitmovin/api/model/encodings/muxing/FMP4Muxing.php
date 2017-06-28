@@ -8,8 +8,8 @@ use JMS\Serializer\Annotation as JMS;
 class FMP4Muxing extends AbstractMuxing
 {
     /**
-     * @JMS\Type("integer")
-     * @var  integer
+     * @JMS\Type("double")
+     * @var  double
      */
     private $segmentLength;
     /**
@@ -36,7 +36,7 @@ class FMP4Muxing extends AbstractMuxing
     }
 
     /**
-     * @return int
+     * @return double
      */
     public function getSegmentLength()
     {
@@ -44,7 +44,7 @@ class FMP4Muxing extends AbstractMuxing
     }
 
     /**
-     * @param int $segmentLength
+     * @param double $segmentLength
      */
     public function setSegmentLength($segmentLength)
     {
