@@ -90,7 +90,7 @@ $videoEncodingStream240p = $apiClient->encodings()->streams($encoding)->create($
 //CREATE DEINTERLACE FILTER
 $deinterlaceFilter = new DeinterlaceFilter();
 $deinterlaceFilter->setMode(DeinterlaceMode::FRAME);
-$deinterlaceFilter->setMode(DeinterlaceParity::AUTO);
+$deinterlaceFilter->setParity(DeinterlaceParity::AUTO);
 $deinterlaceFilter = $apiClient->filters()->deinterlace()->create($deinterlaceFilter);
 $apiClient->encodings()->streams($encoding)->addFilter($videoEncodingStream1080p, array($deinterlaceFilter));
 $apiClient->encodings()->streams($encoding)->addFilter($videoEncodingStream720p, array($deinterlaceFilter));
