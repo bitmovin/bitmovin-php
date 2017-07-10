@@ -307,7 +307,7 @@ function createFmp4Muxing($apiClient, $encoding, $stream, $output, $outputPath, 
 {
     $muxingStream = new MuxingStream();
     $muxingStream->setStreamId($stream->getId());
-    $encodingOutputs = null;
+    $encodingOutputs = array();
 
     $fmp4Muxing = new FMP4Muxing();
     $fmp4Muxing->setInitSegmentName($initSegmentName);
