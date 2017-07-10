@@ -51,7 +51,7 @@ class FilterFactory
                 $apiFilters[] = self::createRotateFilterForStream($abstractFilterConfig, $apiClient);
             }
         }
-        if (sizeof($apiFilters) > 0)
+        if (count($apiFilters) > 0)
             $apiClient->encodings()->streams($encoding)->addFilter($stream, $apiFilters);
     }
 
