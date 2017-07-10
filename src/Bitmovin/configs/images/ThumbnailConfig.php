@@ -29,6 +29,11 @@ class ThumbnailConfig
     /**
      * @var  string
      */
+    public $unit;
+
+    /**
+     * @var  string
+     */
     public $folder = 'thumbnails/';
 
     /**

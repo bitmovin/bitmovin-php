@@ -30,6 +30,7 @@ class ThumbnailFactory
                     $thumbnail->setName($thumbnailConfig->name);
                     $thumbnail->setDescription(($thumbnailConfig->description));
                     $thumbnail->setPattern($thumbnailConfig->pattern);
+                    $thumbnail->setUnit($thumbnailConfig->unit);
                     $thumbnail->setOutputs(array($encodingOutput));
 
                     $codecConfigContainer->thumbnails[] = $apiClient
