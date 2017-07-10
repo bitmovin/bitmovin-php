@@ -12,6 +12,9 @@ abstract class AbstractHlsOutput extends AbstractOutputFormat
      */
     public $name = "stream.m3u8";
 
+    /** @var integer */
+    public $segmentLength = null;
+
     /**
      * @var AbstractStreamConfig[]
      * @deprecated Please use $audioVideoGroups
@@ -28,7 +31,7 @@ abstract class AbstractHlsOutput extends AbstractOutputFormat
      */
     public $audioVideoGroups = null;
 
-        /**
+    /**
      * @var ExternalSubtitleFormat[]
      */
     public $vttSubtitles = array();

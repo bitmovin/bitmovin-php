@@ -78,6 +78,53 @@ class H264VideoCodecConfiguration extends VideoConfiguration
      * @var  string H264Level
      */
     private $level;
+    /**
+     * @JMS\Type("string")
+     * @var  string H264BAdapt
+     */
+    private $bAdaptiveStrategy;
+    /**
+     * @JMS\Type("string")
+     * @var  string H264MotionEstimationMethod
+     */
+    private $motionEstimationMethod;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $rcLookahead;
+    /**
+     * @JMS\Type("string")
+     * @var  string H264SubMe
+     */
+    private $subMe;
+    /**
+     * @JMS\Type("string")
+     * @var  string H264Trellis
+     */
+    private $trellis;
+    /**
+     * @JMS\Type("array<string>")
+     * @var  string[] H264Partition
+     */
+    private $partitions;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $slices;
+    /**
+     * @JMS\Type("string")
+     * @var  string H264InterlaceMode
+     */
+    private $interlaceMode;
+
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $crf;
+
 
     /**
      * Constructor.
@@ -317,4 +364,147 @@ class H264VideoCodecConfiguration extends VideoConfiguration
         $this->level = $level;
     }
 
+    /**
+     * @return string
+     */
+    public function getBAdaptiveStrategy()
+    {
+        return $this->bAdaptiveStrategy;
+    }
+
+    /**
+     * @param string $bAdaptiveStrategy
+     */
+    public function setBAdaptiveStrategy($bAdaptiveStrategy)
+    {
+        $this->bAdaptiveStrategy = $bAdaptiveStrategy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMotionEstimationMethod()
+    {
+        return $this->motionEstimationMethod;
+    }
+
+    /**
+     * @param string $motionEstimationMethod
+     */
+    public function setMotionEstimationMethod($motionEstimationMethod)
+    {
+        $this->motionEstimationMethod = $motionEstimationMethod;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRcLookahead()
+    {
+        return $this->rcLookahead;
+    }
+
+    /**
+     * @param int $rcLookahead
+     */
+    public function setRcLookahead($rcLookahead)
+    {
+        $this->rcLookahead = $rcLookahead;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubMe()
+    {
+        return $this->subMe;
+    }
+
+    /**
+     * @param string $subMe
+     */
+    public function setSubMe($subMe)
+    {
+        $this->subMe = $subMe;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrellis()
+    {
+        return $this->trellis;
+    }
+
+    /**
+     * @param string $trellis
+     */
+    public function setTrellis($trellis)
+    {
+        $this->trellis = $trellis;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getPartitions()
+    {
+        return $this->partitions;
+    }
+
+    /**
+     * @param \string[] $partitions
+     */
+    public function setPartitions($partitions)
+    {
+        $this->partitions = $partitions;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSlices()
+    {
+        return $this->slices;
+    }
+
+    /**
+     * @param int $slices
+     */
+    public function setSlices($slices)
+    {
+        $this->slices = $slices;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInterlaceMode()
+    {
+        return $this->interlaceMode;
+    }
+
+    /**
+     * @param string $interlaceMode
+     */
+    public function setInterlaceMode($interlaceMode)
+    {
+        $this->interlaceMode = $interlaceMode;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCrf()
+    {
+        return $this->crf;
+    }
+
+    /**
+     * @param int $crf
+     */
+    public function setCrf($crf)
+    {
+        $this->crf = $crf;
+    }
 }

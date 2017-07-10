@@ -20,6 +20,9 @@ class DashOutputFormat extends AbstractOutputFormat
      */
     public $includedStreamConfigs = null;
 
+    /** @var integer */
+    public $segmentLength = null;
+
     /**
      * @var string
      */

@@ -100,6 +100,18 @@ class MediaInfo extends AbstractModel
     private $segmentPath;
 
     /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $startSegmentNumber;
+    
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $endSegmentNumber;
+
+    /**
      * @JMS\Type("array<string>")
      * @var  string[]
      */
@@ -343,6 +355,38 @@ class MediaInfo extends AbstractModel
     public function setSegmentPath($segmentPath)
     {
         $this->segmentPath = $segmentPath;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStartSegmentNumber()
+    {
+        return $this->startSegmentNumber;
+    }
+
+    /**
+     * @param integer $segmentPath
+     */
+    public function setStartSegmentNumber($startSegmentNumber)
+    {
+        $this->startSegmentNumber = $startSegmentNumber;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getEndSegmentNumber()
+    {
+        return $this->endSegmentNumber;
+    }
+
+    /**
+     * @param integer $segmentPath
+     */
+    public function setEndSegmentNumber($endSegmentNumber)
+    {
+        $this->endSegmentNumber = $endSegmentNumber;
     }
 
     /**

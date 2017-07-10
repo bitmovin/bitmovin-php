@@ -34,6 +34,16 @@ class DashRepresentation extends AbstractModel
      * @var  string
      */
     private $segmentPath;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $startSegmentNumber;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $endSegmentNumber;
 
     /**
      * @return string
@@ -115,4 +125,35 @@ class DashRepresentation extends AbstractModel
         $this->segmentPath = $segmentPath;
     }
 
+    /**
+     * @return integer
+     */
+    public function getStartSegmentNumber()
+    {
+        return $this->startSegmentNumber;
+    }
+
+    /**
+     * @param integer $startSegmentNumber
+     */
+    public function setStartSegmentNumber($startSegmentNumber)
+    {
+        $this->startSegmentNumber = $startSegmentNumber;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getEndSegmentNumber()
+    {
+        return $this->endSegmentNumber;
+    }
+
+    /**
+     * @param integer $endSegmentNumber
+     */
+    public function setEndSegmentNumber($endSegmentNumber)
+    {
+        $this->endSegmentNumber = $endSegmentNumber;
+    }
 }

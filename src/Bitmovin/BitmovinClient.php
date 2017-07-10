@@ -66,6 +66,9 @@ use Bitmovin\output\S3Output;
 use Bitmovin\output\SftpOutput;
 use Icecave\Parity\Parity;
 
+/**
+ * @deprecated Please use ApiClient instead of BitmovinClient, as this one will be no longer supported
+ */
 class BitmovinClient
 {
     /**
@@ -275,6 +278,7 @@ class BitmovinClient
             $encoding->setEncoderVersion($jobContainer->job->encodingProfile->encoderVersion);
             $encoding->setCloudRegion($jobContainer->job->encodingProfile->cloudRegion);
             $encoding->setDescription($jobContainer->job->encodingProfile->name);
+            $encoding->setInfrastructureId($jobContainer->job->encodingProfile->infrastructureId);
             $encodingContainer->encoding = $this->apiClient->encodings()->create($encoding);
         }
     }
@@ -303,6 +307,20 @@ class BitmovinClient
                     $config->setDescription($name);
                     $config->setWidth($codec->width);
                     $config->setHeight($codec->height);
+                    $config->setBFrames($codec->bFrames);
+                    $config->setRefFrames($codec->refFrames);
+                    $config->setQpMin($codec->qpMin);
+                    $config->setQpMax($codec->qpMax);
+                    $config->setMvPredictionMode($codec->mvPredictionMode);
+                    $config->setMvSearchRangeMax($codec->mvSearchRangeMax);
+                    $config->setCabac($codec->cabac);
+                    $config->setMinBitrate($codec->minBitrate);
+                    $config->setMaxBitrate($codec->maxBitrate);
+                    $config->setBufsize($codec->bufsize);
+                    $config->setMinGop($codec->minGop);
+                    $config->setMaxGop($codec->maxGop);
+                    $config->setLevel($codec->level);
+
                     $codecConfigContainer->apiCodecConfiguration = $this->apiClient->codecConfigurations()->videoH264()->create($config);
                 }
                 if ($codecConfigContainer->codecConfig instanceof AudioStreamConfig)
@@ -626,6 +644,8 @@ class BitmovinClient
         }
 
         $this->runHlsFmp4Creation($manifest, $hlsOutputFormat);
+        $jobContainer->manifestContainers[] = new ManifestContainer($this->apiClient, $manifest);
+
         return $hlsOutputFormat->status;
     }
 

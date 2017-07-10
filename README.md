@@ -17,7 +17,7 @@ To install the api-client with composer, add the following to your `composer.jso
 {
 "require": 
   {
-    "bitmovin/bitmovin-php": "1.4.*"
+    "bitmovin/bitmovin-php": "1.5.*"
   }
 }
 ```
@@ -25,7 +25,7 @@ Then run `php composer.phar install`
 
 OR
 
-run the following command: `php composer.phar require bitmovin/bitmovin-php:1.4.*`
+run the following command: `php composer.phar require bitmovin/bitmovin-php:1.5.*`
 
 Example
 -----

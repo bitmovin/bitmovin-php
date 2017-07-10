@@ -92,11 +92,12 @@ class HlsManifestFactory
         if (count($hlsFMP4Format->vttSubtitles) > 0)
             $subtitleGroupId = uniqid();
 
+        /** @var CodecConfigContainer $codecConfigContainer */
         foreach ($configurations as &$codecConfigContainer)
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
             {
-                foreach ($codecConfigContainer->muxings as $muxing)
+                foreach ($codecConfigContainer->hlsMuxings as $muxing)
                 {
                     if (!$muxing instanceof FMP4Muxing)
                         continue;
@@ -105,7 +106,7 @@ class HlsManifestFactory
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
             {
-                foreach ($codecConfigContainer->muxings as $muxing)
+                foreach ($codecConfigContainer->hlsMuxings as $muxing)
                 {
                     if (!$muxing instanceof FMP4Muxing)
                         continue;
@@ -155,11 +156,12 @@ class HlsManifestFactory
         if (count($hlsOutputFormat->vttSubtitles) > 0)
             $subtitleGroupId = uniqid();
 
+        /** @var CodecConfigContainer $codecConfigContainer */
         foreach ($configurations as &$codecConfigContainer)
         {
             if ($codecConfigContainer->apiCodecConfiguration instanceof H264VideoCodecConfiguration)
             {
-                foreach ($codecConfigContainer->muxings as $muxing)
+                foreach ($codecConfigContainer->hlsMuxings as $muxing)
                 {
                     if (!$muxing instanceof TSMuxing)
                         continue;
@@ -168,7 +170,7 @@ class HlsManifestFactory
             }
             if ($codecConfigContainer->apiCodecConfiguration instanceof AACAudioCodecConfiguration)
             {
-                foreach ($codecConfigContainer->muxings as $muxing)
+                foreach ($codecConfigContainer->hlsMuxings as $muxing)
                 {
                     if (!$muxing instanceof TSMuxing)
                         continue;

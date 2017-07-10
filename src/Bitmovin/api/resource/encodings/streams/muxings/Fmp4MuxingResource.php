@@ -4,7 +4,7 @@ namespace Bitmovin\api\resource\encodings\streams\muxings;
 
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
-use Bitmovin\api\resource\encodings\streams\muxings\drm\DrmContainer;
+use Bitmovin\api\resource\encodings\streams\muxings\drm\Fmp4DrmContainer;
 
 class Fmp4MuxingResource extends MuxingResource
 {
@@ -93,11 +93,11 @@ class Fmp4MuxingResource extends MuxingResource
 
     /**
      * @param FMP4Muxing $muxing
-     * @return DrmContainer
+     * @return Fmp4DrmContainer
      */
     public function drm(FMP4Muxing $muxing)
     {
-        return new DrmContainer($this->encoding, $muxing, $this->getApiKey());
+        return new Fmp4DrmContainer($this->encoding, $muxing, $this->getApiKey());
     }
 
 }
