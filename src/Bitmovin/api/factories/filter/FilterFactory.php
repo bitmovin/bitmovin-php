@@ -8,14 +8,14 @@ use Bitmovin\api\ApiClient;
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\filters\AbstractFilter;
-use Bitmovin\api\model\filters\WatermarkFilter;
-use Bitmovin\api\model\filters\DeinterlaceFilter;
 use Bitmovin\api\model\filters\CropFilter;
+use Bitmovin\api\model\filters\DeinterlaceFilter;
 use Bitmovin\api\model\filters\RotateFilter;
-use Bitmovin\configs\filter\WatermarkFilterConfig;
-use Bitmovin\configs\filter\DeinterlaceFilterConfig;
+use Bitmovin\api\model\filters\WatermarkFilter;
 use Bitmovin\configs\filter\CropFilterConfig;
+use Bitmovin\configs\filter\DeinterlaceFilterConfig;
 use Bitmovin\configs\filter\RotateFilterConfig;
+use Bitmovin\configs\filter\WatermarkFilterConfig;
 
 class FilterFactory
 {
@@ -34,16 +34,20 @@ class FilterFactory
         $apiFilters = array();
         foreach ($abstractFilterConfigs as $abstractFilterConfig)
         {
-            if ($abstractFilterConfig instanceof WatermarkFilterConfig) {
+            if ($abstractFilterConfig instanceof WatermarkFilterConfig)
+            {
                 $apiFilters[] = self::createWatermarkFilterForStream($abstractFilterConfig, $apiClient);
             }
-            if ($abstractFilterConfig instanceof DeinterlaceFilterConfig) {
+            if ($abstractFilterConfig instanceof DeinterlaceFilterConfig)
+            {
                 $apiFilters[] = self::createDeinterlaceFilterForStream($abstractFilterConfig, $apiClient);
             }
-            if ($abstractFilterConfig instanceof CropFilterConfig) {
+            if ($abstractFilterConfig instanceof CropFilterConfig)
+            {
                 $apiFilters[] = self::createCropFilterForStream($abstractFilterConfig, $apiClient);
             }
-            if ($abstractFilterConfig instanceof RotateFilterConfig) {
+            if ($abstractFilterConfig instanceof RotateFilterConfig)
+            {
                 $apiFilters[] = self::createRotateFilterForStream($abstractFilterConfig, $apiClient);
             }
         }
