@@ -30,6 +30,11 @@ class Thumbnail extends AbstractModel
     private $pattern;
 
     /**
+     * @JMS\Type("string")
+     */
+    private $unit;
+
+    /**
      * @JMS\Type("array<integer>")
      */
     private $positions;
@@ -130,6 +135,22 @@ class Thumbnail extends AbstractModel
     public function setPositions($positions)
     {
         $this->positions = $positions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+
+    /**
+     * @param string $unit (use ThumbnailUnit enum)
+     */
+    public function setUnit($unit)
+    {
+        $this->unit = $unit;
     }
 
     /**
