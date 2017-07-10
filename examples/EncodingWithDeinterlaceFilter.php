@@ -160,7 +160,7 @@ $period = $apiClient->manifests()->dash()->createPeriod($manifest, $period);
 
 // CREATE VIDEO ADPAPTATION SET
 $videoAdaptionSet = new VideoAdaptationSet();
-$dashVideoAdaptionSet = $apiClient->manifests()->dash()->addVideoAdaptionSetToPeriod($manifest, $period, $videoAdaptionSet);
+$videoAdaptionSet = $apiClient->manifests()->dash()->addVideoAdaptionSetToPeriod($manifest, $period, $videoAdaptionSet);
 
 // ADD VIDEO REPRESENTATIONS TO ADAPTATION SET
 $fmp4SegmentPath1080p = getSegmentOutputPath($outputPath, $fmp4Muxing1080p->getOutputs()[0]->getOutputPath());
@@ -173,21 +173,21 @@ $dashRepresentation720p = createDashRepresentation($encoding, $fmp4Muxing720p, D
 $dashRepresentation480p = createDashRepresentation($encoding, $fmp4Muxing480p, DashMuxingType::TYPE_TEMPLATE, $fmp4SegmentPath480p);
 $dashRepresentation360p = createDashRepresentation($encoding, $fmp4Muxing360p, DashMuxingType::TYPE_TEMPLATE, $fmp4SegmentPath360p);
 $dashRepresentation240p = createDashRepresentation($encoding, $fmp4Muxing240p, DashMuxingType::TYPE_TEMPLATE, $fmp4SegmentPath240p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $dashVideoAdaptionSet, $dashRepresentation1080p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $dashVideoAdaptionSet, $dashRepresentation720p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $dashVideoAdaptionSet, $dashRepresentation480p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $dashVideoAdaptionSet, $dashRepresentation360p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $dashVideoAdaptionSet, $dashRepresentation240p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $videoAdaptionSet, $dashRepresentation1080p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $videoAdaptionSet, $dashRepresentation720p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $videoAdaptionSet, $dashRepresentation480p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $videoAdaptionSet, $dashRepresentation360p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $videoAdaptionSet, $dashRepresentation240p);
 
 // CREATE AUDIO ADAPTATION SET FOR EACH LANGUAGE
 $audioAdaptionSet = new AudioAdaptationSet();
 $audioAdaptionSet->setLang("en");
-$dashAudioAdaptionSet = $apiClient->manifests()->dash()->addAudioAdaptionSetToPeriod($manifest, $period, $audioAdaptionSet);
+$audioAdaptionSet = $apiClient->manifests()->dash()->addAudioAdaptionSetToPeriod($manifest, $period, $audioAdaptionSet);
 
 // ADD AUDIO REPRESENTATIONS TO ADAPTATION SET
 $audioSegmentPath240p = getSegmentOutputPath($outputPath, $audioFmp4Muxing128->getOutputs()[0]->getOutputPath());
 $audioDashRepresentation128 = createDashRepresentation($encoding, $audioFmp4Muxing128, DashMuxingType::TYPE_TEMPLATE, $audioSegmentPath240p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $dashAudioAdaptionSet, $audioDashRepresentation128);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $period, $audioAdaptionSet, $audioDashRepresentation128);
 
 //Start Manifest Creation
 $response = $apiClient->manifests()->dash()->start($manifest);
