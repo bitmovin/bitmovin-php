@@ -6,6 +6,7 @@ use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\api\enum\codecConfigurations\H264Profile;
 use Bitmovin\api\enum\manifests\dash\DashMuxingType;
 use Bitmovin\api\enum\manifests\hls\MediaInfoType;
+use Bitmovin\api\enum\output\FtpTransferVersion;
 use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\exceptions\BitmovinException;
@@ -57,6 +58,8 @@ $ftpPassword = 'YOUR-FTP-PASSWORD';
 $outputPath = 'path/to/your/output/folder/';
 $ftpOutput = new FTPOutput($ftpHost, $ftpUserName, $ftpPassword);
 $ftpOutput->setPort(21);
+$ftpOutput->setTransferVersion(FtpTransferVersion::TRANSFER_VERSION_1_1_0);
+$ftpOutput->setMaxConcurrentConnections(20);
 $output = $apiClient->outputs()->ftp()->create($ftpOutput);
 
 // CREATE VIDEO CODEC CONFIGURATIONS
