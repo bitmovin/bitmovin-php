@@ -292,7 +292,7 @@ function createHlsVariantStreamInfo(Encoding $encoding, Stream $stream, TSMuxing
  * @return FMP4Muxing
  * @throws BitmovinException
  */
-function createFmp4Muxing($apiClient, $encoding, $stream, $output, $outputPath, $outputAcl = AclPermission::ACL_PUBLIC_READ, $initSegmentName = 'init.mp4', $segmentDuration = 4, $segmentNaming = 'segment_%number%.m4s')
+function createFmp4Muxing($apiClient, $encoding, $stream, $output, $outputPath, $outputAcl = AclPermission::ACL_PUBLIC_READ, $segmentDuration = 4, $initSegmentName = 'init.mp4', $segmentNaming = 'segment_%number%.m4s')
 {
     $muxingStream = new MuxingStream();
     $muxingStream->setStreamId($stream->getId());
