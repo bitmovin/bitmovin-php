@@ -4,8 +4,6 @@ use Bitmovin\api\ApiClient;
 use Bitmovin\api\enum\AclPermission;
 use Bitmovin\api\enum\CloudRegion;
 use Bitmovin\api\enum\codecConfigurations\H264Profile;
-use Bitmovin\api\enum\manifests\dash\DashMuxingType;
-use Bitmovin\api\enum\manifests\hls\MediaInfoType;
 use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\exceptions\BitmovinException;
@@ -15,19 +13,11 @@ use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\helper\Acl;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
-use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\model\encodings\muxing\MuxingStream;
-use Bitmovin\api\model\encodings\muxing\TSMuxing;
 use Bitmovin\api\model\encodings\muxing\ProgressiveTSMuxing;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\inputs\S3Input;
-use Bitmovin\api\model\manifests\dash\AudioAdaptationSet;
-use Bitmovin\api\model\manifests\dash\DashDrmRepresentation;
-use Bitmovin\api\model\manifests\dash\DashManifest;
-use Bitmovin\api\model\manifests\dash\Period;
-use Bitmovin\api\model\manifests\dash\VideoAdaptationSet;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
-use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\api\model\outputs\S3Output;
@@ -173,13 +163,13 @@ var_dump("Master Playlist finished");
 //#####################################################################################################################
 
 /**
- * @param Encoding $encoding
- * @param Stream   $stream
- * @param TSMuxing $tsMuxing
- * @param string   $audioGroupId
- * @param string   $segmentPath
- * @param string   $uri
+ * @param Encoding            $encoding
+ * @param Stream              $stream
+ * @param ProgressiveTSMuxing $tsMuxing
+ * @param string              $segmentPath
+ * @param string              $uri
  * @return StreamInfo
+ * @internal param string $audioGroupId
  */
 function createHlsVariantStreamInfo(Encoding $encoding, Stream $stream, ProgressiveTSMuxing $tsMuxing, $segmentPath, $uri)
 {
@@ -196,14 +186,15 @@ function createHlsVariantStreamInfo(Encoding $encoding, Stream $stream, Progress
 /**
  * @param ApiClient $apiClient
  * @param Encoding  $encoding
- * @param Stream    $stream
+ * @param Stream    $videoStream
+ * @param Stream    $audioStream
  * @param Output    $output
  * @param string    $outputPath
  *
  * @param string    $outputAcl
  * @param int       $segmentDuration
- * @param string    $segmentNaming
- * @return TSMuxing
+ * @param string    $fileName
+ * @return ProgressiveTSMuxing
  * @throws BitmovinException
  */
 function createCombinedTsMuxing($apiClient, $encoding, $videoStream, $audioStream, $output, $outputPath, $outputAcl = AclPermission::ACL_PUBLIC_READ, $segmentDuration = 4, $fileName = 'index.ts')
