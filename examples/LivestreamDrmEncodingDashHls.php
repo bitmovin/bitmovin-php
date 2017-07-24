@@ -45,6 +45,7 @@ $apiClient = new ApiClient('YOUR-BITMOVIN-API-KEY');
 
 //LIVESTREAM CONFIGURATION VALUES
 $dashLiveEdgeOffset = 60;
+$hlsLiveEdgeOffset = 60;
 $hlsTimeShiftWindowSize = 60;
 $streamKey = "yourownstreamkey";
 $fps = 30;
@@ -61,7 +62,7 @@ $rtmpInput = $apiClient->inputs()->rtmp()->listPage()[0];
 $s3OutputAccessKey = 'YOUR-AWS-S3-ACCESS-KEY';
 $s3OutputSecretKey = 'YOUR-AWS-S3-SECRET-KEY';
 $s3OutputBucketName = "YOUR-AWS-S3-BUCKETNAME";
-$outputPath = "path/to/your/input/file.mp4";
+$outputPath = "path/to/your/output/location/";
 $s3Output = new S3Output($s3OutputBucketName, $s3OutputAccessKey, $s3OutputSecretKey);
 $output = $apiClient->outputs()->s3()->create($s3Output);
 
@@ -251,7 +252,7 @@ $manifestName = "livestream.m3u8";
 $manifest = new HlsManifest();
 $manifest->setOutputs(array($manifestOutput));
 $manifest->setManifestName($manifestName);
-$masterPlaylist = $apiClient->manifests()->hls()->create($manifest);
+$hlsManifest = $apiClient->manifests()->hls()->create($manifest);
 $audioGroupId = 'audio';
 
 $variantStreamUri1080p = "video_1080p_" . $codecConfigVideo1080p->getBitrate() . "_variant.m3u8";
@@ -273,11 +274,11 @@ $videoStreamInfo480p = createHlsVariantStreamInfo($encoding, $videoEncodingStrea
 $videoStreamInfo360p = createHlsVariantStreamInfo($encoding, $videoEncodingStream360p, $tsMuxing360p, $videoTsDrm360p, $audioGroupId, $tsSegmentPath360p, $variantStreamUri360p);
 $videoStreamInfo240p = createHlsVariantStreamInfo($encoding, $videoEncodingStream240p, $tsMuxing240p, $videoTsDrm240p, $audioGroupId, $tsSegmentPath240p, $variantStreamUri240p);
 
-$variantStream1080p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo1080p);
-$variantStream720p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo720p);
-$variantStream480p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo480p);
-$variantStream360p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo360p);
-$variantStream240p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo240p);
+$variantStream1080p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest, $videoStreamInfo1080p);
+$variantStream720p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest, $videoStreamInfo720p);
+$variantStream480p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest, $videoStreamInfo480p);
+$variantStream360p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest, $videoStreamInfo360p);
+$variantStream240p = $apiClient->manifests()->hls()->createStreamInfo($hlsManifest, $videoStreamInfo240p);
 
 
 $audioSegmentPath128 = getSegmentOutputPath($outputPath, $audioTsDrm128->getOutputs()[0]->getOutputPath());
@@ -299,7 +300,7 @@ $audioMediaInfo128->setDefault(false);
 $audioMediaInfo128->setForced(false);
 $audioMediaInfo128->setSegmentPath($audioSegmentPath128);
 
-$apiClient->manifests()->hls()->createMediaInfo($masterPlaylist, $audioMediaInfo128);
+$apiClient->manifests()->hls()->createMediaInfo($hlsManifest, $audioMediaInfo128);
 
 //###########################################################################################
 
@@ -310,6 +311,7 @@ $liveDashManifest->setLiveEdgeOffset($dashLiveEdgeOffset);
 $liveHlsManifest = new LiveHlsManifest();
 $liveHlsManifest->setManifestId($hlsManifest->getId());
 $liveHlsManifest->setTimeshift($hlsTimeShiftWindowSize);
+$liveHlsManifest->setLiveEdgeOffset($hlsLiveEdgeOffset);
 
 $startLiveEncodingRequest = new StartLiveEncodingRequest();
 $startLiveEncodingRequest->setStreamKey($streamKey);
