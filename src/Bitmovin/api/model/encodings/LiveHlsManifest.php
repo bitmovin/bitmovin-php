@@ -21,6 +21,12 @@ class LiveHlsManifest
     private $timeshift;
 
     /**
+     * @JMS\Type("float")
+     * @var float
+     */
+    private $liveEdgeOffset;
+
+    /**
      * @return string
      */
     public function getManifestId()
@@ -50,6 +56,22 @@ class LiveHlsManifest
     public function setTimeshift($timeshift)
     {
         $this->timeshift = $timeshift;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLiveEdgeOffset()
+    {
+        return $this->liveEdgeOffset;
+    }
+
+    /**
+     * @param float $liveEdgeOffset
+     */
+    public function setLiveEdgeOffset($liveEdgeOffset)
+    {
+        $this->liveEdgeOffset = $liveEdgeOffset;
     }
 
 }
