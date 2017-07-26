@@ -38,6 +38,12 @@ class Encoding extends AbstractModel implements Transferable
      */
     private $cloudRegion;
 
+    /**
+     * @var @JMS\Type("array<string>")
+     * @var string[]
+     */
+    private $labels;
+
     public function __construct($name)
     {
         $this->name = $name;
@@ -123,4 +129,19 @@ class Encoding extends AbstractModel implements Transferable
         $this->infrastructureId = $infrastructureId;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * @param mixed $labels
+     */
+    public function setLabels($labels)
+    {
+        $this->labels = $labels;
+    }
 }
