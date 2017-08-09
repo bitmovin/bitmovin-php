@@ -39,6 +39,18 @@ class SftpOutput extends Output
     private $password;
 
     /**
+     * @JMS\Type("string")
+     * @var string
+     */
+    private $transferVersion;
+
+    /**
+     * @JMS\Type("integer")
+     * @var integer
+     */
+    private $maxConcurrentConnections;
+
+    /**
      * SFtpInput constructor.
      * @param string $host
      * @param string $username
@@ -131,4 +143,35 @@ class SftpOutput extends Output
         $this->password = $password;
     }
 
+    /**
+     * @return string
+     */
+    public function getTransferVersion()
+    {
+        return $this->transferVersion;
+    }
+
+    /**
+     * @param string $transferVersion
+     */
+    public function setTransferVersion($transferVersion)
+    {
+        $this->transferVersion = $transferVersion;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxConcurrentConnections()
+    {
+        return $this->maxConcurrentConnections;
+    }
+
+    /**
+     * @param int $maxConcurrentConnections
+     */
+    public function setMaxConcurrentConnections($maxConcurrentConnections)
+    {
+        $this->maxConcurrentConnections = $maxConcurrentConnections;
+    }
 }

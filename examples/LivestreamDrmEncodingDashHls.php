@@ -294,7 +294,7 @@ $audioMediaInfo128->setType(MediaInfoType::AUDIO);
 $audioMediaInfo128->setEncodingId($encoding->getId());
 $audioMediaInfo128->setStreamId($audioEncodingStream128->getId());
 $audioMediaInfo128->setMuxingId($audioTsMuxing128->getId());
-$audioMediaInfo128->setDrmId($audioFairPlayDrm128->getId());
+$audioMediaInfo128->setDrmId($audioTsDrm128->getId());
 $audioMediaInfo128->setAutoselect(false);
 $audioMediaInfo128->setDefault(false);
 $audioMediaInfo128->setForced(false);
