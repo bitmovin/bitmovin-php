@@ -67,11 +67,11 @@ $inputStreamAudio = new InputStream($s3Input, $videoInputPath, SelectionMode::AU
 $inputStreamAudio->setPosition(1);
 
 // CREATE VIDEO CODEC CONFIGURATIONS
-$codecConfigVideo1080p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo1080p', H264Profile::HIGH, 4800000, 1920);
-$codecConfigVideo720p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo720p', H264Profile::HIGH, 2400000, 1280);
-$codecConfigVideo480p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo480p', H264Profile::HIGH, 1200000, 854);
-$codecConfigVideo360p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo360p', H264Profile::HIGH, 800000, 640);
-$codecConfigVideo240p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo240p', H264Profile::HIGH, 400000, 426);
+$codecConfigVideo1080p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo1080p', H264Profile::HIGH, 4800000, null, 1080);
+$codecConfigVideo720p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo720p', H264Profile::HIGH, 2400000, null, 720);
+$codecConfigVideo480p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo480p', H264Profile::MAIN, 1200000, null, 480);
+$codecConfigVideo360p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo360p', H264Profile::MAIN, 800000, null, 360);
+$codecConfigVideo240p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo240p', H264Profile::BASELINE, 400000, null, 240);
 
 // CREATE AUDIO CODEC CONFIGURATIONS
 $codecConfigAudio128 = createAACAudioCodecConfiguration($apiClient, 'StreamDemoAAC128k', 128000);
@@ -109,11 +109,11 @@ $cencDrmEncodingOutput480p = createEncodingOutput($s3Output, $outputPath . 'vide
 $cencDrmEncodingOutput360p = createEncodingOutput($s3Output, $outputPath . 'video/360p/dash/drm/');
 $cencDrmEncodingOutput240p = createEncodingOutput($s3Output, $outputPath . 'video/240p/dash/drm/');
 
-$cencDrm1080p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput1080p), $widevinePssh, $playreadyLaUrl);
-$cencDrm720p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput720p), $widevinePssh, $playreadyLaUrl);
-$cencDrm480p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput480p), $widevinePssh, $playreadyLaUrl);
-$cencDrm360p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput360p), $widevinePssh, $playreadyLaUrl);
-$cencDrm240p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput240p), $widevinePssh, $playreadyLaUrl);
+$cencDrm1080p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput1080p), $widevinePssh);
+$cencDrm720p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput720p), $widevinePssh);
+$cencDrm480p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput480p), $widevinePssh);
+$cencDrm360p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput360p), $widevinePssh);
+$cencDrm240p = createCencDrm($cencDrmKey, $cencDrmKid, array($cencDrmEncodingOutput240p), $widevinePssh);
 
 $videoFmp4Drm1080p = $apiClient->encodings()->muxings($encoding)->fmp4Muxing()->drm($fmp4Muxing1080p)->cencDrm()->create($cencDrm1080p);
 $videoFmp4Drm720p = $apiClient->encodings()->muxings($encoding)->fmp4Muxing()->drm($fmp4Muxing720p)->cencDrm()->create($cencDrm720p);
