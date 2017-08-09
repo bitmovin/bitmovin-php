@@ -37,11 +37,6 @@ class SftpOutput extends AbstractOutput
     public $prefix = '';
 
     /**
-     * @var string
-     */
-    public $transferVersion;
-
-    /**
      * @var int
      */
     public $maxConcurrentConnections = 0;
