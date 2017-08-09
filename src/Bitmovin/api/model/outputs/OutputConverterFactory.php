@@ -49,6 +49,7 @@ class OutputConverterFactory
         $convertedOutput = new FtpOutput($output->host, $output->username, $output->password);
         $convertedOutput->setPassive($output->passive);
         $convertedOutput->setPort($output->port);
+        $convertedOutput->setTransferVersion($output->transferVersion);
         if ($output->maxConcurrentConnections > 0)
         {
             $convertedOutput->setMaxConcurrentConnections($output->maxConcurrentConnections);
@@ -66,6 +67,12 @@ class OutputConverterFactory
         $convertedOutput = new SftpOutput($output->host, $output->username, $output->password);
         $convertedOutput->setPassive($output->passive);
         $convertedOutput->setPort($output->port);
+        $convertedOutput->setTransferVersion($output->transferVersion);
+        if ($output->maxConcurrentConnections > 0)
+        {
+            $convertedOutput->setMaxConcurrentConnections($output->maxConcurrentConnections);
+            $convertedOutput->setTransferVersion(FtpTransferVersion::TRANSFER_VERSION_1_1_0);
+        }
         return $convertedOutput;
     }
 

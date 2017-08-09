@@ -37,6 +37,16 @@ class SftpOutput extends AbstractOutput
     public $prefix = '';
 
     /**
+     * @var string
+     */
+    public $transferVersion;
+
+    /**
+     * @var int
+     */
+    public $maxConcurrentConnections = 0;
+
+    /**
      * FtpInput constructor.
      * @param string $host
      * @param string $username
