@@ -38,6 +38,28 @@ class WatermarkFilter extends AbstractFilter
     private $bottom;
 
     /**
+     * @JMS\Type("string")
+     * @var string
+     */
+    private $unit;
+
+    /**
+     * @return string
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+
+    /**
+     * @param string $unit
+     */
+    public function setUnit($unit)
+    {
+        $this->unit = $unit;
+    }
+
+    /**
      * @return string
      */
     public function getImage()
