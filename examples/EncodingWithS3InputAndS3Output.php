@@ -40,22 +40,29 @@ $apiClient = new ApiClient('YOUR-BITMOVIN-API-KEY');
 $encoding = new Encoding('A Name for your encoding');
 $encoding->setCloudRegion(CloudRegion::GOOGLE_EUROPE_WEST_1);
 $encoding = $apiClient->encodings()->create($encoding);
-$segmentLength = 4;
 
 // S3 INPUT CONFIGURATION
 $s3InputAccessKey = 'YOUR-AWS-S3-ACCESS-KEY';
 $s3InputSecretKey = 'YOUR-AWS-S3-SECRET-KEY';
 $s3InputBucketName = "YOUR-AWS-S3-BUCKETNAME";
-$videoInputPath = "path/to/your/input/file.mp4";
 $s3Input = new S3Input($s3InputBucketName, $s3InputAccessKey, $s3InputSecretKey);
-$input = $apiClient->inputs()->s3()->create($s3Input);
+$s3Input = $apiClient->inputs()->s3()->create($s3Input);
+$videoInputPath = "path/to/your/input/file.mp4";
+
+//or an use existing S3 Input
+//$s3Input = $apiClient->inputs()->s3()->getById("s3-input-id");
+//$videoInputPath = "path/to/your/input/file.mp4";
 
 $s3OutputAccessKey = 'YOUR-AWS-S3-ACCESS-KEY';
 $s3OutputSecretKey = 'YOUR-AWS-S3-SECRET-KEY';
 $s3OutputBucketName = "YOUR-AWS-S3-BUCKETNAME";
-$outputPath = "path/to/your/input/file.mp4";
 $s3Output = new S3Output($s3OutputBucketName, $s3OutputAccessKey, $s3OutputSecretKey);
-$output = $apiClient->outputs()->s3()->create($s3Output);
+$s3Output = $apiClient->outputs()->s3()->create($s3Output);
+$outputPath = "path/to/your/output-destination/";
+
+//or use existing S3 Output
+//$s3Output = $apiClient->outputs()->s3()->getById("s3-output-id");
+//$outputPath = "path/to/your/input/file.mp4";
 
 // CREATE VIDEO CODEC CONFIGURATIONS
 $codecConfigVideo1080p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo1080p', H264Profile::HIGH, 4800000, null, 1080);
@@ -64,15 +71,19 @@ $codecConfigVideo480p = createH264VideoCodecConfiguration($apiClient, 'StreamDem
 $codecConfigVideo360p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo360p', H264Profile::MAIN, 800000, null, 360);
 $codecConfigVideo240p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo240p', H264Profile::BASELINE, 400000, null, 240);
 
-// CREATE AUDIO CODEC CONFIGURATIONS
-$codecConfigAudio128 = createAACAudioCodecConfiguration($apiClient, 'StreamDemoAAC128k', 128000);
+// or use an existing codec configuration
+//$codecConfigVideo1080p = $apiClient->codecConfigurations()->videoH264()->getById("h264-codec-configuration-id");
 
-//CREATE INPUT STREAMS
-//video stream of input file
-$inputStreamVideo = new InputStream($input, $videoInputPath, SelectionMode::AUTO);
+// CREATE AUDIO CODEC CONFIGURATIONS
+$codecConfigAudio128kbit = createAACAudioCodecConfiguration($apiClient, 'StreamDemoAAC128k', 128000);
+
+// or use an existing codec configuration
+//$codecConfigAudio128kbit = $apiClient->codecConfigurations()->audioAAC()->getById("aac-codec-configuration-id");
+
+//CREATE AUDIO / VIDEO INPUT STREAMS
+$inputStreamVideo = new InputStream($s3Input, $videoInputPath, SelectionMode::AUTO);
 $inputStreamVideo->setPosition(0);
-//audio stream of input file
-$inputStreamAudio = new InputStream($input, $videoInputPath, SelectionMode::AUTO);
+$inputStreamAudio = new InputStream($s3Input, $videoInputPath, SelectionMode::AUTO);
 $inputStreamAudio->setPosition(1);
 
 // CREATE VIDEO STREAMS
@@ -81,33 +92,33 @@ $videoStream720p = new Stream($codecConfigVideo720p, array($inputStreamVideo));
 $videoStream480p = new Stream($codecConfigVideo480p, array($inputStreamVideo));
 $videoStream360p = new Stream($codecConfigVideo360p, array($inputStreamVideo));
 $videoStream240p = new Stream($codecConfigVideo240p, array($inputStreamVideo));
-$videoEncodingStream1080p = $apiClient->encodings()->streams($encoding)->create($videoStream1080p);
-$videoEncodingStream720p = $apiClient->encodings()->streams($encoding)->create($videoStream720p);
-$videoEncodingStream480p = $apiClient->encodings()->streams($encoding)->create($videoStream480p);
-$videoEncodingStream360p = $apiClient->encodings()->streams($encoding)->create($videoStream360p);
-$videoEncodingStream240p = $apiClient->encodings()->streams($encoding)->create($videoStream240p);
+$videoStream1080p = $apiClient->encodings()->streams($encoding)->create($videoStream1080p);
+$videoStream720p = $apiClient->encodings()->streams($encoding)->create($videoStream720p);
+$videoStream480p = $apiClient->encodings()->streams($encoding)->create($videoStream480p);
+$videoStream360p = $apiClient->encodings()->streams($encoding)->create($videoStream360p);
+$videoStream240p = $apiClient->encodings()->streams($encoding)->create($videoStream240p);
 
 // CREATE AUDIO STREAMS
-$audioStream128 = new Stream($codecConfigAudio128, array($inputStreamAudio));
-$audioEncodingStream128 = $apiClient->encodings()->streams($encoding)->create($audioStream128);
+$audioStream128 = new Stream($codecConfigAudio128kbit, array($inputStreamAudio));
+$audioStream128 = $apiClient->encodings()->streams($encoding)->create($audioStream128);
 
 // CREATE VIDEO MUXINGS (FMP4)
-$fmp4Muxing1080p = createFmp4Muxing($apiClient, $encoding, $videoEncodingStream1080p, $output, $outputPath . 'video/1080p/dash/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
-$fmp4Muxing720p = createFmp4Muxing($apiClient, $encoding, $videoEncodingStream720p, $output, $outputPath . 'video/720p/dash/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
-$fmp4Muxing480p = createFmp4Muxing($apiClient, $encoding, $videoEncodingStream480p, $output, $outputPath . 'video/480p/dash/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
-$fmp4Muxing360p = createFmp4Muxing($apiClient, $encoding, $videoEncodingStream360p, $output, $outputPath . 'video/360p/dash/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
-$fmp4Muxing240p = createFmp4Muxing($apiClient, $encoding, $videoEncodingStream240p, $output, $outputPath . 'video/240p/dash/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
+$fmp4Muxing1080p = createFmp4Muxing($apiClient, $encoding, $videoStream1080p, $s3Output, $outputPath . 'video/1080p/dash/', AclPermission::ACL_PUBLIC_READ);
+$fmp4Muxing720p = createFmp4Muxing($apiClient, $encoding, $videoStream720p, $s3Output, $outputPath . 'video/720p/dash/', AclPermission::ACL_PUBLIC_READ);
+$fmp4Muxing480p = createFmp4Muxing($apiClient, $encoding, $videoStream480p, $s3Output, $outputPath . 'video/480p/dash/', AclPermission::ACL_PUBLIC_READ);
+$fmp4Muxing360p = createFmp4Muxing($apiClient, $encoding, $videoStream360p, $s3Output, $outputPath . 'video/360p/dash/', AclPermission::ACL_PUBLIC_READ);
+$fmp4Muxing240p = createFmp4Muxing($apiClient, $encoding, $videoStream240p, $s3Output, $outputPath . 'video/240p/dash/', AclPermission::ACL_PUBLIC_READ);
 // CREATE AUDIO MUXING (FMP4)
-$audioFmp4Muxing128 = createFmp4Muxing($apiClient, $encoding, $audioEncodingStream128, $output, $outputPath . 'audio/128kbps/dash/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
+$audioFmp4Muxing128 = createFmp4Muxing($apiClient, $encoding, $audioStream128, $s3Output, $outputPath . 'audio/128kbps/dash/', AclPermission::ACL_PUBLIC_READ);
 
 // CREATE VIDEO MUXINGS (TS)
-$tsMuxing1080p = createTsMuxing($apiClient, $encoding, $videoEncodingStream1080p, $output, $outputPath . 'video/1080p/hls/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
-$tsMuxing720p = createTsMuxing($apiClient, $encoding, $videoEncodingStream720p, $output, $outputPath . 'video/720p/hls/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
-$tsMuxing480p = createTsMuxing($apiClient, $encoding, $videoEncodingStream480p, $output, $outputPath . 'video/480p/hls/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
-$tsMuxing360p = createTsMuxing($apiClient, $encoding, $videoEncodingStream360p, $output, $outputPath . 'video/360p/hls/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
-$tsMuxing240p = createTsMuxing($apiClient, $encoding, $videoEncodingStream240p, $output, $outputPath . 'video/240p/hls/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
+$tsMuxing1080p = createTsMuxing($apiClient, $encoding, $videoStream1080p, $s3Output, $outputPath . 'video/1080p/hls/', AclPermission::ACL_PUBLIC_READ);
+$tsMuxing720p = createTsMuxing($apiClient, $encoding, $videoStream720p, $s3Output, $outputPath . 'video/720p/hls/', AclPermission::ACL_PUBLIC_READ);
+$tsMuxing480p = createTsMuxing($apiClient, $encoding, $videoStream480p, $s3Output, $outputPath . 'video/480p/hls/', AclPermission::ACL_PUBLIC_READ);
+$tsMuxing360p = createTsMuxing($apiClient, $encoding, $videoStream360p, $s3Output, $outputPath . 'video/360p/hls/', AclPermission::ACL_PUBLIC_READ);
+$tsMuxing240p = createTsMuxing($apiClient, $encoding, $videoStream240p, $s3Output, $outputPath . 'video/240p/hls/', AclPermission::ACL_PUBLIC_READ);
 // CREATE AUDIO MUXING (TS)
-$audioTsMuxing128 = createTsMuxing($apiClient, $encoding, $audioEncodingStream128, $output, $outputPath . 'audio/128kbps/hls/', AclPermission::ACL_PUBLIC_READ, $segmentLength);
+$audioTsMuxing128 = createTsMuxing($apiClient, $encoding, $audioStream128, $s3Output, $outputPath . 'audio/128kbps/hls/', AclPermission::ACL_PUBLIC_READ);
 
 $apiClient->encodings()->start($encoding);
 
@@ -128,7 +139,7 @@ if ($status->getStatus() === Status::ERROR)
 //###########################################################################################
 
 //MANIFEST OUTPUT DESTINATION
-$manifestOutput = new EncodingOutput($output);
+$manifestOutput = new EncodingOutput($s3Output);
 $manifestOutput->setOutputPath($outputPath);
 $acl = new Acl(AclPermission::ACL_PUBLIC_READ);
 $manifestOutput->setAcl([$acl]);
@@ -141,15 +152,20 @@ $manifestType = DashMuxingType::TYPE_TEMPLATE;
 $manifest = new DashManifest();
 $manifest->setOutputs(array($manifestOutput));
 $manifest->setManifestName($manifestName);
-$dashManifest = $apiClient->manifests()->dash()->create($manifest);
+$manifest = $apiClient->manifests()->dash()->create($manifest);
 
 // ADD PERIOD
 $period = new Period();
-$manifestPeriod = $apiClient->manifests()->dash()->createPeriod($dashManifest, $period);
+$manifestPeriod = $apiClient->manifests()->dash()->createPeriod($manifest, $period);
 
 // CREATE VIDEO ADPAPTATION SET
 $videoAdaptionSet = new VideoAdaptationSet();
-$dashVideoAdaptionSet = $apiClient->manifests()->dash()->addVideoAdaptionSetToPeriod($dashManifest, $manifestPeriod, $videoAdaptionSet);
+$videoAdaptionSet = $apiClient->manifests()->dash()->addVideoAdaptionSetToPeriod($manifest, $manifestPeriod, $videoAdaptionSet);
+
+// CREATE AUDIO ADAPTATION SET FOR EACH LANGUAGE
+$audioAdaptionSet = new AudioAdaptationSet();
+$audioAdaptionSet->setLang("en");
+$audioAdaptionSet = $apiClient->manifests()->dash()->addAudioAdaptionSetToPeriod($manifest, $manifestPeriod, $audioAdaptionSet);
 
 // ADD VIDEO REPRESENTATIONS TO ADAPTATION SET
 $fmp4SegmentPath1080p = getSegmentOutputPath($outputPath, $fmp4Muxing1080p->getOutputs()[0]->getOutputPath());
@@ -162,28 +178,23 @@ $dashRepresentation720p = createDashRepresentation($encoding, $fmp4Muxing720p, D
 $dashRepresentation480p = createDashRepresentation($encoding, $fmp4Muxing480p, DashMuxingType::TYPE_TEMPLATE, $fmp4SegmentPath480p);
 $dashRepresentation360p = createDashRepresentation($encoding, $fmp4Muxing360p, DashMuxingType::TYPE_TEMPLATE, $fmp4SegmentPath360p);
 $dashRepresentation240p = createDashRepresentation($encoding, $fmp4Muxing240p, DashMuxingType::TYPE_TEMPLATE, $fmp4SegmentPath240p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($dashManifest, $manifestPeriod, $dashVideoAdaptionSet, $dashRepresentation1080p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($dashManifest, $manifestPeriod, $dashVideoAdaptionSet, $dashRepresentation720p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($dashManifest, $manifestPeriod, $dashVideoAdaptionSet, $dashRepresentation480p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($dashManifest, $manifestPeriod, $dashVideoAdaptionSet, $dashRepresentation360p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($dashManifest, $manifestPeriod, $dashVideoAdaptionSet, $dashRepresentation240p);
-
-// CREATE AUDIO ADAPTATION SET FOR EACH LANGUAGE
-$audioAdaptionSet = new AudioAdaptationSet();
-$audioAdaptionSet->setLang("en");
-$dashAudioAdaptionSet = $apiClient->manifests()->dash()->addAudioAdaptionSetToPeriod($dashManifest, $manifestPeriod, $audioAdaptionSet);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $manifestPeriod, $videoAdaptionSet, $dashRepresentation1080p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $manifestPeriod, $videoAdaptionSet, $dashRepresentation720p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $manifestPeriod, $videoAdaptionSet, $dashRepresentation480p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $manifestPeriod, $videoAdaptionSet, $dashRepresentation360p);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $manifestPeriod, $videoAdaptionSet, $dashRepresentation240p);
 
 // ADD AUDIO REPRESENTATIONS TO ADAPTATION SET
 $audioSegmentPath240p = getSegmentOutputPath($outputPath, $audioFmp4Muxing128->getOutputs()[0]->getOutputPath());
 $audioDashRepresentation128 = createDashRepresentation($encoding, $audioFmp4Muxing128, DashMuxingType::TYPE_TEMPLATE, $audioSegmentPath240p);
-$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($dashManifest, $manifestPeriod, $dashAudioAdaptionSet, $audioDashRepresentation128);
+$apiClient->manifests()->dash()->addRepresentationToAdaptationSet($manifest, $manifestPeriod, $audioAdaptionSet, $audioDashRepresentation128);
 
 //Start Manifest Creation
-$response = $apiClient->manifests()->dash()->start($dashManifest);
+$response = $apiClient->manifests()->dash()->start($manifest);
 
 do
 {
-    $status = $apiClient->manifests()->dash()->status($dashManifest);
+    $status = $apiClient->manifests()->dash()->status($manifest);
     var_dump($status->getStatus());
     $isRunning = !in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
     sleep(1);
@@ -210,33 +221,29 @@ $tsSegmentPath360p = getSegmentOutputPath($outputPath, $tsMuxing360p->getOutputs
 $tsSegmentPath240p = getSegmentOutputPath($outputPath, $tsMuxing240p->getOutputs()[0]->getOutputPath());
 
 //Create a Variant Stream for Video
-$videoStreamInfo1080p = createHlsVariantStreamInfo($encoding, $videoEncodingStream1080p, $tsMuxing1080p, $audioGroupId, $tsSegmentPath1080p, $variantStreamUri1080p);
-$videoStreamInfo720p = createHlsVariantStreamInfo($encoding, $videoEncodingStream720p, $tsMuxing720p, $audioGroupId, $tsSegmentPath720p, $variantStreamUri720p);
-$videoStreamInfo480p = createHlsVariantStreamInfo($encoding, $videoEncodingStream480p, $tsMuxing480p, $audioGroupId, $tsSegmentPath480p, $variantStreamUri480p);
-$videoStreamInfo360p = createHlsVariantStreamInfo($encoding, $videoEncodingStream360p, $tsMuxing360p, $audioGroupId, $tsSegmentPath360p, $variantStreamUri360p);
-$videoStreamInfo240p = createHlsVariantStreamInfo($encoding, $videoEncodingStream240p, $tsMuxing240p, $audioGroupId, $tsSegmentPath240p, $variantStreamUri240p);
-$variantStream1080p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo1080p);
-$variantStream720p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo720p);
-$variantStream480p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo480p);
-$variantStream360p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo360p);
-$variantStream240p = $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo240p);
+$videoStreamInfo1080p = createHlsVariantStreamInfo($encoding, $videoStream1080p, $tsMuxing1080p, $audioGroupId, $tsSegmentPath1080p, $variantStreamUri1080p);
+$videoStreamInfo720p = createHlsVariantStreamInfo($encoding, $videoStream720p, $tsMuxing720p, $audioGroupId, $tsSegmentPath720p, $variantStreamUri720p);
+$videoStreamInfo480p = createHlsVariantStreamInfo($encoding, $videoStream480p, $tsMuxing480p, $audioGroupId, $tsSegmentPath480p, $variantStreamUri480p);
+$videoStreamInfo360p = createHlsVariantStreamInfo($encoding, $videoStream360p, $tsMuxing360p, $audioGroupId, $tsSegmentPath360p, $variantStreamUri360p);
+$videoStreamInfo240p = createHlsVariantStreamInfo($encoding, $videoStream240p, $tsMuxing240p, $audioGroupId, $tsSegmentPath240p, $variantStreamUri240p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo1080p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo720p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo480p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo360p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo240p);
 
+$audioVariantStreamUri128 = "audio_1_" . $codecConfigAudio128kbit->getBitrate() . "_variant.m3u8";
 $audioSegmentPath128 = getSegmentOutputPath($outputPath, $audioTsMuxing128->getOutputs()[0]->getOutputPath());
-$audioVariantStreamUri128 = "audio_1_" . $codecConfigAudio128->getBitrate() . "_variant.m3u8";
 
 $audioMediaInfo128 = new MediaInfo();
 $audioMediaInfo128->setGroupId($audioGroupId);
 $audioMediaInfo128->setName("English");
 $audioMediaInfo128->setLanguage("English");
-$audioMediaInfo128->setAssocLanguage("en");
 $audioMediaInfo128->setUri($audioVariantStreamUri128);
 $audioMediaInfo128->setType(MediaInfoType::AUDIO);
 $audioMediaInfo128->setEncodingId($encoding->getId());
-$audioMediaInfo128->setStreamId($audioEncodingStream128->getId());
+$audioMediaInfo128->setStreamId($audioStream128->getId());
 $audioMediaInfo128->setMuxingId($audioTsMuxing128->getId());
-$audioMediaInfo128->setAutoselect(false);
-$audioMediaInfo128->setDefault(false);
-$audioMediaInfo128->setForced(false);
 $audioMediaInfo128->setSegmentPath($audioSegmentPath128);
 
 $apiClient->manifests()->hls()->createMediaInfo($masterPlaylist, $audioMediaInfo128);
@@ -296,7 +303,7 @@ function createFmp4Muxing($apiClient, $encoding, $stream, $output, $outputPath, 
 {
     $muxingStream = new MuxingStream();
     $muxingStream->setStreamId($stream->getId());
-    $encodingOutputs = null;
+    $encodingOutputs = array();
 
     $fmp4Muxing = new FMP4Muxing();
     $fmp4Muxing->setInitSegmentName($initSegmentName);
