@@ -2,6 +2,7 @@
 
 namespace Bitmovin\api\resource\encodings\streams\muxings\drm;
 
+use Bitmovin\api\model\encodings\drms\AesDrm;
 use Bitmovin\api\model\encodings\drms\FairPlayDrm;
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\muxing\TSMuxing;
@@ -17,6 +18,11 @@ class TsDrmContainer
     private $fairplayDrm;
 
     /**
+     * @var AesDrmResource
+     */
+    private $aesDrm;
+
+    /**
      * MuxingContainer constructor.
      *
      * @param Encoding   $encoding
@@ -30,8 +36,10 @@ class TsDrmContainer
             ApiUrls::PH_MUXING_ID   => $muxing->getId()
         );
         $baseUriFairPlayDrm = RouteHelper::buildURI(ApiUrls::ENCODING_MUXINGS_TS_DRM_FAIRPLAY, $routeReplacementMap);
-
         $this->fairplayDrm = new FairPlayDrmResource($encoding, $muxing, $baseUriFairPlayDrm, FairPlayDrm::class, $apiKey);
+
+        $baseUriAesDrm = RouteHelper::buildURI(ApiUrls::ENCODING_MUXINGS_TS_DRM_AES, $routeReplacementMap);
+        $this->aesDrm = new AesDrmResource($encoding, $muxing, $baseUriAesDrm, AesDrm::class, $apiKey);
     }
 
     /**
@@ -42,5 +50,9 @@ class TsDrmContainer
         return $this->fairplayDrm;
     }
 
+    public function aes()
+    {
+        return $this->aesDrm;
+    }
 
 }
