@@ -55,6 +55,7 @@ final class ApiUrls
     const ENCODING_MUXINGS_MP4_DRM_PLAYREADY = "encoding/encodings/{encoding_id}/muxings/mp4/{muxing_id}/drm/playready";
 
     const ENCODING_MUXINGS_TS_DRM_FAIRPLAY = "encoding/encodings/{encoding_id}/muxings/ts/{muxing_id}/drm/fairplay";
+    const ENCODING_MUXINGS_TS_DRM_AES = "encoding/encodings/{encoding_id}/muxings/ts/{muxing_id}/drm/aes";
 
     const FILTERS = "encoding/filters";
     const FILTERS_WATERMARK = "encoding/filters/watermark";
