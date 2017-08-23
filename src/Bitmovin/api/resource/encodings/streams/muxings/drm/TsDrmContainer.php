@@ -50,6 +50,10 @@ class TsDrmContainer
         return $this->fairplayDrm;
     }
 
+
+    /**
+     * @return AesDrmResource
+     */
     public function aes()
     {
         return $this->aesDrm;
