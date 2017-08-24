@@ -114,11 +114,11 @@ $aesEncodingOutput480p = createEncodingOutput($s3Output, $outputPath . 'video/48
 $aesEncodingOutput360p = createEncodingOutput($s3Output, $outputPath . 'video/360p/hls/drm/');
 $aesEncodingOutput240p = createEncodingOutput($s3Output, $outputPath . 'video/240p/hls/drm/');
 
-$aesDrm1080p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput1080p));
-$aesDrm720p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput720p));
-$aesDrm480p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput480p));
-$aesDrm360p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput360p));
-$aesDrm240p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput240p));
+$aesDrm1080p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput1080p), 'keyfile.key');
+$aesDrm720p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput720p), 'keyfile.key');
+$aesDrm480p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput480p), 'keyfile.key');
+$aesDrm360p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput360p), 'keyfile.key');
+$aesDrm240p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput240p), 'keyfile.key');
 
 $videoTsDrm1080p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($tsMuxing1080p)->aes()->create($aesDrm1080p);
 $videoTsDrm720p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($tsMuxing720p)->aes()->create($aesDrm720p);
@@ -128,9 +128,9 @@ $videoTsDrm240p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($
 
 // CREATE DRM TO AUDIO TS MUXINGs
 $audioAesEncodingOutput128 = createEncodingOutput($s3Output, $outputPath . 'audio/128kbps/hls/drm/');
-$audioAesDrm128 = createAes128Drm($aesKey, $aesIV, array($audioAesEncodingOutput128));
-$audioTsDrm128 = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($audioTsMuxing128)->aes()->create($audioAesDrm128);
 
+$audioAesDrm128 = createAes128Drm($aesKey, $aesIV, array($audioAesEncodingOutput128), 'keyfile.key');
+$audioTsDrm128 = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($audioTsMuxing128)->aes()->create($audioAesDrm128);
 
 $apiClient->encodings()->start($encoding);
 
@@ -220,9 +220,9 @@ var_dump("Master Playlist finished");
 
 //#####################################################################################################################
 
-function createAes128Drm($key, $iv, $outputs)
+function createAes128Drm($key, $iv, $outputs, $keyFileUri)
 {
-    return new AesDrm(AesEncryptionMethod::AES_128, $key, $iv, $outputs);
+    return new AesDrm(AesEncryptionMethod::AES_128, $key, $iv, $outputs, $keyFileUri);
 }
 
 /**
