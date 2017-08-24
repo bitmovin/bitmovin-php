@@ -34,13 +34,15 @@ class AesDrm extends AbstractDrm
      * @param string (32char hex format)                            $key
      * @param string (32char hex format)                            $iv
      * @param \Bitmovin\api\model\encodings\helper\EncodingOutput[] $outputs
+     * @param string                                                $keyFileUri
      */
-    public function __construct($method, $key, $iv, array $outputs = [])
+    public function __construct($method, $key, $iv, array $outputs = [], $keyFileUri = null)
     {
         parent::__construct($outputs);
         $this->method = $method;
         $this->key = $key;
         $this->iv = $iv;
+        $this->keyFileUri = $keyFileUri;
     }
 
     /**
