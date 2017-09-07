@@ -6,6 +6,7 @@ use Bitmovin\api\model\AbstractModel;
 use Bitmovin\api\model\codecConfigurations\CodecConfiguration;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
+use Bitmovin\api\model\encodings\streams\condition\AbstractCondition;
 use JMS\Serializer\Annotation as JMS;
 
 class Stream extends AbstractModel
@@ -26,6 +27,12 @@ class Stream extends AbstractModel
      * @var  EncodingOutput[]
      */
     private $outputs;
+
+    /**
+     * @JMS\Type("Bitmovin\api\model\encodings\streams\condition\AbstractCondition")
+     * @var  AbstractCondition
+     */
+    private $conditions;
 
     /**
      * Stream constructor.
@@ -85,6 +92,22 @@ class Stream extends AbstractModel
     public function setOutputs($outputs)
     {
         $this->outputs = $outputs;
+    }
+
+    /**
+     * @return AbstractCondition
+     */
+    public function getConditions()
+    {
+        return $this->conditions;
+    }
+
+    /**
+     * @param AbstractCondition $conditions
+     */
+    public function setConditions($conditions)
+    {
+        $this->conditions = $conditions;
     }
 
 }
