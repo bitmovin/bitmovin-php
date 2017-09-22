@@ -48,7 +48,6 @@ $s3Input = new S3Input($s3InputBucketName, $s3InputAccessKey, $s3InputSecretKey)
 $s3Input = $apiClient->inputs()->s3()->create($s3Input);
 $videoInputPath = "path/to/your/input/file.mp4";
 
-
 //or an use existing S3 Input
 //$s3Input = $apiClient->inputs()->s3()->getById("s3-input-id");
 //$videoInputPath = "path/to/your/input/file.mp4";
@@ -60,10 +59,10 @@ $s3Output = new S3Output($s3OutputBucketName, $s3OutputAccessKey, $s3OutputSecre
 $s3Output = $apiClient->outputs()->s3()->create($s3Output);
 $outputPath = "path/to/your/output-destination/";
 
+
 // AES CONFIGURATION
 $aesKey = "0123456789abcdef0123456789abcdef";
 $aesIV = "0123456789abcdef0123456789abcdef";
-
 
 // CREATE ENCODING
 $encoding = new Encoding('hlsv3 with aes encoding');
@@ -72,16 +71,15 @@ $encoding->setCloudRegion(CloudRegion::GOOGLE_EUROPE_WEST_1);
 $encoding = $apiClient->encodings()->create($encoding);
 
 // CREATE VIDEO CODEC CONFIGURATIONS
-$codecConfigVideo720p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo720p', H264Profile::HIGH, 2400000, null, 720);
 
-// or use an existing codec configuration
-//$codecConfigVideo1080p = $apiClient->codecConfigurations()->videoH264()->getById("h264-codec-configuration-id");
+$codecConfigVideo1080p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo1080p', H264Profile::HIGH, 4800000, null, 1080);
+$codecConfigVideo720p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo720p', H264Profile::HIGH, 2400000, null, 720);
+$codecConfigVideo480p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo480p', H264Profile::MAIN, 1200000, null, 480);
+$codecConfigVideo360p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo360p', H264Profile::MAIN, 800000, null, 360);
+$codecConfigVideo240p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo240p', H264Profile::BASELINE, 400000, null, 240);
 
 // CREATE AUDIO CODEC CONFIGURATIONS
-$codecConfigAudio128kbit = createAACAudioCodecConfiguration($apiClient, 'StreamDemoAAC128k', 128000);
-
-// or use an existing codec configuration
-//$codecConfigAudio128kbit = $apiClient->codecConfigurations()->audioAAC()->getById("aac-codec-configuration-id");
+$codecConfigAudio160kbit = createAACAudioCodecConfiguration($apiClient, 'StreamDemoAAC160k', 160000);
 
 //CREATE AUDIO / VIDEO INPUT STREAMS
 $inputStreamVideo = new InputStream($s3Input, $videoInputPath, SelectionMode::AUTO);
@@ -90,20 +88,46 @@ $inputStreamAudio = new InputStream($s3Input, $videoInputPath, SelectionMode::AU
 $inputStreamAudio->setPosition(1);
 
 // CREATE VIDEO STREAMS
+
+$videoStream1080p = new Stream($codecConfigVideo1080p, array($inputStreamVideo));
 $videoStream720p = new Stream($codecConfigVideo720p, array($inputStreamVideo));
+$videoStream480p = new Stream($codecConfigVideo480p, array($inputStreamVideo));
+$videoStream360p = new Stream($codecConfigVideo360p, array($inputStreamVideo));
+$videoStream240p = new Stream($codecConfigVideo240p, array($inputStreamVideo));
+$videoStream1080p = $apiClient->encodings()->streams($encoding)->create($videoStream1080p);
 $videoStream720p = $apiClient->encodings()->streams($encoding)->create($videoStream720p);
+$videoStream480p = $apiClient->encodings()->streams($encoding)->create($videoStream480p);
+$videoStream360p = $apiClient->encodings()->streams($encoding)->create($videoStream360p);
+$videoStream240p = $apiClient->encodings()->streams($encoding)->create($videoStream240p);
 
 // CREATE AUDIO STREAMS
-$audioStream128 = new Stream($codecConfigAudio128kbit, array($inputStreamAudio));
-$audioStream128 = $apiClient->encodings()->streams($encoding)->create($audioStream128);
+$audioStream160 = new Stream($codecConfigAudio160kbit, array($inputStreamAudio));
+$audioStream160 = $apiClient->encodings()->streams($encoding)->create($audioStream160);
 
 // CREATE VIDEO MUXINGS (TS)
-$combinedTsMuxing720p = createTsMuxing($apiClient, $encoding, array($videoStream720p, $audioStream128), $s3Output, $outputPath . '720p/hls/', AclPermission::ACL_PUBLIC_READ);
+$combinedtsMuxing1080p = createTsMuxing($apiClient, $encoding, array($videoStream1080p, $audioStream160), $s3Output, $outputPath . '1080p/hls/', AclPermission::ACL_PUBLIC_READ);
+$combinedtsMuxing720p = createTsMuxing($apiClient, $encoding, array($videoStream720p, $audioStream160), $s3Output, $outputPath . '720p/hls/', AclPermission::ACL_PUBLIC_READ);
+$combinedtsMuxing480p = createTsMuxing($apiClient, $encoding, array($videoStream480p, $audioStream160), $s3Output, $outputPath . '480p/hls/', AclPermission::ACL_PUBLIC_READ);
+$combinedtsMuxing360p = createTsMuxing($apiClient, $encoding, array($videoStream360p, $audioStream160), $s3Output, $outputPath . '360p/hls/', AclPermission::ACL_PUBLIC_READ);
+$combinedtsMuxing240p = createTsMuxing($apiClient, $encoding, array($videoStream240p, $audioStream160), $s3Output, $outputPath . '240p/hls/', AclPermission::ACL_PUBLIC_READ);
+
 
 // ADD AES DRM TO HLSv3 MUXINGs
-$aesEncodingOutput720p = createEncodingOutput($s3Output, $outputPath . '720p/hls/drm/');
+$aesEncodingOutput1080p = createEncodingOutput($s3Output, $outputPath . '1080p/aes/');
+$aesEncodingOutput720p = createEncodingOutput($s3Output, $outputPath . '720p/aes/');
+$aesEncodingOutput480p = createEncodingOutput($s3Output, $outputPath . '480p/aes/');
+$aesEncodingOutput360p = createEncodingOutput($s3Output, $outputPath . '360p/aes/');
+$aesEncodingOutput240p = createEncodingOutput($s3Output, $outputPath . '240p/aes/');
+$aesDrm1080p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput1080p), null);
 $aesDrm720p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput720p), null);
-$combinedTsDrm720p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($combinedTsMuxing720p)->aes()->create($aesDrm720p);
+$aesDrm480p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput480p), null);
+$aesDrm360p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput360p), null);
+$aesDrm240p = createAes128Drm($aesKey, $aesIV, array($aesEncodingOutput240p), null);
+$combinedTsDrm1080p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($combinedtsMuxing1080p)->aes()->create($aesDrm1080p);
+$combinedTsDrm720p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($combinedtsMuxing720p)->aes()->create($aesDrm720p);
+$combinedTsDrm480p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($combinedtsMuxing480p)->aes()->create($aesDrm480p);
+$combinedTsDrm360p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($combinedtsMuxing360p)->aes()->create($aesDrm360p);
+$combinedTsDrm240p = $apiClient->encodings()->muxings($encoding)->tsMuxing()->drm($combinedtsMuxing240p)->aes()->create($aesDrm240p);
 
 $apiClient->encodings()->start($encoding);
 
@@ -138,12 +162,28 @@ $manifest->setHlsMasterPlaylistVersion(HlsVersion::HLS_VERSION_3);
 $manifest->setHlsMediaPlaylistVersion(HlsVersion::HLS_VERSION_3);
 $masterPlaylist = $apiClient->manifests()->hls()->create($manifest);
 
+$variantStreamUri1080p = "video_1080p_" . $codecConfigVideo1080p->getBitrate() . "_variant.m3u8";
 $variantStreamUri720p = "video_720p_" . $codecConfigVideo720p->getBitrate() . "_variant.m3u8";
-$tsSegmentPath720p = getSegmentOutputPath($outputPath, $combinedTsMuxing720p->getOutputs()[0]->getOutputPath());
+$variantStreamUri480p = "video_480p_" . $codecConfigVideo480p->getBitrate() . "_variant.m3u8";
+$variantStreamUri360p = "video_360p_" . $codecConfigVideo360p->getBitrate() . "_variant.m3u8";
+$variantStreamUri240p = "video_240p_" . $codecConfigVideo240p->getBitrate() . "_variant.m3u8";
+$tsSegmentPath1080p = getSegmentOutputPath($outputPath, $combinedtsMuxing1080p->getOutputs()[0]->getOutputPath());
+$tsSegmentPath720p = getSegmentOutputPath($outputPath, $combinedtsMuxing720p->getOutputs()[0]->getOutputPath());
+$tsSegmentPath480p = getSegmentOutputPath($outputPath, $combinedtsMuxing480p->getOutputs()[0]->getOutputPath());
+$tsSegmentPath360p = getSegmentOutputPath($outputPath, $combinedtsMuxing360p->getOutputs()[0]->getOutputPath());
+$tsSegmentPath240p = getSegmentOutputPath($outputPath, $combinedtsMuxing240p->getOutputs()[0]->getOutputPath());
 
 //Create a Variant Stream for Video
-$videoStreamInfo720p = createHlsVariantStreamInfo($encoding, $videoStream720p, $combinedTsMuxing720p, $tsSegmentPath720p, $variantStreamUri720p);
+$videoStreamInfo1080p = createHlsVariantStreamInfo($encoding, $videoStream1080p, $combinedtsMuxing1080p, $tsSegmentPath1080p, $variantStreamUri1080p);
+$videoStreamInfo720p = createHlsVariantStreamInfo($encoding, $videoStream720p, $combinedtsMuxing720p, $tsSegmentPath720p, $variantStreamUri720p);
+$videoStreamInfo480p = createHlsVariantStreamInfo($encoding, $videoStream480p, $combinedtsMuxing480p, $tsSegmentPath480p, $variantStreamUri480p);
+$videoStreamInfo360p = createHlsVariantStreamInfo($encoding, $videoStream360p, $combinedtsMuxing360p, $tsSegmentPath360p, $variantStreamUri360p);
+$videoStreamInfo240p = createHlsVariantStreamInfo($encoding, $videoStream240p, $combinedtsMuxing240p, $tsSegmentPath240p, $variantStreamUri240p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo1080p);
 $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo720p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo480p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo360p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo240p);
 
 //Start Manifest Creation
 $response = $apiClient->manifests()->hls()->start($masterPlaylist);
@@ -164,12 +204,28 @@ $manifest->setOutputs(array($manifestOutput));
 $manifest->setManifestName($manifestName);
 $masterPlaylist = $apiClient->manifests()->hls()->create($manifest);
 
+$variantStreamUri1080p = "video_1080p_" . $codecConfigVideo1080p->getBitrate() . "_variant_aes.m3u8";
 $variantStreamUri720p = "video_720p_" . $codecConfigVideo720p->getBitrate() . "_variant_aes.m3u8";
+$variantStreamUri480p = "video_480p_" . $codecConfigVideo480p->getBitrate() . "_variant_aes.m3u8";
+$variantStreamUri360p = "video_360p_" . $codecConfigVideo360p->getBitrate() . "_variant_aes.m3u8";
+$variantStreamUri240p = "video_240p_" . $codecConfigVideo240p->getBitrate() . "_variant_aes.m3u8";
+$tsSegmentPath1080p = getSegmentOutputPath($outputPath, $combinedTsDrm1080p->getOutputs()[0]->getOutputPath());
 $tsSegmentPath720p = getSegmentOutputPath($outputPath, $combinedTsDrm720p->getOutputs()[0]->getOutputPath());
+$tsSegmentPath480p = getSegmentOutputPath($outputPath, $combinedTsDrm480p->getOutputs()[0]->getOutputPath());
+$tsSegmentPath360p = getSegmentOutputPath($outputPath, $combinedTsDrm360p->getOutputs()[0]->getOutputPath());
+$tsSegmentPath240p = getSegmentOutputPath($outputPath, $combinedTsDrm240p->getOutputs()[0]->getOutputPath());
 
 //Create a Variant Stream for Video
-$videoStreamInfo720p = createHlsVariantStreamInfoForDrm($encoding, $videoStream720p, $combinedTsMuxing720p, $combinedTsDrm720p, $tsSegmentPath720p, $variantStreamUri720p);
+$videoStreamInfo1080p = createHlsVariantStreamInfoForDrm($encoding, $videoStream1080p, $combinedtsMuxing1080p, $combinedTsDrm1080p, $tsSegmentPath1080p, $variantStreamUri1080p);
+$videoStreamInfo720p = createHlsVariantStreamInfoForDrm($encoding, $videoStream720p, $combinedtsMuxing720p, $combinedTsDrm720p, $tsSegmentPath720p, $variantStreamUri720p);
+$videoStreamInfo480p = createHlsVariantStreamInfoForDrm($encoding, $videoStream480p, $combinedtsMuxing480p, $combinedTsDrm480p, $tsSegmentPath480p, $variantStreamUri480p);
+$videoStreamInfo360p = createHlsVariantStreamInfoForDrm($encoding, $videoStream360p, $combinedtsMuxing360p, $combinedTsDrm360p, $tsSegmentPath360p, $variantStreamUri360p);
+$videoStreamInfo240p = createHlsVariantStreamInfoForDrm($encoding, $videoStream240p, $combinedtsMuxing240p, $combinedTsDrm240p, $tsSegmentPath240p, $variantStreamUri240p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo1080p);
 $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo720p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo480p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo360p);
+$apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $videoStreamInfo240p);
 
 //Start Manifest Creation
 $response = $apiClient->manifests()->hls()->start($masterPlaylist);
