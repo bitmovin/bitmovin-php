@@ -13,6 +13,11 @@ class H265VideoCodecConfiguration extends VideoConfiguration
      */
     private $profile;
     /**
+     * @JMS\Type("float")
+     * @var  float
+     */
+    private $crf;
+    /**
      * @JMS\Type("integer")
      * @var  integer
      */
@@ -26,12 +31,7 @@ class H265VideoCodecConfiguration extends VideoConfiguration
      * @JMS\Type("integer")
      * @var  integer
      */
-    private $qpMin;
-    /**
-     * @JMS\Type("integer")
-     * @var  integer
-     */
-    private $qpMax;
+    private $qp;
     /**
      * @JMS\Type("integer")
      * @var  integer
@@ -48,35 +48,10 @@ class H265VideoCodecConfiguration extends VideoConfiguration
      */
     private $bufsize;
     /**
-     * @JMS\Type("integer")
-     * @var  integer
-     */
-    private $minGop;
-    /**
-     * @JMS\Type("integer")
-     * @var  integer
-     */
-    private $maxGop;
-    /**
-     * @JMS\Type("string")
-     * @var  string MvPredictionMode
-     */
-    private $mvPredictionMode;
-    /**
-     * @JMS\Type("integer")
-     * @var  integer Range: 16-24
-     */
-    private $mvSearchRangeMax;
-    /**
      * @JMS\Type("string")
      * @var  string H265Level
      */
     private $level;
-    /**
-     * @JMS\Type("boolean")
-     * @var  boolean
-     */
-    private $cabac;
     /**
      * @JMS\Type("integer")
      * @var  integer
@@ -144,6 +119,42 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     private $sao;
 
     /**
+     * @JMS\Type("float")
+     * @var  float
+     */
+    private $minKeyFrameInterval;
+
+    /**
+     * @JMS\Type("float")
+     * @var  float
+     */
+    private $maxKeyFrameInterval;
+
+    /**
+     * @JMS\Type("string")
+     * @var  string  MasterDisplay
+     */
+    private $masterDisplay;
+
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $maxContentLightLevel;
+
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $maxPictureAverageLightLevel;
+
+    /**
+     * @JMS\Type("boolean")
+     * @var  boolean
+     */
+    private $hdr;
+
+    /**
      * Constructor.
      *
      * @param string $name
@@ -171,6 +182,22 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     public function setProfile($profile)
     {
         $this->profile = $profile;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCrf()
+    {
+        return $this->crf;
+    }
+
+    /**
+     * @param float $rate
+     */
+    public function setCrf($crf)
+    {
+        $this->crf = $crf;
     }
 
     /**
@@ -240,33 +267,17 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     /**
      * @return int
      */
-    public function getQpMin()
+    public function getQp()
     {
-        return $this->qpMin;
+        return $this->qp;
     }
 
     /**
      * @param int $qpMin
      */
-    public function setQpMin($qpMin)
+    public function setQp($qp)
     {
-        $this->qpMin = $qpMin;
-    }
-
-    /**
-     * @return int
-     */
-    public function getQpMax()
-    {
-        return $this->qpMax;
-    }
-
-    /**
-     * @param int $qpMax
-     */
-    public function setQpMax($qpMax)
-    {
-        $this->qpMax = $qpMax;
+        $this->qp = $qp;
     }
 
     /**
@@ -286,83 +297,11 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     }
 
     /**
-     * @return int
-     */
-    public function getMinGop()
-    {
-        return $this->minGop;
-    }
-
-    /**
-     * @param int $minGop
-     */
-    public function setMinGop($minGop)
-    {
-        $this->minGop = $minGop;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxGop()
-    {
-        return $this->maxGop;
-    }
-
-    /**
-     * @param int $maxGop
-     */
-    public function setMaxGop($maxGop)
-    {
-        $this->maxGop = $maxGop;
-    }
-
-    /**
      * @return string
      */
     public function getMvPredictionMode()
     {
         return $this->mvPredictionMode;
-    }
-
-    /**
-     * @param string $mvPredictionMode
-     */
-    public function setMvPredictionMode($mvPredictionMode)
-    {
-        $this->mvPredictionMode = $mvPredictionMode;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMvSearchRangeMax()
-    {
-        return $this->mvSearchRangeMax;
-    }
-
-    /**
-     * @param int $mvSearchRangeMax
-     */
-    public function setMvSearchRangeMax($mvSearchRangeMax)
-    {
-        $this->mvSearchRangeMax = $mvSearchRangeMax;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isCabac()
-    {
-        return $this->cabac;
-    }
-
-    /**
-     * @param boolean $cabac
-     */
-    public function setCabac($cabac)
-    {
-        $this->cabac = $cabac;
     }
 
     /**
@@ -555,6 +494,102 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     public function setSao($sao)
     {
         $this->sao = $sao;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMinKeyFrameInterval()
+    {
+        return $this->minKeyFrameInterval;
+    }
+
+    /**
+     * @param float $rate
+     */
+    public function setMinKeyFrameInterval($minKeyFrameInterval)
+    {
+        $this->minKeyFrameInterval = $minKeyFrameInterval;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMaxKeyFrameInterval()
+    {
+        return $this->maxKeyFrameInterval;
+    }
+
+    /**
+     * @param float $rate
+     */
+    public function setMaxKeyFrameInterval($maxKeyFrameInterval)
+    {
+        $this->maxKeyFrameInterval = $maxKeyFrameInterval;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMasterDisplay()
+    {
+        return $this->masterDisplay;
+    }
+
+    /**
+     * @param string $masterDisplay
+     */
+    public function setMasterDisplay($masterDisplay)
+    {
+        $this->masterDisplay = $masterDisplay;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxContentLightLevel()
+    {
+        return $this->maxContentLightLevel;
+    }
+
+    /**
+     * @param int $maxContentLightLevel
+     */
+    public function setMaxContentLightLevel($maxContentLightLevel)
+    {
+        $this->maxContentLightLevel = $maxContentLightLevel;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxPictureAverageLightLevel()
+    {
+        return $this->maxPictureAverageLightLevel;
+    }
+
+    /**
+     * @param int $maxPictureAverageLightLevel
+     */
+    public function setMaxPictureAverageLightLevel($maxPictureAverageLightLevel)
+    {
+        $this->maxPictureAverageLightLevel = $maxPictureAverageLightLevel;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isHdr()
+    {
+        return $this->hdr;
+    }
+
+    /**
+     * @param boolean $hdr
+     */
+    public function setHdr($hdr)
+    {
+        $this->hdr = $hdr;
     }
 
 }
