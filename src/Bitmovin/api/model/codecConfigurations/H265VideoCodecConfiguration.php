@@ -273,7 +273,7 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     }
 
     /**
-     * @param int $qpMin
+     * @param int $qp
      */
     public function setQp($qp)
     {
