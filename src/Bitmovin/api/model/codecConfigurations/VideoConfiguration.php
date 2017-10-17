@@ -30,6 +30,18 @@ abstract class VideoConfiguration extends CodecConfiguration
     private $height;
 
     /**
+     * @JMS\Type("Bitmovin\api\model\codecConfigurations\ColorConfig")
+     * @var  ColorConfig
+     */
+    private $colorConfig;
+
+    /**
+     * @JMS\Type("string")
+     * @var  string PixelFormat
+     */
+    private $pixelFormat;
+
+    /**
      * Constructor.
      *
      * @param string $name
@@ -105,6 +117,38 @@ abstract class VideoConfiguration extends CodecConfiguration
     public function setHeight($height)
     {
         $this->height = $height;
+    }
+
+    /**
+     * @return ColorConfig
+     */
+    public function getColorConfig()
+    {
+        return $this->colorConfig;
+    }
+
+    /**
+     * @param ColorConfig $colorConfig
+     */
+    public function setColorConfig($colorConfig)
+    {
+        $this->colorConfig = $colorConfig;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPixelFormat()
+    {
+        return $this->pixelFormat;
+    }
+
+    /**
+     * @param string $pixelFormat
+     */
+    public function setPixelFormat($pixelFormat)
+    {
+        $this->pixelFormat = $pixelFormat;
     }
 
 }
