@@ -119,6 +119,18 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     private $sao;
 
     /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $minGop;
+
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $maxGop;
+
+    /**
      * @JMS\Type("float")
      * @var  float
      */
@@ -497,6 +509,38 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     }
 
     /**
+     * @return int
+     */
+    public function getMinGop()
+    {
+        return $this->minGop;
+    }
+
+    /**
+     * @param int $minGop
+     */
+    public function setMinGop($minGop)
+    {
+        $this->minGop = $minGop;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxGop()
+    {
+        return $this->maxGop;
+    }
+
+    /**
+     * @param int $maxGop
+     */
+    public function setMaxGop($maxGop)
+    {
+        $this->maxGop = $maxGop;
+    }
+
+    /**
      * @return float
      */
     public function getMinKeyFrameInterval()
@@ -505,7 +549,7 @@ class H265VideoCodecConfiguration extends VideoConfiguration
     }
 
     /**
-     * @param float $rate
+     * @param float $minKeyFrameInterval
      */
     public function setMinKeyFrameInterval($minKeyFrameInterval)
     {
