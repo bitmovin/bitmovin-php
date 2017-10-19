@@ -5,6 +5,7 @@ namespace Bitmovin\configs\video;
 
 
 use Bitmovin\api\enum\codecConfigurations\H264Profile;
+use Bitmovin\api\model\codecConfigurations\ColorConfig;
 
 class H264VideoStreamConfig extends AbstractVideoStreamConfig
 {
@@ -64,5 +65,13 @@ class H264VideoStreamConfig extends AbstractVideoStreamConfig
     /**
      * @var  string H264Level
      */
-    public $level; 
+    public $level;
+    /**
+     * @var  ColorConfig
+     */
+    public $colorConfig;
+    /**
+     * @var  string PixelFormat
+     */
+    public $pixelFormat;  
 }

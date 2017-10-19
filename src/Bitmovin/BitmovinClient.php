@@ -320,6 +320,8 @@ class BitmovinClient
                     $config->setMinGop($codec->minGop);
                     $config->setMaxGop($codec->maxGop);
                     $config->setLevel($codec->level);
+                    $config->setColorConfig($codec->colorConfig);
+                    $config->setPixelFormat($codec->pixelFormat);
 
                     $codecConfigContainer->apiCodecConfiguration = $this->apiClient->codecConfigurations()->videoH264()->create($config);
                 }
