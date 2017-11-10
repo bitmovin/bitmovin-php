@@ -27,10 +27,10 @@ use Bitmovin\api\model\outputs\S3Output;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-define("BITRATE_ADJUSTMENT_UPPER_BOUNDARY", (float)1.5);
-define("BITRATE_ADJUSTMENT_LOWER_BOUNDARY", (float)0.5);
-define("COMPLEXITY_MEDIAN_VALUE", 500000);
-define("ENCODING_STATUS_REFRESH_RATE", 10);
+const BITRATE_ADJUSTMENT_UPPER_BOUNDARY = 1.5;
+const BITRATE_ADJUSTMENT_LOWER_BOUNDARY = 0.5;
+const COMPLEXITY_MEDIAN_VALUE = 500000;
+const ENCODING_STATUS_REFRESH_RATE = 10;
 
 $bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
 $uniqueId = time() . "-" . uniqid();
@@ -58,13 +58,13 @@ $videoFiles = array(
 );
 
 $bitrateLadderEntries = array(
-    array("codec" => "h264", "height" => 1080, "bitrate" => 4300000, "profile" => H264Profile::HIGH, "highComplexityImpact" => (float)0.3, "lowComplexityImpact" => (float)1.5),
-    array("codec" => "h264", "height" => 720, "bitrate" => 2500000, "profile" => H264Profile::HIGH, "highComplexityImpact" => (float)0.4, "lowComplexityImpact" => (float)1.3),
-    array("codec" => "h264", "height" => 720, "bitrate" => 1900000, "profile" => H264Profile::HIGH, "highComplexityImpact" => (float)0.45, "lowComplexityImpact" => (float)1),
-    array("codec" => "h264", "height" => 540, "bitrate" => 1300000, "profile" => H264Profile::HIGH, "highComplexityImpact" => (float)0.9, "lowComplexityImpact" => (float)0.9),
-    array("codec" => "h264", "height" => 360, "bitrate" => 800000, "profile" => H264Profile::HIGH, "highComplexityImpact" => (float)1, "lowComplexityImpact" => (float)0.45),
-    array("codec" => "h264", "height" => 270, "bitrate" => 450000, "profile" => H264Profile::HIGH, "highComplexityImpact" => (float)1.3, "lowComplexityImpact" => (float)0.4),
-    array("codec" => "h264", "height" => 180, "bitrate" => 260000, "profile" => H264Profile::HIGH, "highComplexityImpact" => (float)1.5, "lowComplexityImpact" => (float)0.3)
+    array("codec" => "h264", "height" => 1080, "bitrate" => 4300000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 0.3, "lowComplexityImpact" => 1.5),
+    array("codec" => "h264", "height" => 720, "bitrate" => 2500000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 0.4, "lowComplexityImpact" => 1.3),
+    array("codec" => "h264", "height" => 720, "bitrate" => 1900000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 0.45, "lowComplexityImpact" => 1.0),
+    array("codec" => "h264", "height" => 540, "bitrate" => 1300000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 0.9, "lowComplexityImpact" => 0.9),
+    array("codec" => "h264", "height" => 360, "bitrate" => 800000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 1.0, "lowComplexityImpact" => 0.45),
+    array("codec" => "h264", "height" => 270, "bitrate" => 450000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 1.3, "lowComplexityImpact" => 0.4),
+    array("codec" => "h264", "height" => 180, "bitrate" => 260000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 1.5, "lowComplexityImpact" => 0.3)
 );
 $audioEncodingProfiles = array(
     array("codec" => "aac", "bitrate" => 128000)
@@ -203,10 +203,12 @@ try
 catch (BitmovinException $e)
 {
     var_dump("Bitmovin Exception", $e->getMessage(), $e->getDeveloperMessage());
+    exit(1);
 }
 catch (Exception $e)
 {
     var_dump($e->getMessage());
+    exit(1);
 }
 
 //#####################################################################################################################
@@ -218,7 +220,7 @@ catch (Exception $e)
  */
 function generateBitrateAdjustmentFactorForMuxing(FMP4Muxing $muxing, $encodingProfile)
 {
-    $adjustmentFactor = (float)1.0;
+    $adjustmentFactor = 1.0;
     $avgBitrate = $muxing->getAvgBitrate();
     $complexityImpact = 1;
 
@@ -228,8 +230,8 @@ function generateBitrateAdjustmentFactorForMuxing(FMP4Muxing $muxing, $encodingP
         return $adjustmentFactor;
     }
 
-    $contentComplexity = (float)$avgBitrate / (float)COMPLEXITY_MEDIAN_VALUE;
-    if ($contentComplexity < (float)1)
+    $contentComplexity = (float)$avgBitrate / COMPLEXITY_MEDIAN_VALUE;
+    if ($contentComplexity < 1.0)
     {
         $complexityImpact = $encodingProfile['lowComplexityImpact'];
         $adjustmentFactor = 1 - (1 - $contentComplexity) * $complexityImpact;
