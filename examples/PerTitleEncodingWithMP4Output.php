@@ -32,7 +32,7 @@ const BITRATE_ADJUSTMENT_LOWER_BOUNDARY = 0.5;
 const COMPLEXITY_MEDIAN_VALUE = 500000;
 const ENCODING_STATUS_REFRESH_RATE = 10;
 
-$bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
+/*$bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
 $uniqueId = time() . "-" . uniqid();
 $encodingName = 'Per-Title-Encoding with MP4 Output #' . $uniqueId;
 
@@ -54,6 +54,31 @@ $videoFiles = array(
         'encodingName' => $uniqueId . ' ' . 'Encoding Name #2',
         'inputPath'    => 'path/to/your/input-file-2.mp4',
         'outputPath'   => 'path/to/your/encoding-output-destination/' . $uniqueId . '/'
+    )
+);*/
+
+$bitmovinApiKey = 'd38b9d5f-f370-4f65-b23e-df00bb28e62a';
+$uniqueId = uniqid();
+$encodingName = 'Per-Title-Encoding with MP4 #' . $uniqueId;
+
+$inputS3AccessKey = 'AKIAJXJDN2Y4DC5V42OQ';
+$inputS3SecretKey = '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';
+$inputS3Bucketname = 'bitmovin-api-eu-west1-ci-input';
+
+$outputS3AccessKey = 'AKIAIGBZ5CDU2P2UMGMA';
+$outputS3SecretKey = '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';
+$outputS3Bucketname = 'bitmovin-api-eu-west1-ci';
+
+$videoFiles = array(
+    array(
+        'encodingName' => $uniqueId . ' ' . ' Caminandes',
+        'inputPath'    => 'per-title-encoding-test-inputs/1080p_Caminandes_3.mp4',
+        'outputPath'   => 'gzw-per-title-encoding-api-client-example/' . $uniqueId . '-caminandes/'
+    ),
+    array(
+        'encodingName' => $uniqueId . ' ' . 'Sintel',
+        'inputPath'    => 'per-title-encoding-test-inputs/Sintel.2010.1080p.mkv',
+        'outputPath'   => 'gzw-per-title-encoding-api-client-example/' . $uniqueId . '-sintel-40-17/'
     )
 );
 
