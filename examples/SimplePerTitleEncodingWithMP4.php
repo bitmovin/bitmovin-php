@@ -34,7 +34,7 @@ define("ENCODING_STATUS_REFRESH_RATE", 10);
 
 $bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
 $uniqueId = time() . "-" . uniqid();
-$encodingName = 'Per-Title-Encoding with MP4 #' . $uniqueId;
+$encodingName = 'Per-Title-Encoding with MP4 Output #' . $uniqueId;
 
 $inputS3AccessKey = 'YOUR_AWS_S3_ACCESS_KEY';
 $inputS3SecretKey = 'YOUR_AWS_S3_SECRET_KEY';
@@ -87,18 +87,18 @@ try
     $output->setName("AWS S3 Output Bucket");
     $output = $apiClient->outputs()->s3()->create($output);
 
-    //CREATE CRF ENCODINGS
+    //Create encoding to calculate the complexity factor
     $activeCrfEncodings = array();
     foreach ($videoFiles as $key => $videoFile)
     {
         $inputPath = $videoFile['inputPath'];
         $outputPath = $videoFile['outputPath'];
-        $encodingName = "CRF | " . $videoFile['encodingName'];
-        //RUN CRF ENCODING
-        $videoFiles[$key]['crfEncoding'] = runFastCrfEncoding($apiClient, $encodingName, $input, $inputPath, $output, $outputPath);
+        $encodingName = "Complexity Factor | " . $videoFile['encodingName'];
+        //Run encoding to calculate the complexity factor
+        $videoFiles[$key]['complexityFactorEncoding'] = runFastCrfEncoding($apiClient, $encodingName, $input, $inputPath, $output, $outputPath);
     }
 
-    //WAIT UNTIL ALL CRF ENCODINGS ARE FINISHED
+    //Wait until all Complexity Factor encodings are finished
     $allCrfFinished = false;
     do
     {
@@ -106,7 +106,7 @@ try
         foreach ($videoFiles as $key => $videoFile)
         {
             /** @var Encoding $currentCrfEncoding */
-            $currentCrfEncoding = $videoFile['crfEncoding'];
+            $currentCrfEncoding = $videoFile['complexityFactorEncoding'];
             $status = $apiClient->encodings()->status($currentCrfEncoding);
             $isRunning = !in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
             $states[] = $isRunning;
@@ -124,11 +124,11 @@ try
     foreach ($videoFiles as $videoFile)
     {
         /** @var Encoding $currentCrfEncoding */
-        $currentCrfEncoding = $videoFile['crfEncoding'];
+        $currentCrfEncoding = $videoFile['complexityFactorEncoding'];
         $inputPath = $videoFile['inputPath'];
         $outputPath = $videoFile['outputPath'];
         $encodingName = "Per Title | " . $videoFile['encodingName'];
-        $crfMuxing = $apiClient->encodings()->muxings($videoFile['crfEncoding'])->fmp4Muxing()->listPage()[0];
+        $crfMuxing = $apiClient->encodings()->muxings($videoFile['complexityFactorEncoding'])->fmp4Muxing()->listPage()[0];
 
         // CREATE ENCODING
         $encoding = new Encoding($encodingName);
@@ -144,7 +144,7 @@ try
             if ($bitrateLadderEntry["codec"] !== "h264")
                 continue;
 
-            $mp4MuxingOutputPath = $outputPath . 'mp4-per-title/';
+            $mp4MuxingOutputPath = $outputPath;
             $videoEncodingConfig = array();
             $codecConfigurationVideo = null;
             $codecConfigName = $bitrateLadderEntry["codec"] . "_codecconfig_" . $bitrateLadderEntry["bitrate"];
@@ -255,7 +255,7 @@ function generateBitrateAdjustmentFactorForMuxing(FMP4Muxing $muxing, $encodingP
  * @return Encoding
  * @throws BitmovinException
  */
-function runFastCrfEncoding(ApiClient $apiClient, $encodingName = "Fast CRF Encoding", Input $input, $inputPath, Output $output, $outputPath)
+function runFastCrfEncoding(ApiClient $apiClient, $encodingName = "Fast Complexity Factor Encoding", Input $input, $inputPath, Output $output, $outputPath)
 {
     // CREATE CRF ENCODING
     $crfEncoding = new Encoding($encodingName);
