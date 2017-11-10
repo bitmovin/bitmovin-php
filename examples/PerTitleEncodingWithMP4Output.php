@@ -57,19 +57,6 @@ $videoFiles = array(
     )
 );
 
-$videoFiles = array(
-    array(
-        'encodingName' => $uniqueId . ' ' . ' Caminandes',
-        'inputPath'    => 'per-title-encoding-test-inputs/1080p_Caminandes_3.mp4',
-        'outputPath'   => 'gzw-per-title-encoding-api-client-example/' . $uniqueId . '-caminandes/'
-    ),
-    array(
-        'encodingName' => $uniqueId . ' ' . 'Sintel',
-        'inputPath'    => 'per-title-encoding-test-inputs/Sintel.2010.1080p.mkv',
-        'outputPath'   => 'gzw-per-title-encoding-api-client-example/' . $uniqueId . '-sintel-40-17/'
-    )
-);
-
 $bitrateLadderEntries = array(
     array("codec" => "h264", "height" => 1080, "bitrate" => 4300000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 0.3, "lowComplexityImpact" => 1.5),
     array("codec" => "h264", "height" => 720, "bitrate" => 2500000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 0.4, "lowComplexityImpact" => 1.3),
