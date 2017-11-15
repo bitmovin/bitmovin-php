@@ -40,8 +40,8 @@ const COMPLEXITY_MEDIAN_VALUE = 500000;
 const ENCODING_STATUS_REFRESH_RATE = 10;
 
 $bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
-$uniqueId = time() . "-" . uniqid();
-$encodingName = 'Per-Title-Encoding with MP4 Output #' . $uniqueId;
+$uniqueId = uniqid();
+$encodingName = 'Per-Title-Encoding with MP4/FMP4 Output #' . $uniqueId;
 
 $inputS3AccessKey = 'YOUR_AWS_S3_ACCESS_KEY';
 $inputS3SecretKey = 'YOUR_AWS_S3_SECRET_KEY';
