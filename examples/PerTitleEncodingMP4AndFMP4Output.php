@@ -173,9 +173,7 @@ try
 
         $audioStreams = array();
         foreach ($audioEncodingConfigs as $audioEncodingConfig)
-        {
             $audioStreams[] = $audioEncodingConfig['stream'];
-        }
 
         // CREATE VIDEO CODEC CONFIGURATIONS
         foreach ($bitrateLadderEntries as $bitrateLadderEntry)
