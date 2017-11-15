@@ -33,7 +33,7 @@ const COMPLEXITY_MEDIAN_VALUE = 500000;
 const ENCODING_STATUS_REFRESH_RATE = 10;
 
 $bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
-$uniqueId = time() . "-" . uniqid();
+$uniqueId = uniqid();
 $encodingName = 'Per-Title-Encoding with MP4 Output #' . $uniqueId;
 
 $inputS3AccessKey = 'YOUR_AWS_S3_ACCESS_KEY';
@@ -44,16 +44,17 @@ $outputS3AccessKey = 'YOUR_AWS_S3_ACCESS_KEY';
 $outputS3SecretKey = 'YOUR_AWS_S3_SECRET_KEY';
 $outputS3Bucketname = 'YOUR_AWS_S3_BUCKET_NAME';
 
+$baseOutputPath = "your/base/output/path/";
 $videoFiles = array(
     array(
-        'encodingName' => $uniqueId . ' ' . 'Encoding Name #1',
+        'encodingName' => 'Video-1',
         'inputPath'    => 'path/to/your/input-file-1.mp4',
-        'outputPath'   => 'path/to/your/encoding-output-destination/' . $uniqueId . '/'
+        'outputPath'   => $baseOutputPath . '/video-1/'
     ),
     array(
-        'encodingName' => $uniqueId . ' ' . 'Encoding Name #2',
+        'encodingName' => 'Video-2',
         'inputPath'    => 'path/to/your/input-file-2.mp4',
-        'outputPath'   => 'path/to/your/encoding-output-destination/' . $uniqueId . '/'
+        'outputPath'   => $baseOutputPath . '/video-2/'
     )
 );
 
@@ -118,16 +119,15 @@ try
     } while (!$allCrfFinished);
 
     //START PER TITLE ENCODINGS
-    $staticVideoEncodingConfigs = array();
-    $perTitleVideoEncodingConfigs = array();
-    $activeEncodings = array();
-    foreach ($videoFiles as $videoFile)
+    foreach ($videoFiles as $key => $videoFile)
     {
+        $videoEncodingConfigs = array();
+
         /** @var Encoding $currentCrfEncoding */
         $currentCrfEncoding = $videoFile['complexityFactorEncoding'];
         $inputPath = $videoFile['inputPath'];
         $outputPath = $videoFile['outputPath'];
-        $encodingName = "Per Title | " . $videoFile['encodingName'];
+        $encodingName = $videoFile['encodingName'];
         $crfMuxing = $apiClient->encodings()->muxings($videoFile['complexityFactorEncoding'])->fmp4Muxing()->listPage()[0];
 
         // CREATE ENCODING
@@ -137,6 +137,31 @@ try
 
         //CREATE VIDEO/AUDIO INPUT STREAMS
         $inputStreamVideo = new InputStream($input, $inputPath, SelectionMode::AUTO);
+        $inputStreamAudio = new InputStream($input, $inputPath, SelectionMode::AUTO);
+
+        //CREATE AUDIO CODEC CONFIGURATIONS
+        $audioEncodingConfigs = array();
+        foreach ($audioEncodingProfiles as $encodingProfile)
+        {
+            if ($encodingProfile["codec"] !== "aac")
+                continue;
+
+            $audioEncodingConfig = array();
+            $audioEncodingConfig['profile'] = $encodingProfile;
+            $audioCodecConfigName = $encodingProfile["codec"] . "_" . $encodingProfile["bitrate"];
+
+            //CREATE AUDIO CODEC CONFIGURATION
+            $audioEncodingConfig['codec'] = createAACAudioCodecConfiguration($apiClient, $audioCodecConfigName, $encodingProfile["bitrate"]);
+            // CREATE AUDIO STREAM
+            $audioStream = new Stream($audioEncodingConfig['codec'], array($inputStreamAudio));
+            $audioEncodingConfig['stream'] = $apiClient->encodings()->streams($encoding)->create($audioStream);
+            $audioEncodingConfigs[] = $audioEncodingConfig;
+        }
+        $videoFiles[$key]['audioEncodingConfigs'] = $audioEncodingConfigs;
+
+        $audioStreams = array();
+        foreach ($audioEncodingConfigs as $audioEncodingConfig)
+            $audioStreams[] = $audioEncodingConfig['stream'];
 
         // CREATE VIDEO CODEC CONFIGURATIONS
         foreach ($bitrateLadderEntries as $bitrateLadderEntry)
@@ -144,13 +169,11 @@ try
             if ($bitrateLadderEntry["codec"] !== "h264")
                 continue;
 
-            $mp4MuxingOutputPath = $outputPath;
-            $videoEncodingConfig = array();
-            $codecConfigurationVideo = null;
-            $codecConfigName = $bitrateLadderEntry["codec"] . "_codecconfig_" . $bitrateLadderEntry["bitrate"];
-            $videoEncodingConfig['profile'] = $bitrateLadderEntry;
             $width = null;
             $height = null;
+            $videoEncodingConfig = array();
+            $videoEncodingConfig['profile'] = $bitrateLadderEntry;
+            $codecConfigName = $bitrateLadderEntry["codec"] . "_" . $bitrateLadderEntry["bitrate"];
 
             if (key_exists("width", $bitrateLadderEntry))
             {
@@ -161,43 +184,51 @@ try
                 $height = $bitrateLadderEntry["height"];
             }
 
-            $encodingOutput = new EncodingOutput($output);
-            $encodingOutput->setOutputPath($mp4MuxingOutputPath);
-            $encodingOutput->setAcl(array(new Acl(AclPermission::ACL_PUBLIC_READ)));
+            //DEFINE MUXING OUTPUT PATH
+            $mp4MuxingOutputPath = $outputPath . 'mp4/';
+            $mp4MuxingFilename = $videoEncodingConfig['profile']['bitrate'] . '.mp4';
 
             $adjustmentFactor = generateBitrateAdjustmentFactorForMuxing($crfMuxing, $bitrateLadderEntry);
 
             //Created MP4 Muxing with adjusted Bitrate
             $adjustedBitrate = ((int)$bitrateLadderEntry['bitrate'] * $adjustmentFactor);
-            $videoEncodingConfig['origin_brl'] = $bitrateLadderEntry;
+            //CREATE VIDEO CODEC CONFIGURATION
             $videoEncodingConfig['codec'] = createH264VideoCodecConfiguration($apiClient, $codecConfigName, $bitrateLadderEntry["profile"], $adjustedBitrate, $width, $height);
+            //CREATE VIDEO STREAM
             $videoEncodingConfig['stream'] = createStream($apiClient, $encoding, $videoEncodingConfig['codec'], $inputStreamVideo);
-            $mp4MuxingFilename = $videoEncodingConfig['origin_brl']['bitrate'] . '.mp4';
-            $videoEncodingConfig['mp4_muxing'] = createMp4Muxing($apiClient, $encoding, $mp4MuxingFilename, array($videoEncodingConfig['stream']), $encodingOutput);
-            $perTitleVideoEncodingConfigs[$encoding->getId()][] = $videoEncodingConfig;
+            //CREATE MP4 MUXING
+            $streams = array_merge(array($videoEncodingConfig['stream']), $audioStreams);
+            $videoEncodingConfig['mp4_muxing'] = createMp4Muxing($apiClient, $encoding, $mp4MuxingFilename, $streams, $output, $mp4MuxingOutputPath);
+            $videoEncodingConfigs[] = $videoEncodingConfig;
         }
 
         // START THE ENCODING PROCESS
+        $videoFiles[$key]['videoEncodingConfigs'] = $videoEncodingConfigs;
+
         $apiClient->encodings()->start($encoding);
-        $activeEncodings[] = $encoding;
+        $videoFiles[$key]['encoding'] = $encoding;
     }
 
-    //WAIT UNTIL ALL PER-TITLE ENCODINGS ARE FINISHED
+    //WAIT UNTIL ALL ENCODINGS ARE FINISHED
     $allFinished = false;
     do
     {
         $states = array();
-        foreach ($activeEncodings as $activeEncoding)
+        foreach ($videoFiles as $videoFile)
         {
-            $status = $apiClient->encodings()->status($activeEncoding);
+            /** @var Encoding $currentEncoding */
+            $currentEncoding = $videoFile['encoding'];
+            $status = $apiClient->encodings()->status($currentEncoding);
             $isRunning = !in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
             $states[] = $isRunning;
             $currentTimestamp = date_create(null, new DateTimeZone('UTC'))->getTimestamp();
-            echo $currentTimestamp . ": " . $activeEncoding->getName() . " => " . $status->getStatus() . "\n";
-
+            echo $currentTimestamp . ": " . $currentEncoding->getName() . " => " . $status->getStatus() . "\n";
         }
         $allFinished = !in_array(true, $states);
-        sleep(ENCODING_STATUS_REFRESH_RATE);
+
+        if (!$allFinished)
+            sleep(ENCODING_STATUS_REFRESH_RATE);
+
     } while (!$allFinished);
 }
 catch (BitmovinException $e)
@@ -327,17 +358,20 @@ function createStream(ApiClient $apiClient, Encoding $encoding, H264VideoCodecCo
 }
 
 /**
- * @param ApiClient      $apiClient
- * @param Encoding       $encoding
- * @param string         $filename
- * @param Stream[]       $streams
- * @param EncodingOutput $encodingOutput
+ * @param ApiClient $apiClient
+ * @param Encoding  $encoding
+ * @param string    $filename
+ * @param Stream[]  $streams
+ * @param Output    $output
+ * @param           $outputPath
+ * @param string    $outputAcl
  * @return MP4Muxing
  * @throws BitmovinException
  */
-function createMp4Muxing(ApiClient $apiClient, Encoding $encoding, $filename, array $streams, EncodingOutput $encodingOutput)
+function createMp4Muxing(ApiClient $apiClient, Encoding $encoding, $filename, array $streams, Output $output, $outputPath, $outputAcl = AclPermission::ACL_PUBLIC_READ)
 {
     $muxingStreams = array();
+    $encodingOutputs = null;
 
     foreach ($streams as $stream)
     {
@@ -346,12 +380,58 @@ function createMp4Muxing(ApiClient $apiClient, Encoding $encoding, $filename, ar
         $muxingStreams[] = $muxingStream;
     }
 
+    if (!is_null($output))
+    {
+        $encodingOutput = new EncodingOutput($output);
+        $encodingOutput->setOutputPath($outputPath);
+        $encodingOutput->setAcl(array(new Acl($outputAcl)));
+        $encodingOutputs[] = $encodingOutput;
+    }
+
     $muxing = new MP4Muxing();
     $muxing->setFilename($filename);
-    $muxing->setOutputs(array($encodingOutput));
+    $muxing->setOutputs($encodingOutputs);
     $muxing->setStreams($muxingStreams);
 
     return $apiClient->encodings()->muxings($encoding)->mp4Muxing()->create($muxing);
+}
+
+/**
+ * @param ApiClient $apiClient
+ * @param Encoding  $encoding
+ * @param Stream    $stream
+ * @param Output    $output
+ * @param string    $outputPath
+ *
+ * @param string    $outputAcl
+ * @param string    $initSegmentName
+ * @param int       $segmentDuration
+ * @param string    $segmentNaming
+ * @return FMP4Muxing
+ * @throws BitmovinException
+ */
+function createFmp4Muxing($apiClient, $encoding, $stream, $output, $outputPath, $outputAcl = AclPermission::ACL_PUBLIC_READ, $initSegmentName = 'init.mp4', $segmentDuration = 4, $segmentNaming = 'segment_%number%.m4s')
+{
+    $muxingStream = new MuxingStream();
+    $muxingStream->setStreamId($stream->getId());
+    $encodingOutputs = null;
+
+    if (!is_null($output))
+    {
+        $encodingOutput = new EncodingOutput($output);
+        $encodingOutput->setOutputPath($outputPath);
+        $encodingOutput->setAcl(array(new Acl($outputAcl)));
+        $encodingOutputs[] = $encodingOutput;
+    }
+
+    $fmp4Muxing = new FMP4Muxing();
+    $fmp4Muxing->setInitSegmentName($initSegmentName);
+    $fmp4Muxing->setSegmentLength($segmentDuration);
+    $fmp4Muxing->setSegmentNaming($segmentNaming);
+    $fmp4Muxing->setOutputs($encodingOutputs);
+    $fmp4Muxing->setStreams(array($muxingStream));
+
+    return $apiClient->encodings()->muxings($encoding)->fmp4Muxing()->create($fmp4Muxing);
 }
 
 /**

@@ -56,14 +56,15 @@ $videoFiles = array(
     array(
         'encodingName' => 'Video-1',
         'inputPath'    => 'path/to/your/input-file-1.mp4',
-        'outputPath'   => $baseOutputPath . '/video-1/',
+        'outputPath'   => $baseOutputPath . '/video-1/'
     ),
     array(
         'encodingName' => 'Video-2',
         'inputPath'    => 'path/to/your/input-file-2.mp4',
-        'outputPath'   => $baseOutputPath . '/video-2/',
+        'outputPath'   => $baseOutputPath . '/video-2/'
     )
 );
+
 $bitrateLadderEntries = array(
     array("codec" => "h264", "height" => 1080, "bitrate" => 4300000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 0.3, "lowComplexityImpact" => 1.5),
     array("codec" => "h264", "height" => 720, "bitrate" => 2500000, "profile" => H264Profile::HIGH, "highComplexityImpact" => 0.4, "lowComplexityImpact" => 1.3),
