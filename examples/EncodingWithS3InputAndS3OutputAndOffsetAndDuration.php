@@ -36,7 +36,7 @@ use Bitmovin\api\model\outputs\S3Output;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // CREATE API CLIENT
-$apiClient = new ApiClient('e238df1f-5b5b-4ec6-b033-2b766990d3bd');
+$apiClient = new ApiClient('YOUR-BITMOVIN-API-KEY');
 
 // S3 INPUT CONFIGURATION
 $s3InputAccessKey = 'YOUR-AWS-S3-ACCESS-KEY';
