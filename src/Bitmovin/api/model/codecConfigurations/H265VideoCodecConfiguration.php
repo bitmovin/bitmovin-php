@@ -165,6 +165,11 @@ class H265VideoCodecConfiguration extends VideoConfiguration
      * @var  boolean
      */
     private $hdr;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $sceneCutThreshold;
 
     /**
      * Constructor.
@@ -636,4 +641,20 @@ class H265VideoCodecConfiguration extends VideoConfiguration
         $this->hdr = $hdr;
     }
 
+    /**
+     * @return int
+     */
+    public function getSceneCutThreshold()
+    {
+        return $this->sceneCutThreshold;
+    }
+
+    /**
+     * @param int $sceneCutThreshold
+     */
+    public function setSceneCutThreshold($sceneCutThreshold)
+    {
+        $this->sceneCutThreshold = $sceneCutThreshold;
+    }
+    
 }
