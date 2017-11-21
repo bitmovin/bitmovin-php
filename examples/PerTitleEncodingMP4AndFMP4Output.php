@@ -402,12 +402,12 @@ function generateBitrateAdjustmentFactorForMuxing(FMP4Muxing $muxing, $encodingP
     if ($contentComplexity < 1.0)
     {
         $complexityImpact = $encodingProfile['lowComplexityImpact'];
-        $adjustmentFactor = 1 - (1 - $contentComplexity) * $complexityImpact;
+        $adjustmentFactor = 1.0 - (1.0 - $contentComplexity) * $complexityImpact;
     }
     else
     {
         $complexityImpact = $encodingProfile['highComplexityImpact'];
-        $adjustmentFactor = ($contentComplexity - 1) * $complexityImpact + 1;
+        $adjustmentFactor = ($contentComplexity - 1.0) * $complexityImpact + 1.0;
     }
     $adjustmentFactor = min($adjustmentFactor, BITRATE_ADJUSTMENT_UPPER_BOUNDARY);
     $adjustmentFactor = max($adjustmentFactor, BITRATE_ADJUSTMENT_LOWER_BOUNDARY);
