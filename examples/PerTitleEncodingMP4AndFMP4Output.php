@@ -110,7 +110,7 @@ try
     }
 
     //Wait until all Complexity Factor encodings are finished
-    $allCrfFinished = false;
+    $allCrfFinished = true;
     do
     {
         $states = array();
@@ -120,12 +120,14 @@ try
             $currentCrfEncoding = $videoFile['complexityFactorEncoding'];
             $status = $apiClient->encodings()->status($currentCrfEncoding);
             $isFinished = in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
-            $states[] = $isFinished;
+            if (!$isFinished)
+                $allCrfFinished = false;
+
             $currentTimestamp = date_create(null, new DateTimeZone('UTC'))->getTimestamp();
             echo $currentTimestamp . ": " . $currentCrfEncoding->getName() . " => " . $status->getStatus() . "\n";
         }
-        $allCrfFinished = !in_array(false, $states);
-        sleep(ENCODING_STATUS_REFRESH_RATE);
+        if (!$allCrfFinished)
+            sleep(ENCODING_STATUS_REFRESH_RATE);
     } while (!$allCrfFinished);
 
     //START PER TITLE ENCODINGS
@@ -230,7 +232,7 @@ try
     }
 
     //WAIT UNTIL ALL ENCODINGS ARE FINISHED
-    $allFinished = false;
+    $allFinished = true;
     do
     {
         $states = array();
@@ -240,12 +242,14 @@ try
             $currentEncoding = $videoFile['encoding'];
             $status = $apiClient->encodings()->status($currentEncoding);
             $isFinished = in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
-            $states[] = $isFinished;
+            if (!$isFinished)
+                $allFinished = false;
+
             $currentTimestamp = date_create(null, new DateTimeZone('UTC'))->getTimestamp();
             echo $currentTimestamp . ": " . $currentEncoding->getName() . " => " . $status->getStatus() . "\n";
         }
-        $allFinished = !in_array(false, $states);
-        sleep(ENCODING_STATUS_REFRESH_RATE);
+        if (!$allFinished)
+            sleep(ENCODING_STATUS_REFRESH_RATE);
     } while (!$allFinished);
 
     //CREATE DASH MANIFEST
@@ -271,7 +275,7 @@ try
         $manifests[] = $dashManifest;
     }
 
-    $allFinished = false;
+    $allFinished = true;
     do
     {
         $states = array();
@@ -279,12 +283,14 @@ try
         {
             $status = $apiClient->manifests()->dash()->status($manifest);
             $isFinished = in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
-            $states[] = $isFinished;
+            if (!$isFinished)
+                $allFinished = false;
+
             $currentTimestamp = date_create(null, new DateTimeZone('UTC'))->getTimestamp();
             echo $currentTimestamp . ": " . $manifest->getName() . " => " . $status->getStatus() . "\n";
         }
-        $allFinished = !in_array(false, $states);
-        sleep(MANIFEST_STATUS_REFRESH_RATE);
+        if (!$allFinished)
+            sleep(MANIFEST_STATUS_REFRESH_RATE);
     } while (!$allFinished);
     var_dump("Manifests finished");
 }
