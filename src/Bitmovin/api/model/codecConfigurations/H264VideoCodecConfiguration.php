@@ -124,6 +124,11 @@ class H264VideoCodecConfiguration extends VideoConfiguration
      * @var  integer
      */
     private $crf;
+    /**
+     * @JMS\Type("integer")
+     * @var  integer
+     */
+    private $sceneCutThreshold;
 
 
     /**
@@ -507,4 +512,21 @@ class H264VideoCodecConfiguration extends VideoConfiguration
     {
         $this->crf = $crf;
     }
+
+    /**
+     * @return int
+     */
+    public function getSceneCutThreshold()
+    {
+        return $this->sceneCutThreshold;
+    }
+
+    /**
+     * @param int $sceneCutThreshold
+     */
+    public function setSceneCutThreshold($sceneCutThreshold)
+    {
+        $this->sceneCutThreshold = $sceneCutThreshold;
+    }
+
 }
