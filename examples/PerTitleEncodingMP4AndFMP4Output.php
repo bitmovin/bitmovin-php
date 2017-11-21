@@ -42,6 +42,7 @@ const ENCODING_STATUS_REFRESH_RATE = 10;
 $bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
 $uniqueId = uniqid();
 $encodingName = 'Per-Title-Encoding with MP4/FMP4 Output #' . $uniqueId;
+$encodingRegion = CloudRegion::AUTO;
 
 $inputS3AccessKey = 'YOUR_AWS_S3_ACCESS_KEY';
 $inputS3SecretKey = 'YOUR_AWS_S3_SECRET_KEY';
@@ -104,7 +105,7 @@ try
         $outputPath = $videoFile['outputPath'];
         $encodingName = "Complexity Factor | " . $videoFile['encodingName'];
         //Run encoding to calculate the complexity factor
-        $videoFiles[$key]['complexityFactorEncoding'] = runFastCrfEncoding($apiClient, $encodingName, $input, $inputPath, $output, $outputPath);
+        $videoFiles[$key]['complexityFactorEncoding'] = runFastCrfEncoding($apiClient, $encodingName, $encodingRegion, $input, $inputPath, $output, $outputPath);
     }
 
     //Wait until all Complexity Factor encodings are finished
@@ -141,7 +142,7 @@ try
 
         // CREATE ENCODING
         $encoding = new Encoding($encodingName);
-        $encoding->setCloudRegion(CloudRegion::GOOGLE_EUROPE_WEST_1);
+        $encoding->setCloudRegion($encodingRegion);
         $encoding = $apiClient->encodings()->create($encoding);
 
         //CREATE VIDEO/AUDIO INPUT STREAMS
@@ -415,18 +416,19 @@ function generateBitrateAdjustmentFactorForMuxing(FMP4Muxing $muxing, $encodingP
 /**
  * @param ApiClient $apiClient
  * @param string    $encodingName
+ * @param string    $encodingRegion CloudRegion(ENUM)
  * @param Input     $input
- * @param           $inputPath
+ * @param string    $inputPath
  * @param Output    $output
- * @param           $outputPath
+ * @param string    $outputPath
  * @return Encoding
  * @throws BitmovinException
  */
-function runFastCrfEncoding(ApiClient $apiClient, $encodingName = "Fast Complexity Factor Encoding", Input $input, $inputPath, Output $output, $outputPath)
+function runFastCrfEncoding(ApiClient $apiClient, $encodingName = "Fast Complexity Factor Encoding", $encodingRegion, Input $input, $inputPath, Output $output, $outputPath)
 {
     // CREATE CRF ENCODING
     $crfEncoding = new Encoding($encodingName);
-    $crfEncoding->setCloudRegion(CloudRegion::GOOGLE_EUROPE_WEST_1);
+    $crfEncoding->setCloudRegion($encodingRegion);
     $crfEncoding = $apiClient->encodings()->create($crfEncoding);
 
     //CREATE VIDEO/AUDIO INPUT STREAMS
