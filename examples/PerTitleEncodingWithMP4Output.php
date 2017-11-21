@@ -172,6 +172,7 @@ try
 
             $width = null;
             $height = null;
+            $streams = array();
             $videoEncodingConfig = array();
             $videoEncodingConfig['profile'] = $bitrateLadderEntry;
             $codecConfigName = $bitrateLadderEntry["codec"] . "_" . $bitrateLadderEntry["bitrate"];
@@ -198,7 +199,8 @@ try
             //CREATE VIDEO STREAM
             $videoEncodingConfig['stream'] = createStream($apiClient, $encoding, $videoEncodingConfig['codec'], $inputStreamVideo);
             //CREATE MP4 MUXING
-            $streams = array_merge(array($videoEncodingConfig['stream']), $audioStreams);
+            $streams = array_merge($streams, $audioStreams);
+            $streams[] = $videoEncodingConfig['stream'];
             $videoEncodingConfig['mp4_muxing'] = createMp4Muxing($apiClient, $encoding, $mp4MuxingFilename, $streams, $output, $mp4MuxingOutputPath);
             $videoEncodingConfigs[] = $videoEncodingConfig;
         }
