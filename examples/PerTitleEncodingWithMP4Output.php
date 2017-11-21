@@ -110,12 +110,12 @@ try
             /** @var Encoding $currentCrfEncoding */
             $currentCrfEncoding = $videoFile['complexityFactorEncoding'];
             $status = $apiClient->encodings()->status($currentCrfEncoding);
-            $isRunning = !in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
-            $states[] = $isRunning;
+            $isFinished = in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
+            $states[] = $isFinished;
             $currentTimestamp = date_create(null, new DateTimeZone('UTC'))->getTimestamp();
             echo $currentTimestamp . ": " . $currentCrfEncoding->getName() . " => " . $status->getStatus() . "\n";
         }
-        $allCrfFinished = !in_array(true, $states);
+        $allCrfFinished = !in_array(false, $states);
         sleep(ENCODING_STATUS_REFRESH_RATE);
     } while (!$allCrfFinished);
 
@@ -222,16 +222,13 @@ try
             /** @var Encoding $currentEncoding */
             $currentEncoding = $videoFile['encoding'];
             $status = $apiClient->encodings()->status($currentEncoding);
-            $isRunning = !in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
-            $states[] = $isRunning;
+            $isFinished = in_array($status->getStatus(), array(Status::ERROR, Status::FINISHED));
+            $states[] = $isFinished;
             $currentTimestamp = date_create(null, new DateTimeZone('UTC'))->getTimestamp();
             echo $currentTimestamp . ": " . $currentEncoding->getName() . " => " . $status->getStatus() . "\n";
         }
-        $allFinished = !in_array(true, $states);
-
-        if (!$allFinished)
-            sleep(ENCODING_STATUS_REFRESH_RATE);
-
+        $allFinished = !in_array(false, $states);
+        sleep(ENCODING_STATUS_REFRESH_RATE);
     } while (!$allFinished);
 }
 catch (BitmovinException $e)
@@ -326,8 +323,8 @@ function runFastCrfEncoding(ApiClient $apiClient, $encodingName = "Fast Complexi
     //CREATE CRF FMP4 MUXING
     $fmp4Muxing = new FMP4Muxing();
     $fmp4Muxing->setInitSegmentName('init.mp4');
-    $fmp4Muxing->setSegmentLength(30);
     $fmp4Muxing->setSegmentNaming('segment_%number%.m4s');
+    $fmp4Muxing->setSegmentLength(4);
     $fmp4Muxing->setOutputs($encodingOutputs);
     $fmp4Muxing->setStreams(array($muxingStream));
     $apiClient->encodings()->muxings($crfEncoding)->fmp4Muxing()->create($fmp4Muxing);
