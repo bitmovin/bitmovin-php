@@ -6,7 +6,6 @@ namespace Bitmovin\api\model\encodings\muxing;
 
 use Bitmovin\api\model\AbstractModel;
 use Bitmovin\api\model\encodings\helper\EncodingOutput;
-
 use JMS\Serializer\Annotation as JMS;
 
 abstract class AbstractMuxing extends AbstractModel
@@ -22,6 +21,48 @@ abstract class AbstractMuxing extends AbstractModel
      * @var  MuxingStream[]
      */
     private $streams;
+
+    /**
+     * @JMS\Type("double")
+     * @var  double
+     */
+    private $avgBitrate;
+
+    /**
+     * @JMS\Type("double")
+     * @var  double
+     */
+    private $maxBitrate;
+
+    /**
+     * @JMS\Type("double")
+     * @var  double
+     */
+    private $minBitrate;
+
+    /**
+     * @return float
+     */
+    public function getAvgBitrate()
+    {
+        return $this->avgBitrate;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMaxBitrate()
+    {
+        return $this->maxBitrate;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMinBitrate()
+    {
+        return $this->minBitrate;
+    }
 
     /**
      * @return \Bitmovin\api\model\encodings\helper\EncodingOutput[]
