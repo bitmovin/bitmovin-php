@@ -110,10 +110,9 @@ try
     }
 
     //Wait until all Complexity Factor encodings are finished
-    $allCrfFinished = true;
     do
     {
-        $states = array();
+        $allCrfFinished = true;
         foreach ($videoFiles as $key => $videoFile)
         {
             /** @var Encoding $currentCrfEncoding */
@@ -232,10 +231,9 @@ try
     }
 
     //WAIT UNTIL ALL ENCODINGS ARE FINISHED
-    $allFinished = true;
     do
     {
-        $states = array();
+        $allFinished = true;
         foreach ($videoFiles as $videoFile)
         {
             /** @var Encoding $currentEncoding */
@@ -275,10 +273,9 @@ try
         $manifests[] = $dashManifest;
     }
 
-    $allFinished = true;
     do
     {
-        $states = array();
+        $allFinished = true;
         foreach ($manifests as $manifest)
         {
             $status = $apiClient->manifests()->dash()->status($manifest);

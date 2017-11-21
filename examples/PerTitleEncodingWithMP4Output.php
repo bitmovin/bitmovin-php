@@ -101,9 +101,9 @@ try
     }
 
     //Wait until all Complexity Factor encodings are finished
-    $allCrfFinished = true;
     do
     {
+        $allCrfFinished = true;
         foreach ($videoFiles as $key => $videoFile)
         {
             /** @var Encoding $currentCrfEncoding */
@@ -214,9 +214,9 @@ try
     }
 
     //WAIT UNTIL ALL ENCODINGS ARE FINISHED
-    $allFinished = true;
     do
     {
+        $allFinished = true;
         foreach ($videoFiles as $videoFile)
         {
             /** @var Encoding $currentEncoding */
