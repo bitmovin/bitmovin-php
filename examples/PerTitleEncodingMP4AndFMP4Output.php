@@ -206,7 +206,7 @@ try
             $adjustmentFactor = generateBitrateAdjustmentFactorForMuxing($crfMuxing, $bitrateLadderEntry);
 
             //Created MP4 Muxing with adjusted Bitrate
-            $adjustedBitrate = ((int)$bitrateLadderEntry['bitrate'] * $adjustmentFactor);
+            $adjustedBitrate = (int)($bitrateLadderEntry['bitrate'] * $adjustmentFactor);
             //CREATE VIDEO CODEC CONFIGURATION
             $videoEncodingConfig['codec'] = createH264VideoCodecConfiguration($apiClient, $codecConfigName, $bitrateLadderEntry["profile"], $adjustedBitrate, $width, $height);
             //CREATE VIDEO STREAM
