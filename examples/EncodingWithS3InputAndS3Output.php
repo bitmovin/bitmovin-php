@@ -52,19 +52,19 @@ $s3OutputBucketName = 'YOUR_BUCKETNAME';
 $outputPath = 'path/to/your/output/destination/';
 
 $videoEncodingProfiles = array(
-    array("codec" => "h264", "height" => 1080, "bitrate" => 5800000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 1080, "bitrate" => 4300000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 720, "bitrate" => 3000000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 720, "bitrate" => 2300000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 576, "bitrate" => 1500000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 432, "bitrate" => 1000000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 360, "bitrate" => 750000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 288, "bitrate" => 550000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 216, "bitrate" => 375000, "profile" => H264Profile::HIGH),
-    array("codec" => "h264", "height" => 216, "bitrate" => 240000, "profile" => H264Profile::HIGH)
+    array("height" => 1080, "bitrate" => 5800000, "profile" => H264Profile::HIGH),
+    array("height" => 1080, "bitrate" => 4300000, "profile" => H264Profile::HIGH),
+    array("height" => 720, "bitrate" => 3000000, "profile" => H264Profile::HIGH),
+    array("height" => 720, "bitrate" => 2300000, "profile" => H264Profile::HIGH),
+    array("height" => 576, "bitrate" => 1500000, "profile" => H264Profile::HIGH),
+    array("height" => 432, "bitrate" => 1000000, "profile" => H264Profile::HIGH),
+    array("height" => 360, "bitrate" => 750000, "profile" => H264Profile::HIGH),
+    array("height" => 288, "bitrate" => 550000, "profile" => H264Profile::HIGH),
+    array("height" => 216, "bitrate" => 375000, "profile" => H264Profile::HIGH),
+    array("height" => 216, "bitrate" => 240000, "profile" => H264Profile::HIGH)
 );
 $audioEncodingProfiles = array(
-    array("codec" => "aac", "bitrate" => 128000)
+    array("bitrate" => 128000)
 );
 
 // ==================================================================================================================
@@ -93,9 +93,6 @@ $inputStreamAudio = new InputStream($input, $videoInputPath, SelectionMode::AUTO
 $videoEncodingConfigs = array();
 foreach ($videoEncodingProfiles as $encodingProfile)
 {
-    if ($encodingProfile["codec"] !== "h264")
-        continue;
-
     $encodingProfileName = $encodingProfile["codec"] . "_" . $encodingProfile["bitrate"];
 
     $videoEncodingConfig = array();
@@ -107,9 +104,6 @@ foreach ($videoEncodingProfiles as $encodingProfile)
 $audioEncodingConfigs = array();
 foreach ($audioEncodingProfiles as $encodingProfile)
 {
-    if ($encodingProfile["codec"] !== "aac")
-        continue;
-
     $encodingProfileName = $encodingProfile["codec"] . "_" . $encodingProfile["bitrate"];
 
     $audioEncodingConfig = array();
@@ -135,14 +129,14 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
 foreach ($videoEncodingConfigs as $key => $videoEncodingConfig)
 {
     $encodingProfile = $videoEncodingConfig['profile'];
-    $muxingOutputPath = $outputPath . 'video/fmp4/' . $encodingProfile['codec'] . '/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
+    $muxingOutputPath = $outputPath . 'video/fmp4/h264/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
     $videoEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $videoEncodingConfig['stream'], $output, $muxingOutputPath);
 }
 // CREATE FMP4 MUXINGS FOR AUDIO
 foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
 {
     $encodingProfile = $audioEncodingConfig['profile'];
-    $muxingOutputPath = $outputPath . 'audio/fmp4/' . $encodingProfile['codec'] . '/' . $encodingProfile['bitrate'] . '/';
+    $muxingOutputPath = $outputPath . 'audio/fmp4/aac/' . $encodingProfile['bitrate'] . '/';
     $audioEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $audioEncodingConfig['stream'], $output, $muxingOutputPath);
 }
 
@@ -150,14 +144,14 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
 foreach ($videoEncodingConfigs as $key => $videoEncodingConfig)
 {
     $encodingProfile = $videoEncodingConfig['profile'];
-    $muxingOutputPath = $outputPath . 'video/ts/' . $encodingProfile['codec'] . '/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
+    $muxingOutputPath = $outputPath . 'video/ts/h264/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
     $videoEncodingConfigs[$key]['ts_muxing'] = createFmp4Muxing($apiClient, $encoding, $videoEncodingConfig['stream'], $output, $muxingOutputPath);
 }
 // CREATE TS MUXINGS FOR AUDIO
 foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
 {
     $encodingProfile = $audioEncodingConfig['profile'];
-    $muxingOutputPath = $outputPath . 'audio/ts/' . $encodingProfile['codec'] . '/' . $encodingProfile['bitrate'] . '/';
+    $muxingOutputPath = $outputPath . 'audio/ts/aac/' . $encodingProfile['bitrate'] . '/';
     $audioEncodingConfigs[$key]['ts_muxing'] = createFmp4Muxing($apiClient, $encoding, $audioEncodingConfig['stream'], $output, $muxingOutputPath);
 }
 
@@ -275,7 +269,7 @@ foreach ($videoEncodingConfigs as $videoEncodingConfig)
     /** @var Stream $videoStream */
     $videoStream = $videoEncodingConfig['stream'];
     $encodingProfile = $videoEncodingConfig['profile'];
-    $variantStreamUri = 'video_' . $encodingProfile['codec'] . '_' . $encodingProfile['height'] . '_' . $encodingProfile['bitrate'] . '.m3u8';
+    $variantStreamUri = 'video_h264_' . $encodingProfile['height'] . '_' . $encodingProfile['bitrate'] . '.m3u8';
     $segmentPath = getSegmentOutputPath($outputPath, $fmp4Muxing->getOutputs()[0]->getOutputPath());
 
     $variantStream = new StreamInfo();
@@ -296,7 +290,7 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
     /** @var Stream $audioStream */
     $audioStream = $audioEncodingConfig['stream'];
     $encodingProfile = $audioEncodingConfig['profile'];
-    $variantStreamUri = 'audio_' . $encodingProfile['codec'] . '_' . $encodingProfile['bitrate'] . '.m3u8';
+    $variantStreamUri = 'audio_aac_' . $encodingProfile['bitrate'] . '.m3u8';
     $segmentPath = getSegmentOutputPath($outputPath, $fmp4Muxing->getOutputs()[0]->getOutputPath());
 
     $mediaInfo = new MediaInfo();
