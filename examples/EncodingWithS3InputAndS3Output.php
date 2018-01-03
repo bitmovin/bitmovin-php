@@ -93,8 +93,7 @@ $inputStreamAudio = new InputStream($input, $videoInputPath, SelectionMode::AUTO
 $videoEncodingConfigs = array();
 foreach ($videoEncodingProfiles as $encodingProfile)
 {
-    $encodingProfileName = $encodingProfile["codec"] . "_" . $encodingProfile["bitrate"];
-
+    $encodingProfileName = "h264_" . $encodingProfile["bitrate"];
     $videoEncodingConfig = array();
     $videoEncodingConfig['profile'] = $encodingProfile;
     $videoEncodingConfig['codec'] = createH264VideoCodecConfiguration($apiClient, $encodingProfileName, $encodingProfile["profile"], $encodingProfile["bitrate"], null, $encodingProfile["height"]);
@@ -104,55 +103,41 @@ foreach ($videoEncodingProfiles as $encodingProfile)
 $audioEncodingConfigs = array();
 foreach ($audioEncodingProfiles as $encodingProfile)
 {
-    $encodingProfileName = $encodingProfile["codec"] . "_" . $encodingProfile["bitrate"];
-
+    $encodingProfileName = "aac_" . $encodingProfile["bitrate"];
     $audioEncodingConfig = array();
     $audioEncodingConfig['profile'] = $encodingProfile;
     $audioEncodingConfig['codec'] = createAACAudioCodecConfiguration($apiClient, $encodingProfileName, $encodingProfile["bitrate"]);;
     $audioEncodingConfigs[] = $audioEncodingConfig;
 }
 
-// CREATE VIDEO STREAMS
+// CREATE VIDEO STREAMS AND MUXINGS
 foreach ($videoEncodingConfigs as $key => $videoEncodingConfig)
 {
+    $encodingProfile = $videoEncodingConfig['profile'];
+    // CREATE VIDEO STREAM
     $videoStream = new Stream($videoEncodingConfig['codec'], array($inputStreamVideo));
     $videoEncodingConfigs[$key]['stream'] = $apiClient->encodings()->streams($encoding)->create($videoStream);
+    // CREATE FMP4 MUXING FOR VIDEO
+    $fmp4MuxingOutputPath = $outputPath . 'video/fmp4/h264/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
+    $videoEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $fmp4MuxingOutputPath);
+    // CREATE TS MUXING FOR VIDEO
+    $tsMuxingOutputPath = $outputPath . 'video/ts/h264/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
+    $videoEncodingConfigs[$key]['ts_muxing'] = createTsMuxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $tsMuxingOutputPath);
 }
-// CREATE AUDIO STREAMS
+
+// CREATE AUDIO STREAMS AND MUXINGS
 foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
 {
+    $encodingProfile = $audioEncodingConfig['profile'];
+    // CREATE AUDIO STREAM
     $audioStream = new Stream($audioEncodingConfig['codec'], array($inputStreamAudio));
     $audioEncodingConfigs[$key]['stream'] = $apiClient->encodings()->streams($encoding)->create($audioStream);
-}
-
-// CREATE FMP4 MUXINGS FOR VIDEO
-foreach ($videoEncodingConfigs as $key => $videoEncodingConfig)
-{
-    $encodingProfile = $videoEncodingConfig['profile'];
-    $muxingOutputPath = $outputPath . 'video/fmp4/h264/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
-    $videoEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $videoEncodingConfig['stream'], $output, $muxingOutputPath);
-}
-// CREATE FMP4 MUXINGS FOR AUDIO
-foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
-{
-    $encodingProfile = $audioEncodingConfig['profile'];
-    $muxingOutputPath = $outputPath . 'audio/fmp4/aac/' . $encodingProfile['bitrate'] . '/';
-    $audioEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $audioEncodingConfig['stream'], $output, $muxingOutputPath);
-}
-
-// CREATE TS MUXINGS FOR VIDEO
-foreach ($videoEncodingConfigs as $key => $videoEncodingConfig)
-{
-    $encodingProfile = $videoEncodingConfig['profile'];
-    $muxingOutputPath = $outputPath . 'video/ts/h264/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
-    $videoEncodingConfigs[$key]['ts_muxing'] = createFmp4Muxing($apiClient, $encoding, $videoEncodingConfig['stream'], $output, $muxingOutputPath);
-}
-// CREATE TS MUXINGS FOR AUDIO
-foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
-{
-    $encodingProfile = $audioEncodingConfig['profile'];
-    $muxingOutputPath = $outputPath . 'audio/ts/aac/' . $encodingProfile['bitrate'] . '/';
-    $audioEncodingConfigs[$key]['ts_muxing'] = createFmp4Muxing($apiClient, $encoding, $audioEncodingConfig['stream'], $output, $muxingOutputPath);
+    // CREATE FMP4 MUXING FOR AUDIO
+    $fmp4MuxingOutputPath = $outputPath . 'audio/fmp4/aac/' . $encodingProfile['bitrate'] . '/';
+    $audioEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $audioEncodingConfigs[$key]['stream'], $output, $fmp4MuxingOutputPath);
+    // CREATE TS MUXING FOR AUDIO
+    $tsMuxingOutputPath = $outputPath . 'audio/ts/aac/' . $encodingProfile['bitrate'] . '/';
+    $audioEncodingConfigs[$key]['ts_muxing'] = createTsMuxing($apiClient, $encoding, $audioEncodingConfigs[$key]['stream'], $output, $tsMuxingOutputPath);
 }
 
 // START THE ENCODING PROCESS
