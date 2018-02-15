@@ -40,11 +40,16 @@ $s3OutputBucketName = 'YOUR_BUCKETNAME';
 $outputPath = 'path/to/your/output/destination/';
 
 $videoEncodingProfiles = array(
-    array("height" => 1080, "bitrate" => 4800000, "profile" => H264Profile::HIGH),
-    array("height" => 720, "bitrate" => 2400000, "profile" => H264Profile::HIGH),
-    array("height" => 480, "bitrate" => 1200000, "profile" => H264Profile::MAIN),
-    array("height" => 360, "bitrate" => 800000, "profile" => H264Profile::MAIN),
-    array("height" => 240, "bitrate" => 400000, "profile" => H264Profile::BASELINE),
+    array("height" => 1080, "bitrate" => 5800000, "profile" => H264Profile::HIGH),
+    array("height" => 1080, "bitrate" => 4300000, "profile" => H264Profile::HIGH),
+    array("height" => 720, "bitrate" => 3000000, "profile" => H264Profile::HIGH),
+    array("height" => 720, "bitrate" => 2300000, "profile" => H264Profile::HIGH),
+    array("height" => 576, "bitrate" => 1500000, "profile" => H264Profile::HIGH),
+    array("height" => 432, "bitrate" => 1000000, "profile" => H264Profile::HIGH),
+    array("height" => 360, "bitrate" => 750000, "profile" => H264Profile::HIGH),
+    array("height" => 288, "bitrate" => 550000, "profile" => H264Profile::HIGH),
+    array("height" => 216, "bitrate" => 375000, "profile" => H264Profile::HIGH),
+    array("height" => 216, "bitrate" => 240000, "profile" => H264Profile::HIGH)
 );
 
 $audioEncodingProfiles = array(
