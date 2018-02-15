@@ -105,7 +105,7 @@ abstract class AbstractMuxing extends AbstractModel
     /**
      * @return string
      */
-    public function getStreamConditionsMode(): string
+    public function getStreamConditionsMode()
     {
         return $this->streamConditionsMode;
     }
@@ -113,7 +113,7 @@ abstract class AbstractMuxing extends AbstractModel
     /**
      * @param string $streamConditionsMode
      */
-    public function setStreamConditionsMode(string $streamConditionsMode): void
+    public function setStreamConditionsMode($streamConditionsMode)
     {
         $this->streamConditionsMode = $streamConditionsMode;
     }
