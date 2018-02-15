@@ -25,93 +25,111 @@ use Bitmovin\api\enum\muxing\StreamConditionsMode;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// CREATE API CLIENT
-$apiClient = new ApiClient('YOUR-BITMOVIN-API-KEY');
-
-// CREATE ENCODING
-$encoding = new Encoding('Encoding with stream conditions');
-$encoding->setCloudRegion(CloudRegion::GOOGLE_EUROPE_WEST_1);
-$encoding = $apiClient->encodings()->create($encoding);
+$bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
+$cloudRegion = CloudRegion::AUTO;
 
 // S3 INPUT CONFIGURATION
-$s3InputAccessKey = 'YOUR-AWS-S3-ACCESS-KEY';
-$s3InputSecretKey = 'YOUR-AWS-S3-SECRET-KEY';
-$s3InputBucketName = "YOUR-AWS-S3-BUCKETNAME";
+$s3InputAccessKey = 'YOUR_ACCESS_KEY';
+$s3InputSecretKey = 'YOUR_SECRET_KEY';
+$s3InputBucketName = 'YOUR_BUCKETNAME';
+$videoInputPath = 'path/to/your/inputfile.mp4';
+
+$s3OutputAccessKey = 'YOUR_ACCESS_KEY';
+$s3OutputSecretKey = 'YOUR_SECRET_KEY';
+$s3OutputBucketName = 'YOUR_BUCKETNAME';
+$outputPath = 'path/to/your/output/destination/';
+
+$videoEncodingProfiles = array(
+    array("height" => 1080, "bitrate" => 4800000, "profile" => H264Profile::HIGH),
+    array("height" => 720, "bitrate" => 2400000, "profile" => H264Profile::HIGH),
+    array("height" => 480, "bitrate" => 1200000, "profile" => H264Profile::MAIN),
+    array("height" => 360, "bitrate" => 800000, "profile" => H264Profile::MAIN),
+    array("height" => 240, "bitrate" => 400000, "profile" => H264Profile::BASELINE),
+);
+
+$audioEncodingProfiles = array(
+    array("bitrate" => 128000)
+);
+
+// ==================================================================================================================
+
+// CREATE API CLIENT
+$apiClient = new ApiClient($bitmovinApiKey);
+
+// CREATE ENCODING
+$encoding = new Encoding('Encoding with stream conditions - drop stream');
+$encoding->setCloudRegion($cloudRegion);
+$encoding = $apiClient->encodings()->create($encoding);
+
+// CREATE INPUT
 $s3Input = new S3Input($s3InputBucketName, $s3InputAccessKey, $s3InputSecretKey);
 $s3Input = $apiClient->inputs()->s3()->create($s3Input);
-$videoInputPath = "path/to/your/input/file.mp4";
 
-//or an use existing S3 Input
-//$s3Input = $apiClient->inputs()->s3()->getById("s3-input-id");
-//$videoInputPath = "path/to/your/input/file.mp4";
-
-$s3OutputAccessKey = 'YOUR-AWS-S3-ACCESS-KEY';
-$s3OutputSecretKey = 'YOUR-AWS-S3-SECRET-KEY';
-$s3OutputBucketName = "YOUR-AWS-S3-BUCKETNAME";
+// CREATE OUTPUT
 $s3Output = new S3Output($s3OutputBucketName, $s3OutputAccessKey, $s3OutputSecretKey);
 $s3Output = $apiClient->outputs()->s3()->create($s3Output);
-$outputPath = "path/to/your/output-destination/";
 
-//or use existing S3 Output
-//$s3Output = $apiClient->outputs()->s3()->getById("s3-output-id");
-//$outputPath = "path/to/your/input/file.mp4";
-
-// CREATE VIDEO CODEC CONFIGURATIONS
-$codecConfigVideo1080p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo1080p', H264Profile::HIGH, 4800000, null, 1080);
-$codecConfigVideo720p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo720p', H264Profile::HIGH, 2400000, null, 720);
-$codecConfigVideo480p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo480p', H264Profile::MAIN, 1200000, null, 480);
-$codecConfigVideo360p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo360p', H264Profile::MAIN, 800000, null, 360);
-$codecConfigVideo240p = createH264VideoCodecConfiguration($apiClient, 'StreamDemo240p', H264Profile::BASELINE, 400000, null, 240);
-
-// or use an existing codec configuration
-//$codecConfigVideo1080p = $apiClient->codecConfigurations()->videoH264()->getById("h264-codec-configuration-id");
-
-// CREATE AUDIO CODEC CONFIGURATIONS
-$codecConfigAudio128kbit = createAACAudioCodecConfiguration($apiClient, 'StreamDemoAAC128k', 128000);
-
-// or use an existing codec configuration
-//$codecConfigAudio128kbit = $apiClient->codecConfigurations()->audioAAC()->getById("aac-codec-configuration-id");
-
-//CREATE AUDIO / VIDEO INPUT STREAMS
+// CREATE AUDIO / VIDEO INPUT STREAMS
 $inputStreamVideo = new InputStream($s3Input, $videoInputPath, SelectionMode::AUTO);
 $inputStreamVideo->setPosition(0);
 $inputStreamAudio = new InputStream($s3Input, $videoInputPath, SelectionMode::AUTO);
 $inputStreamAudio->setPosition(1);
 
+// CREATE VIDEO CODEC CONFIGURATIONS
+$videoEncodingConfigs = array();
+foreach ($videoEncodingProfiles as $videoEncodingProfile)
+{
+    $encodingProfileName = "h264_" . $videoEncodingProfile["bitrate"];
+    $videoEncodingConfig = array();
+    $videoEncodingConfig['profile'] = $videoEncodingProfile;
+    $videoEncodingConfig['codec'] = createH264VideoCodecConfiguration($apiClient, $encodingProfileName, $videoEncodingProfile["profile"], $videoEncodingProfile["bitrate"], null, $videoEncodingProfile["height"]);
+    $videoEncodingConfigs[] = $videoEncodingConfig;
+}
+
+// CREATE AUDIO CODEC CONFIGURATIONS
+$audioEncodingConfigs = array();
+foreach ($audioEncodingProfiles as $videoEncodingProfile)
+{
+    $encodingProfileName = "aac_" . $videoEncodingProfile["bitrate"];
+    $audioEncodingConfig = array();
+    $audioEncodingConfig['profile'] = $videoEncodingProfile;
+    $audioEncodingConfig['codec'] = createAACAudioCodecConfiguration($apiClient, $encodingProfileName, $videoEncodingProfile["bitrate"]);;
+    $audioEncodingConfigs[] = $audioEncodingConfig;
+}
+
 // CREATE VIDEO STREAMS
-$videoStream1080p = new Stream($codecConfigVideo1080p, array($inputStreamVideo));
-$videoStream720p = new Stream($codecConfigVideo720p, array($inputStreamVideo));
-$videoStream480p = new Stream($codecConfigVideo480p, array($inputStreamVideo));
-$videoStream360p = new Stream($codecConfigVideo360p, array($inputStreamVideo));
-$videoStream240p = new Stream($codecConfigVideo240p, array($inputStreamVideo));
-$videoStream1080p->setConditions(new Condition(ConditionAttribute::HEIGHT, ConditionOperator::GREATER_THAN_OR_EQUAL_TO, "1080"));
-$videoStream720p->setConditions(new Condition(ConditionAttribute::HEIGHT, ConditionOperator::GREATER_THAN_OR_EQUAL_TO, "720"));
-$videoStream480p->setConditions(new Condition(ConditionAttribute::HEIGHT, ConditionOperator::GREATER_THAN_OR_EQUAL_TO, "480"));
-$videoStream360p->setConditions(new Condition(ConditionAttribute::HEIGHT, ConditionOperator::GREATER_THAN_OR_EQUAL_TO, "360"));
-$videoStream240p->setConditions(new Condition(ConditionAttribute::HEIGHT, ConditionOperator::GREATER_THAN_OR_EQUAL_TO, "240"));
-$videoStream1080p = $apiClient->encodings()->streams($encoding)->create($videoStream1080p);
-$videoStream720p = $apiClient->encodings()->streams($encoding)->create($videoStream720p);
-$videoStream480p = $apiClient->encodings()->streams($encoding)->create($videoStream480p);
-$videoStream360p = $apiClient->encodings()->streams($encoding)->create($videoStream360p);
-$videoStream240p = $apiClient->encodings()->streams($encoding)->create($videoStream240p);
+foreach ($videoEncodingConfigs as $key => $videoEncodingConfig)
+{
+    $videoEncodingProfile = $videoEncodingConfig['profile'];
+
+    // CREATE VIDEO STREAM
+    $videoStream = new Stream($videoEncodingConfig['codec'], array($inputStreamVideo));
+    $videoStream->setConditions(new Condition(ConditionAttribute::HEIGHT, ConditionOperator::GREATER_THAN_OR_EQUAL_TO, strval($videoEncodingProfile['height'])));
+    $videoEncodingConfigs[$key]['stream'] = $apiClient->encodings()->streams($encoding)->create($videoStream);
+}
 
 // CREATE AUDIO STREAMS
-$audioStream128 = new Stream($codecConfigAudio128kbit, array($inputStreamAudio));
-$audioStream128->setConditions(new Condition(ConditionAttribute::INPUTSTREAM, ConditionOperator::EQUAL, "true"));
-$audioStream128 = $apiClient->encodings()->streams($encoding)->create($audioStream128);
+foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
+{
+    // CREATE AUDIO STREAM
+    $audioStream = new Stream($audioEncodingConfig['codec'], array($inputStreamAudio));
+    $audioStream->setConditions(new Condition(ConditionAttribute::INPUTSTREAM, ConditionOperator::EQUAL, "true"));
+    $audioEncodingConfigs[$key]['stream'] = $apiClient->encodings()->streams($encoding)->create($audioStream);
+}
 
-$combinedStreams1080p = array($videoStream1080p, $audioStream128);
-$combinedStreams720p = array($videoStream720p, $audioStream128);
-$combinedStreams480p = array($videoStream480p, $audioStream128);
-$combinedStreams360p = array($videoStream360p, $audioStream128);
-$combinedStreams240p = array($videoStream240p, $audioStream128);
+// CREATE MUXINGS
+foreach ($audioEncodingConfigs as $audioEncodingConfig)
+{
+    $audioStream = $audioEncodingConfig['stream'];
 
-// CREATE MP4 MUXINGS
-createMp4Muxing($apiClient, $encoding, $combinedStreams1080p, $s3Output, $outputPath, '1080p.mp4', AclPermission::ACL_PUBLIC_READ, StreamConditionsMode::DROP_STREAM);
-createMp4Muxing($apiClient, $encoding, $combinedStreams720p, $s3Output, $outputPath, '720p.mp4', AclPermission::ACL_PUBLIC_READ, StreamConditionsMode::DROP_STREAM);
-createMp4Muxing($apiClient, $encoding, $combinedStreams480p, $s3Output, $outputPath, '480p.mp4', AclPermission::ACL_PUBLIC_READ, StreamConditionsMode::DROP_STREAM);
-createMp4Muxing($apiClient, $encoding, $combinedStreams360p, $s3Output, $outputPath, '360p.mp4', AclPermission::ACL_PUBLIC_READ, StreamConditionsMode::DROP_STREAM);
-createMp4Muxing($apiClient, $encoding, $combinedStreams240p, $s3Output, $outputPath, '240p.mp4', AclPermission::ACL_PUBLIC_READ, StreamConditionsMode::DROP_STREAM);
+    foreach ($videoEncodingConfigs as $videoEncodingConfig)
+    {
+        $videoStream = $videoEncodingConfig['stream'];
+        $videoHeight = $videoEncodingConfig['profile']['height'];
+
+        createMp4Muxing($apiClient, $encoding, array($videoStream, $audioStream), $s3Output, $outputPath, strval($videoHeight) . '.mp4', AclPermission::ACL_PUBLIC_READ, StreamConditionsMode::DROP_STREAM);
+    }
+}
 
 $apiClient->encodings()->start($encoding);
 
