@@ -41,6 +41,12 @@ abstract class AbstractMuxing extends AbstractModel
     private $minBitrate;
 
     /**
+     * @JMS\Type("string")
+     * @var string StreamConditionsMode
+     */
+    private $streamConditionsMode;
+
+    /**
      * @return float
      */
     public function getAvgBitrate()
@@ -96,4 +102,19 @@ abstract class AbstractMuxing extends AbstractModel
         $this->streams = $streams;
     }
 
+    /**
+     * @return string
+     */
+    public function getStreamConditionsMode()
+    {
+        return $this->streamConditionsMode;
+    }
+
+    /**
+     * @param string $streamConditionsMode
+     */
+    public function setStreamConditionsMode($streamConditionsMode)
+    {
+        $this->streamConditionsMode = $streamConditionsMode;
+    }
 }

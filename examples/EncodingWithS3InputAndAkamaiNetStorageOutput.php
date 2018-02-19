@@ -29,6 +29,7 @@ use Bitmovin\api\model\manifests\dash\VideoAdaptationSet;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
+use Bitmovin\api\model\outputs\AkamaiNetStorageOutput;
 use Bitmovin\api\model\outputs\Output;
 use Bitmovin\api\model\outputs\S3Output;
 
@@ -36,7 +37,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $bitmovinApiKey = 'YOUR_BITMOVIN_API_KEY';
 
-$encodingName = 'Encoding Sample S3Input S3Output';
+$encodingName = 'Encoding Sample S3Input Akamai NetStorage Output';
 $cloudRegion = CloudRegion::AUTO;
 
 //S3 INPUT CONFIGURATION
@@ -82,8 +83,8 @@ $input = new S3Input($s3InputBucketName, $s3InputAccessKey, $s3InputSecretKey);
 $input = $apiClient->inputs()->s3()->create($input);
 
 // CREATE OUTPUT
-$output = new S3Output($s3OutputBucketName, $s3OutputAccessKey, $s3OutputSecretKey);
-$output = $apiClient->outputs()->s3()->create($output);
+$output = new AkamaiNetStorageOutput($akamaiNetStorageHost, $akamaiNetStorageUsername, $akamaiNetStoragePassword);
+$output = $apiClient->outputs()->akamaiNetStorage()->create($output);
 
 //CREATE VIDEO/AUDIO INPUT STREAMS
 $inputStreamVideo = new InputStream($input, $videoInputPath, SelectionMode::AUTO);
