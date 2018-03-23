@@ -163,6 +163,19 @@ function pretty_print_stream_input_details($streamInputDetails) {
                 echo "Duration: ". $metaStream->getDuration()."\n";
             }
         }
+
+        if (is_array($details->getSubtitleStreams())) {
+            echo "\n";
+            echo "Subtitle Streams:\n";
+            foreach ($details->getSubtitleStreams() as $subtitleStream) {
+                echo "ID: ". $subtitleStream->getId()."\n";
+                echo "Position: ". $subtitleStream->getPosition()."\n";
+                echo "Codec: ". $subtitleStream->getCodec()."\n";
+                echo "Duration: ". $subtitleStream->getDuration()."\n";
+                echo "Language: " . $subtitleStream->getLanguage()."\n";
+                echo "Hearing Impaired: " . $subtitleStream->getHearingImpaired()."\n";
+            }
+        }
         echo "----------------------------------------------------\n";
     }
 }

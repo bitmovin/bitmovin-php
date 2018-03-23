@@ -36,7 +36,6 @@ class StreamInputAnalysisDetails
      */
     private $bitrate;
 
-
     /**
      * @JMS\Type("array<string, string>")
      * @var array
@@ -60,6 +59,12 @@ class StreamInputAnalysisDetails
      * @var StreamInputAnalysisMetaStream[]
      */
     private $metaStreams;
+
+    /**
+     * @JMS\Type("array<Bitmovin\api\model\encodings\streams\inputAnalysis\StreamInputAnalysisSubtitleStream>")
+     * @var StreamInputAnalysisSubtitleStream[]
+     */
+    private $subtitleStreams;
 
     /**
      * @return string
@@ -203,5 +208,21 @@ class StreamInputAnalysisDetails
     public function setMetaStreams($metaStreams)
     {
         $this->metaStreams = $metaStreams;
+    }
+
+    /**
+     * @param  StreamInputAnalysisSubtitleStream[] $subtitleStreams
+     */
+    public function setSubtitleStreams($subtitleStreams)
+    {
+        $this->subtitleStreams = $subtitleStreams;
+    }
+
+    /**
+     * @return StreamInputAnalysisSubtitleStream[]
+     */
+    public function getSubtitleStreams()
+    {
+        return $this->subtitleStreams;
     }
 }

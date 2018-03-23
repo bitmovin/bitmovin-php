@@ -4,7 +4,7 @@ namespace Bitmovin\api\model\encodings\streams\inputAnalysis;
 
 use JMS\Serializer\Annotation as JMS;
 
-class StreamInputAnalysisAudioStream
+class StreamInputAnalysisSubtitleStream
 {
     /**
      * @JMS\Type("string")
@@ -29,24 +29,6 @@ class StreamInputAnalysisAudioStream
      * @var string
      */
     private $codec;
-
-    /**
-     * @JMS\Type("integer")
-     * @var integer
-     */
-    private $sampleRate;
-
-    /**
-     * @JMS\Type("integer")
-     * @var integer
-     */
-    private $bitrate;
-
-    /**
-     * @JMS\Type("string")
-     * @var string
-     */
-    private $channelFormat;
 
     /**
      * @JMS\Type("string")
@@ -125,54 +107,6 @@ class StreamInputAnalysisAudioStream
     }
 
     /**
-     * @return int
-     */
-    public function getSampleRate()
-    {
-        return $this->sampleRate;
-    }
-
-    /**
-     * @param int $sampleRate
-     */
-    public function setSampleRate($sampleRate)
-    {
-        $this->sampleRate = $sampleRate;
-    }
-
-    /**
-     * @return int
-     */
-    public function getBitrate()
-    {
-        return $this->bitrate;
-    }
-
-    /**
-     * @param int $bitrate
-     */
-    public function setBitrate($bitrate)
-    {
-        $this->bitrate = $bitrate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getChannelFormat()
-    {
-        return $this->channelFormat;
-    }
-
-    /**
-     * @param string $channelFormat
-     */
-    public function setChannelFormat($channelFormat)
-    {
-        $this->channelFormat = $channelFormat;
-    }
-
-    /**
      * @return string
      */
     public function getLanguage()
@@ -189,15 +123,15 @@ class StreamInputAnalysisAudioStream
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
-    public function isHearingImpaired()
+    public function getHearingImpaired()
     {
         return $this->hearingImpaired;
     }
 
     /**
-     * @param bool $hearingImpaired
+     * @param boolean $hearingImpaired
      */
     public function setHearingImpaired($hearingImpaired)
     {

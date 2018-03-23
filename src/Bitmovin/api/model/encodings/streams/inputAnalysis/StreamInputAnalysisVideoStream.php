@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dmoser
- * Date: 14.03.18
- * Time: 10:57
- */
 
 namespace Bitmovin\api\model\encodings\streams\inputAnalysis;
 
