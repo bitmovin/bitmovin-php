@@ -5,6 +5,7 @@ namespace Bitmovin\api\resource;
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\streams\Stream;
 use Bitmovin\api\model\filters\AbstractFilter;
+use Bitmovin\api\resource\encodings\streams\inputAnalysis\InputStreamAnalysisDetailsResource;
 use Bitmovin\api\resource\encodings\streams\sprites\SpriteResource;
 use Bitmovin\api\resource\encodings\streams\thumbnails\ThumbnailResource;
 use Bitmovin\api\util\ApiUrls;
@@ -147,6 +148,16 @@ class StreamResource extends AbstractResource
         $stream = $this->deleteResource($streamId);
 
         return $stream;
+    }
+
+    /**
+     * @param Stream $stream
+     * @return InputStreamAnalysisDetailsResource
+     * @throws \Bitmovin\api\exceptions\BitmovinException
+     */
+    public function streamInputAnalysis($stream)
+    {
+        return new InputStreamAnalysisDetailsResource($this->getEncoding(), $stream, parent::getApiKey());
     }
 
     /**

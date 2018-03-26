@@ -270,7 +270,7 @@ abstract class AbstractResource extends AbstractHttpClient
      *
      * @return \Bitmovin\api\model\AbstractModel[]
      */
-    private function buildResourcesFromArrayResponse(ResponseInterface $response)
+    protected function buildResourcesFromArrayResponse(ResponseInterface $response)
     {
         $responseEnvelope = ResponseBuilder::buildResponseEnvelope($response, $this->getClassName(), $this->getListName());
         $result = $responseEnvelope->getData()->getResult();
