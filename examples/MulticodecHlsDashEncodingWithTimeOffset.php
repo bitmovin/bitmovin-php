@@ -20,6 +20,7 @@ use Bitmovin\api\model\encodings\helper\EncodingOutput;
 use Bitmovin\api\model\encodings\helper\InputStream;
 use Bitmovin\api\model\encodings\muxing\FMP4Muxing;
 use Bitmovin\api\model\encodings\muxing\MuxingStream;
+use Bitmovin\api\model\encodings\muxing\TSMuxing;
 use Bitmovin\api\model\encodings\muxing\WebmMuxing;
 use Bitmovin\api\model\encodings\StartEncodingTrimming;
 use Bitmovin\api\model\encodings\StartEncodingRequest;
@@ -75,7 +76,7 @@ $vp9VideoEncodingProfiles = array(
 );
 
 $h264VideoEncodingProfiles = array(
-    array("height" => 1080, "bitrate" => 4800000, "profile" => HH264Profile::HIGH),
+    array("height" => 1080, "bitrate" => 4800000, "profile" => H264Profile::HIGH),
     array("height" => 720,  "bitrate" => 2400000, "profile" => H264Profile::HIGH),
     array("height" => 480,  "bitrate" => 1200000, "profile" => H264Profile::HIGH),
     array("height" => 360,  "bitrate" => 300000,  "profile" => H264Profile::HIGH),
@@ -151,9 +152,46 @@ function createVideoCodecConfigAndStream ($videoEncodingConfigs, $codec, $profil
             // CREATE FMP4 MUXING FOR VIDEO
             $fmp4MuxingOutputPath = $outputPath . 'video/fmp4/'. $codec .'/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
             $videoEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $fmp4MuxingOutputPath);
+            if($codec == 'h264') {
+                $tsMuxingOutputPath = $outputPath . 'video/ts/' . $codec . '/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
+                $videoEncodingConfigs[$key]['ts_muxing'] = createTsMuxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $tsMuxingOutputPath);
+            }
         }
     }
     return $videoEncodingConfigs;
+}
+
+/**
+ * @param ApiClient $apiClient
+ * @param Encoding  $encoding
+ * @param Stream    $stream
+ * @param Output    $output
+ * @param string    $outputPath
+ *
+ * @param string    $outputAcl
+ * @param int       $segmentDuration
+ * @param string    $segmentNaming
+ * @return TSMuxing
+ * @throws BitmovinException
+ */
+function createTsMuxing($apiClient, $encoding, $stream, $output, $outputPath, $outputAcl = AclPermission::ACL_PUBLIC_READ, $segmentDuration = 4, $segmentNaming = 'segment_%number%.ts')
+{
+    $encodingOutputs = array();
+    if ($output instanceof Output)
+    {
+        $encodingOutput = new EncodingOutput($output);
+        $encodingOutput->setOutputPath($outputPath);
+        $encodingOutput->setAcl(array(new Acl($outputAcl)));
+        $encodingOutputs[] = $encodingOutput;
+    }
+    $muxingStream = new MuxingStream();
+    $muxingStream->setStreamId($stream->getId());
+    $tsMuxing = new TSMuxing();
+    $tsMuxing->setSegmentLength($segmentDuration);
+    $tsMuxing->setSegmentNaming($segmentNaming);
+    $tsMuxing->setOutputs($encodingOutputs);
+    $tsMuxing->setStreams(array($muxingStream));
+    return $apiClient->encodings()->muxings($encoding)->tsMuxing()->create($tsMuxing);
 }
 
 // CREATE AUDIO CODEC CONFIGURATIONS
@@ -177,6 +215,9 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
     // CREATE FMP4 MUXING FOR AUDIO
     $fmp4MuxingOutputPath = $outputPath . 'audio/fmp4/aac/' . $encodingProfile['bitrate'] . '/';
     $audioEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $audioEncodingConfigs[$key]['stream'], $output, $fmp4MuxingOutputPath);
+    // CREATE FMP4 MUXING FOR AUDIO
+    $tsMuxingOutputPath = $outputPath . 'audio/ts/aac/' . $encodingProfile['bitrate'] . '/';
+    $audioEncodingConfigs[$key]['ts_muxing'] = createTsMuxing($apiClient, $encoding, $audioEncodingConfigs[$key]['stream'], $output, $tsMuxingOutputPath);
 }
 // START THE ENCODING PROCESS
 $startEncodingRequest = new StartEncodingRequest();
@@ -288,7 +329,7 @@ $masterPlaylist = $apiClient->manifests()->hls()->create($masterPlaylist);
 // Create Variant-Stream-Infos from each FMP4 Muxing for Video
 foreach ($videoEncodingConfigs as $videoEncodingConfig)
 {
-    if (array_key_exists('fmp4_muxing', $videoEncodingConfig)) {
+    if (array_key_exists('fmp4_muxing', $videoEncodingConfig) && $videoEncodingConfig['codecName'] == 'h265') {
         /** @var FMP4Muxing $fmp4Muxing */
         $fmp4Muxing = $videoEncodingConfig['fmp4_muxing'];
         /** @var Stream $videoStream */
@@ -305,6 +346,23 @@ foreach ($videoEncodingConfigs as $videoEncodingConfig)
         $variantStream->setUri($variantStreamUri);
         $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $variantStream);
     }
+    else if (array_key_exists('ts_muxing', $videoEncodingConfig)) {
+        /** @var FMP4Muxing $fmp4Muxing */
+        $tsMuxing = $videoEncodingConfig['ts_muxing'];
+        /** @var Stream $videoStream */
+        $videoStream = $videoEncodingConfig['stream'];
+        $encodingProfile = $videoEncodingConfig['profile'];
+        $variantStreamUri = $videoEncodingConfig['codecName'] . $encodingProfile['height'] . '_' . $encodingProfile['bitrate'] . '.m3u8';
+        $segmentPath = getSegmentOutputPath($outputPath, $tsMuxing->getOutputs()[0]->getOutputPath());
+        $variantStream = new StreamInfo();
+        $variantStream->setEncodingId($encoding->getId());
+        $variantStream->setStreamId($videoStream->getId());
+        $variantStream->setMuxingId($tsMuxing->getId());
+        $variantStream->setAudio($audioGroupId);
+        $variantStream->setSegmentPath($segmentPath);
+        $variantStream->setUri($variantStreamUri);
+        $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $variantStream);
+    }
 }
 // Create Media-Infos from each FMP4 Muxing for Video
 foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
@@ -314,7 +372,7 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
     /** @var Stream $audioStream */
     $audioStream = $audioEncodingConfig['stream'];
     $encodingProfile = $audioEncodingConfig['profile'];
-    $variantStreamUri = 'audio_aac_' . $encodingProfile['bitrate'] . '.m3u8';
+    $variantStreamUri = 'audio_aac_fmp4' . $encodingProfile['bitrate'] . '.m3u8';
     $segmentPath = getSegmentOutputPath($outputPath, $fmp4Muxing->getOutputs()[0]->getOutputPath());
     $mediaInfo = new MediaInfo();
     $mediaInfo->setGroupId($audioGroupId);
@@ -329,6 +387,12 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
     $mediaInfo->setMuxingId($fmp4Muxing->getId());
     $mediaInfo->setAutoselect(true);
     $mediaInfo->setDefault(true);
+    $apiClient->manifests()->hls()->createMediaInfo($masterPlaylist, $mediaInfo);
+    $tsMuxing = $audioEncodingConfig['ts_muxing'];
+    $mediaInfo->setMuxingId($tsMuxing->getId());
+    $variantStreamUri = 'audio_aac_ts' . $encodingProfile['bitrate'] . '.m3u8';
+    $segmentPath = getSegmentOutputPath($outputPath, $tsMuxing->getOutputs()[0]->getOutputPath());
+    $mediaInfo->setSegmentPath($segmentPath);
     $apiClient->manifests()->hls()->createMediaInfo($masterPlaylist, $mediaInfo);
 }
 //Start Manifest Creation
