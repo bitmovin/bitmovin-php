@@ -19,8 +19,8 @@ class StreamInputAnalysisVideoStream
     private $position;
 
     /**
-     * @JMS\Type("integer")
-     * @var integer
+     * @JMS\Type("float")
+     * @var float
      */
     private $duration;
 
