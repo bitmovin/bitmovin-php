@@ -322,6 +322,7 @@ var_dump("Master Playlist finished");
 // CREATE HLS PLAYLIST
 $masterPlaylistName = "stream.m3u8";
 $audioGroupId = 'audio';
+$tsAudioGroupId = 'tsAudio';
 $masterPlaylist = new HlsManifest();
 $masterPlaylist->setOutputs(array($manifestOutput));
 $masterPlaylist->setManifestName($masterPlaylistName);
@@ -358,7 +359,7 @@ foreach ($videoEncodingConfigs as $videoEncodingConfig)
         $variantStream->setEncodingId($encoding->getId());
         $variantStream->setStreamId($videoStream->getId());
         $variantStream->setMuxingId($tsMuxing->getId());
-        $variantStream->setAudio($audioGroupId);
+        $variantStream->setAudio($tsAudioGroupId);
         $variantStream->setSegmentPath($segmentPath);
         $variantStream->setUri($variantStreamUri);
         $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $variantStream);
@@ -373,7 +374,7 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
     $variantStreamUri = 'audio_aac_ts' . $encodingProfile['bitrate'] . '.m3u8';
     $mediaInfo = new MediaInfo();
     $mediaInfo->setMuxingId($tsMuxing->getId());
-    $mediaInfo->setGroupId($audioGroupId);
+    $mediaInfo->setGroupId($tsAudioGroupId);
     $segmentPath = getSegmentOutputPath($outputPath, $tsMuxing->getOutputs()[0]->getOutputPath());
     $mediaInfo->setSegmentPath($segmentPath);
     $mediaInfo->setName("English");
@@ -386,6 +387,26 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
     $mediaInfo->setAutoselect(true);
     $mediaInfo->setDefault(true);
     $apiClient->manifests()->hls()->createMediaInfo($masterPlaylist, $mediaInfo);
+
+    $audioStream = $audioEncodingConfig['stream'];
+    $fmp4Muxing = $audioEncodingConfig['fmp4_muxing'];
+    $encodingProfile = $audioEncodingConfig['profile'];
+    $fmp4VariantStreamUri = 'audio_aac_fmp4' . $encodingProfile['bitrate'] . '.m3u8';
+    $fmp4MediaInfo = new MediaInfo();
+    $fmp4MediaInfo->setMuxingId($fmp4Muxing->getId());
+    $fmp4MediaInfo->setGroupId($audioGroupId);
+    $fmp4SegmentPath = getSegmentOutputPath($outputPath, $fmp4Muxing->getOutputs()[0]->getOutputPath());
+    $fmp4MediaInfo->setSegmentPath($fmp4SegmentPath);
+    $fmp4MediaInfo->setName("English");
+    $fmp4MediaInfo->setLanguage("English");
+    $fmp4MediaInfo->setAssocLanguage("en");
+    $fmp4MediaInfo->setUri($fmp4VariantStreamUri);
+    $fmp4MediaInfo->setType(MediaInfoType::AUDIO);
+    $fmp4MediaInfo->setEncodingId($encoding->getId());
+    $fmp4MediaInfo->setStreamId($audioStream->getId());
+    $fmp4MediaInfo->setAutoselect(false);
+    $fmp4MediaInfo->setDefault(false);
+    $apiClient->manifests()->hls()->createMediaInfo($masterPlaylist, $fmp4MediaInfo);
 }
 
 //Start Manifest Creation
