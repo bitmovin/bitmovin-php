@@ -364,18 +364,17 @@ foreach ($videoEncodingConfigs as $videoEncodingConfig)
         $apiClient->manifests()->hls()->createStreamInfo($masterPlaylist, $variantStream);
     }
 }
-// Create Media-Infos from each FMP4 Muxing for Video
+
 foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
 {
-    /** @var FMP4Muxing $fmp4Muxing */
-    $fmp4Muxing = $audioEncodingConfig['fmp4_muxing'];
-    /** @var Stream $audioStream */
     $audioStream = $audioEncodingConfig['stream'];
+    $tsMuxing = $audioEncodingConfig['ts_muxing'];
     $encodingProfile = $audioEncodingConfig['profile'];
-    $variantStreamUri = 'audio_aac_fmp4' . $encodingProfile['bitrate'] . '.m3u8';
-    $segmentPath = getSegmentOutputPath($outputPath, $fmp4Muxing->getOutputs()[0]->getOutputPath());
+    $variantStreamUri = 'audio_aac_ts' . $encodingProfile['bitrate'] . '.m3u8';
     $mediaInfo = new MediaInfo();
+    $mediaInfo->setMuxingId($tsMuxing->getId());
     $mediaInfo->setGroupId($audioGroupId);
+    $segmentPath = getSegmentOutputPath($outputPath, $tsMuxing->getOutputs()[0]->getOutputPath());
     $mediaInfo->setSegmentPath($segmentPath);
     $mediaInfo->setName("English");
     $mediaInfo->setLanguage("English");
@@ -384,17 +383,11 @@ foreach ($audioEncodingConfigs as $key => $audioEncodingConfig)
     $mediaInfo->setType(MediaInfoType::AUDIO);
     $mediaInfo->setEncodingId($encoding->getId());
     $mediaInfo->setStreamId($audioStream->getId());
-    $mediaInfo->setMuxingId($fmp4Muxing->getId());
     $mediaInfo->setAutoselect(true);
     $mediaInfo->setDefault(true);
     $apiClient->manifests()->hls()->createMediaInfo($masterPlaylist, $mediaInfo);
-    $tsMuxing = $audioEncodingConfig['ts_muxing'];
-    $mediaInfo->setMuxingId($tsMuxing->getId());
-    $variantStreamUri = 'audio_aac_ts' . $encodingProfile['bitrate'] . '.m3u8';
-    $segmentPath = getSegmentOutputPath($outputPath, $tsMuxing->getOutputs()[0]->getOutputPath());
-    $mediaInfo->setSegmentPath($segmentPath);
-    $apiClient->manifests()->hls()->createMediaInfo($masterPlaylist, $mediaInfo);
 }
+
 //Start Manifest Creation
 $response = $apiClient->manifests()->hls()->start($masterPlaylist);
 do
