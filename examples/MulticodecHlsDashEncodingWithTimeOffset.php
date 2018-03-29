@@ -109,91 +109,6 @@ $videoEncodingConfigs264 = createVideoCodecConfigAndStream($videoEncodingConfigs
 $videoEncodingConfigsVp9 = createVideoCodecConfigAndStream($videoEncodingConfigs, 'vp9', $vp9VideoEncodingProfiles, $apiClient, $inputStreamVideo, $encoding, $outputPath, $output);
 $videoEncodingConfigs = array_merge($videoEncodingConfigs265, $videoEncodingConfigsVp9, $videoEncodingConfigs264);
 
-// CREATE VIDEO CODEC CONFIGS   AND STREAMS
-function createVideoCodecConfigAndStream ($videoEncodingConfigs, $codec, $profile, $apiClient, $inputStreamVideo, $encoding, $outputPath, $output)
-{
-
-// CREATE VIDEO CODEC CONFIGURATIONS
-    foreach ($profile as $encodingProfile) {
-        $encodingProfileName = $codec . '_' . $encodingProfile["bitrate"];
-        $videoEncodingConfig = array();
-        $videoEncodingConfig['profile'] = $encodingProfile;
-        if ($codec == 'h265') {
-            $videoEncodingConfig['codec'] = createH265VideoCodecConfiguration($apiClient, $encodingProfileName, $encodingProfile["profile"], $encodingProfile["bitrate"], null, $encodingProfile["height"]);
-        }
-        elseif ($codec == 'vp9') {
-            $videoEncodingConfig['codec'] = createVP9VideoCodecConfiguration($apiClient, $encodingProfileName, $encodingProfile["bitrate"], null, $encodingProfile["height"]);
-        }
-        else {
-            $videoEncodingConfig['codec'] = createH264VideoCodecConfiguration($apiClient, $encodingProfileName, $encodingProfile["profile"], $encodingProfile["bitrate"], null, $encodingProfile["height"]);
-        }
-        $videoEncodingConfig['codecName'] = $codec;
-        $videoEncodingConfigs[] = $videoEncodingConfig;
-    }
-
-// CREATE VIDEO STREAMS AND MUXINGS
-    foreach ($videoEncodingConfigs as $key => $videoEncodingConfig) {
-        if($codec == 'vp9')
-        {
-            $encodingProfile = $videoEncodingConfig['profile'];
-            // CREATE VIDEO STREAM
-            $videoStream = new Stream($videoEncodingConfig['codec'], array($inputStreamVideo));
-            $videoEncodingConfigs[$key]['stream'] = $apiClient->encodings()->streams($encoding)->create($videoStream);
-            // CREATE WEBM MUXING FOR VIDEO
-            $webMuxingOutputPath = $outputPath . 'video/webm/'. $codec .'/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
-            $videoEncodingConfigs[$key]['webm_muxing'] = createWebmMuxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $webMuxingOutputPath);
-
-        }
-        else {
-            $encodingProfile = $videoEncodingConfig['profile'];
-            // CREATE VIDEO STREAM
-            $videoStream = new Stream($videoEncodingConfig['codec'], array($inputStreamVideo));
-            $videoEncodingConfigs[$key]['stream'] = $apiClient->encodings()->streams($encoding)->create($videoStream);
-            // CREATE FMP4 MUXING FOR VIDEO
-            $fmp4MuxingOutputPath = $outputPath . 'video/fmp4/'. $codec .'/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
-            $videoEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $fmp4MuxingOutputPath);
-            if($codec == 'h264') {
-                $tsMuxingOutputPath = $outputPath . 'video/ts/' . $codec . '/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
-                $videoEncodingConfigs[$key]['ts_muxing'] = createTsMuxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $tsMuxingOutputPath);
-            }
-        }
-    }
-    return $videoEncodingConfigs;
-}
-
-/**
- * @param ApiClient $apiClient
- * @param Encoding  $encoding
- * @param Stream    $stream
- * @param Output    $output
- * @param string    $outputPath
- *
- * @param string    $outputAcl
- * @param int       $segmentDuration
- * @param string    $segmentNaming
- * @return TSMuxing
- * @throws BitmovinException
- */
-function createTsMuxing($apiClient, $encoding, $stream, $output, $outputPath, $outputAcl = AclPermission::ACL_PUBLIC_READ, $segmentDuration = 4, $segmentNaming = 'segment_%number%.ts')
-{
-    $encodingOutputs = array();
-    if ($output instanceof Output)
-    {
-        $encodingOutput = new EncodingOutput($output);
-        $encodingOutput->setOutputPath($outputPath);
-        $encodingOutput->setAcl(array(new Acl($outputAcl)));
-        $encodingOutputs[] = $encodingOutput;
-    }
-    $muxingStream = new MuxingStream();
-    $muxingStream->setStreamId($stream->getId());
-    $tsMuxing = new TSMuxing();
-    $tsMuxing->setSegmentLength($segmentDuration);
-    $tsMuxing->setSegmentNaming($segmentNaming);
-    $tsMuxing->setOutputs($encodingOutputs);
-    $tsMuxing->setStreams(array($muxingStream));
-    return $apiClient->encodings()->muxings($encoding)->tsMuxing()->create($tsMuxing);
-}
-
 // CREATE AUDIO CODEC CONFIGURATIONS
 $audioEncodingConfigs = array();
 foreach ($audioEncodingProfiles as $encodingProfile)
@@ -420,6 +335,106 @@ do
 } while ($isRunning);
 var_dump("Master Playlist finished");
 //#####################################################################################################################
+
+/**
+ * @param VideoEncodingConfigs $videoEncodingConfigs
+ * @param string      $encoding
+ * @param Stream      $codec
+ * @param Array       $profile
+ * @param ApiClient   $apiClient
+ * @param InputStream $inputStreamVideo
+ * @param Encoding    $encoding
+ * @param string      $outputPath
+ * @param S3Output    $output
+ *
+ * @return Array
+ * @throws BitmovinException
+ */
+// CREATE VIDEO CODEC CONFIGS AND STREAMS
+function createVideoCodecConfigAndStream ($videoEncodingConfigs, $codec, $profile, $apiClient, $inputStreamVideo, $encoding, $outputPath, $output)
+{
+
+// CREATE VIDEO CODEC CONFIGURATIONS
+    foreach ($profile as $encodingProfile) {
+        $encodingProfileName = $codec . '_' . $encodingProfile["bitrate"];
+        $videoEncodingConfig = array();
+        $videoEncodingConfig['profile'] = $encodingProfile;
+        if ($codec == 'h265') {
+            $videoEncodingConfig['codec'] = createH265VideoCodecConfiguration($apiClient, $encodingProfileName, $encodingProfile["profile"], $encodingProfile["bitrate"], null, $encodingProfile["height"]);
+        }
+        elseif ($codec == 'vp9') {
+            $videoEncodingConfig['codec'] = createVP9VideoCodecConfiguration($apiClient, $encodingProfileName, $encodingProfile["bitrate"], null, $encodingProfile["height"]);
+        }
+        else {
+            $videoEncodingConfig['codec'] = createH264VideoCodecConfiguration($apiClient, $encodingProfileName, $encodingProfile["profile"], $encodingProfile["bitrate"], null, $encodingProfile["height"]);
+        }
+        $videoEncodingConfig['codecName'] = $codec;
+        $videoEncodingConfigs[] = $videoEncodingConfig;
+    }
+
+// CREATE VIDEO STREAMS AND MUXINGS
+    foreach ($videoEncodingConfigs as $key => $videoEncodingConfig) {
+        if($codec == 'vp9')
+        {
+            $encodingProfile = $videoEncodingConfig['profile'];
+            // CREATE VIDEO STREAM
+            $videoStream = new Stream($videoEncodingConfig['codec'], array($inputStreamVideo));
+            $videoEncodingConfigs[$key]['stream'] = $apiClient->encodings()->streams($encoding)->create($videoStream);
+            // CREATE WEBM MUXING FOR VIDEO
+            $webMuxingOutputPath = $outputPath . 'video/webm/'. $codec .'/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
+            $videoEncodingConfigs[$key]['webm_muxing'] = createWebmMuxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $webMuxingOutputPath);
+
+        }
+        else {
+            $encodingProfile = $videoEncodingConfig['profile'];
+            // CREATE VIDEO STREAM
+            $videoStream = new Stream($videoEncodingConfig['codec'], array($inputStreamVideo));
+            $videoEncodingConfigs[$key]['stream'] = $apiClient->encodings()->streams($encoding)->create($videoStream);
+            // CREATE FMP4 MUXING FOR VIDEO
+            $fmp4MuxingOutputPath = $outputPath . 'video/fmp4/'. $codec .'/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
+            $videoEncodingConfigs[$key]['fmp4_muxing'] = createFmp4Muxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $fmp4MuxingOutputPath);
+            if($codec == 'h264') {
+                $tsMuxingOutputPath = $outputPath . 'video/ts/' . $codec . '/' . $encodingProfile['height'] . 'p_' . $encodingProfile['bitrate'] . '/';
+                $videoEncodingConfigs[$key]['ts_muxing'] = createTsMuxing($apiClient, $encoding, $videoEncodingConfigs[$key]['stream'], $output, $tsMuxingOutputPath);
+            }
+        }
+    }
+    return $videoEncodingConfigs;
+}
+
+/**
+ * @param ApiClient $apiClient
+ * @param Encoding  $encoding
+ * @param Stream    $stream
+ * @param Output    $output
+ * @param string    $outputPath
+ *
+ * @param string    $outputAcl
+ * @param int       $segmentDuration
+ * @param string    $segmentNaming
+ * @return TSMuxing
+ * @throws BitmovinException
+ */
+function createTsMuxing($apiClient, $encoding, $stream, $output, $outputPath, $outputAcl = AclPermission::ACL_PUBLIC_READ, $segmentDuration = 4, $segmentNaming = 'segment_%number%.ts')
+{
+    $encodingOutputs = array();
+    if ($output instanceof Output)
+    {
+        $encodingOutput = new EncodingOutput($output);
+        $encodingOutput->setOutputPath($outputPath);
+        $encodingOutput->setAcl(array(new Acl($outputAcl)));
+        $encodingOutputs[] = $encodingOutput;
+    }
+    $muxingStream = new MuxingStream();
+    $muxingStream->setStreamId($stream->getId());
+    $tsMuxing = new TSMuxing();
+    $tsMuxing->setSegmentLength($segmentDuration);
+    $tsMuxing->setSegmentNaming($segmentNaming);
+    $tsMuxing->setOutputs($encodingOutputs);
+    $tsMuxing->setStreams(array($muxingStream));
+    return $apiClient->encodings()->muxings($encoding)->tsMuxing()->create($tsMuxing);
+}
+
 /**
  * @param ApiClient $apiClient
  * @param Encoding  $encoding
