@@ -14,6 +14,26 @@ class StartEncodingRequest implements ModelInterface
     private $trimming;
 
     /**
+     * @var  array
+     */
+    private $previewDashManifests = array();
+
+    /**
+     * @var  array
+     */
+    private $previewHlsManifests = array();
+
+    /**
+     * @var  array
+     */
+    private $vodDashManifests = array();
+
+    /**
+     * @var  array
+     */
+    private $vodHlsManifests = array();
+
+    /**
      * @return StartEncodingTrimming
      */
     public function getTrimming()
@@ -27,6 +47,70 @@ class StartEncodingRequest implements ModelInterface
     public function setTrimming($trimming)
     {
         $this->trimming = $trimming;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPreviewDashManifests()
+    {
+        return $this->previewDashManifests;
+    }
+
+    /**
+     * @param array $schema
+     */
+    public function setPreviewDashManifests($previewDashManifests)
+    {
+        $this->previewDashManifests = $previewDashManifests;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPreviewHlsManifests()
+    {
+        return $this->previewHlsManifests;
+    }
+
+    /**
+     * @param array $schema
+     */
+    public function setPreviewHlsManifests($previewHlsManifests)
+    {
+        $this->previewHlsManifests = $previewHlsManifests;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVodDashManifests()
+    {
+        return $this->vodDashManifests;
+    }
+
+    /**
+     * @param array $schema
+     */
+    public function setVodDashManifests($vodDashManifests)
+    {
+        $this->vodDashManifests = $vodDashManifests;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVodHlsManifests()
+    {
+        return $this->vodHlsManifests;
+    }
+
+    /**
+     * @param array $schema
+     */
+    public function setVodHlsManifests($vodHlsManifests)
+    {
+        $this->vodHlsManifests = $vodHlsManifests;
     }
 
     public function getId()
