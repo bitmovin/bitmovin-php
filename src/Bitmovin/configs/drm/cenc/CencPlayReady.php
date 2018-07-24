@@ -34,4 +34,19 @@ class CencPlayReady
         $this->laUrl = $laUrl;
     }
 
+    /**
+     * @return string
+     */
+    public function getPssh()
+    {
+        return $this->pssh;
+    }
+    
+    /**
+     * @param string $pssh
+     */
+    public function setPssh($pssh)
+    {
+        $this->pssh = $pssh;
+    }
 }
