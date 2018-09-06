@@ -31,7 +31,6 @@ $bitmovinApiKey = '<INSERT YOUR API KEY>';
 
 $encodingName = 'PHP Example - Per Title';
 $encodingRegion = CloudRegion::AUTO;
-$encoderVersion = '<INSERT ENCODER VERSION>';
 
 $inputS3AccessKey = '<INSERT_YOUR_ACCESS_KEY>';
 $inputS3SecretKey = '<INSERT_YOUR_SECRET_KEY>';
@@ -185,7 +184,6 @@ function startEncoding($apiClient, $encoding)
 
     $perTitle = new PerTitle();
     $perTitle->setH264PerTitleConfiguration($h264PerTitleConfiguration);
-
 
     $startEncodingRequest = new StartEncodingRequest();
     $startEncodingRequest->setEncodingMode(EncodingMode::THREE_PASS);
