@@ -15,12 +15,14 @@ class StartEncodingRequest implements ModelInterface
     private $trimming;
 
     /**
+     * @JMS\SerializedName("perTitle")
      * @JMS\Type("Bitmovin\api\model\encodings\pertitle\PerTitle")
      * @var PerTitle $perTitle
      */
     private $perTitle;
 
     /**
+     * @JMS\SerializedName("encodingMode")
      * @JMS\Type("string")
      * @var EncodingMode $encodingMode
      */
