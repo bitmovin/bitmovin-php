@@ -2,6 +2,7 @@
 
 namespace Bitmovin\api\model\encodings;
 
+use Bitmovin\api\model\encodings\pertitle\PerTitle;
 use Bitmovin\api\model\ModelInterface;
 use JMS\Serializer\Annotation as JMS;
 
@@ -12,6 +13,18 @@ class StartEncodingRequest implements ModelInterface
      * @var StartEncodingTrimming
      */
     private $trimming;
+
+    /**
+     * @JMS\Type("Bitmovin\api\model\encodings\pertitle\PerTitle")
+     * @var PerTitle $perTitle
+     */
+    private $perTitle;
+
+    /**
+     * @JMS\Type("string")
+     * @var EncodingMode $encodingMode
+     */
+    private $encodingMode;
 
     /**
      * @return StartEncodingTrimming
@@ -27,6 +40,38 @@ class StartEncodingRequest implements ModelInterface
     public function setTrimming($trimming)
     {
         $this->trimming = $trimming;
+    }
+
+    /**
+     * @return PerTitle
+     */
+    public function getPerTitle()
+    {
+        return $this->perTitle;
+    }
+
+    /**
+     * @param PerTitle $perTitle
+     */
+    public function setPerTitle($perTitle)
+    {
+        $this->perTitle = $perTitle;
+    }
+
+    /**
+     * @return EncodingMode
+     */
+    public function getEncodingMode()
+    {
+        return $this->encodingMode;
+    }
+
+    /**
+     * @param EncodingMode $encodingMode
+     */
+    public function setEncodingMode($encodingMode)
+    {
+        $this->encodingMode = $encodingMode;
     }
 
     public function getId()
