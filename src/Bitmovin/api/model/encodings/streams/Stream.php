@@ -35,6 +35,12 @@ class Stream extends AbstractModel
     private $conditions;
 
     /**
+     * @JMS\Type("string")
+     * @var StreamMode $mode
+     */
+    private $mode;
+
+    /**
      * Stream constructor.
      *
      * @param CodecConfiguration $codecConfiguration
@@ -110,4 +116,19 @@ class Stream extends AbstractModel
         $this->conditions = $conditions;
     }
 
+    /**
+     * @return StreamMode
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    /**
+     * @param StreamMode $mode
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+    }
 }
