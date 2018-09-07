@@ -33,6 +33,7 @@ class PerTitleConfiguration
     private $maxBitrateStepSize;
 
     /**
+     * @JMS\SerializedName("autoRepresentations")
      * @JMS\Type("Bitmovin\api\model\encodings\AutoRepresentation")
      * @var AutoRepresentation $autoRepresentation
      */

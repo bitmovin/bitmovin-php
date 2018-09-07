@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation as JMS;
 class AutoRepresentation
 {
     /**
+     * @JMS\SerializedName("adoptConfigurationThreshold")
      * @JMS\Type("float")
      * @var float $adoptConfigurationThreshold
      */

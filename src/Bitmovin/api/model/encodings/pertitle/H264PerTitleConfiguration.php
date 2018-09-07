@@ -6,7 +6,11 @@ use JMS\Serializer\Annotation as JMS;
 
 class H264PerTitleConfiguration extends PerTitleConfiguration
 {
-    /** @JMS\Type("float") @var float $targetQualityCrf*/
+    /**
+     * @JMS\SerializedName("targetQualityCrf")
+     * @JMS\Type("float")
+     * @var float $targetQualityCrf
+     */
     private $targetQualityCrf;
 
     /**
