@@ -8,6 +8,7 @@ class PerTitle
 {
     /**
      * @JMS\Type("Bitmovin\api\model\encodings\pertitle\H264PerTitleConfiguration")
+     * @JMS\SerializedName("h264Configuration")
      * @var H264PerTitleConfiguration $h264PerTitleConfiguration
      */
     private $h264PerTitleConfiguration;

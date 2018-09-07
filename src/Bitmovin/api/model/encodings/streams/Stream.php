@@ -35,6 +35,7 @@ class Stream extends AbstractModel
     private $conditions;
 
     /**
+     * @JMS\SerializedName("mode")
      * @JMS\Type("string")
      * @var StreamMode $mode
      */
