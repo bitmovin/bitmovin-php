@@ -35,6 +35,13 @@ class Stream extends AbstractModel
     private $conditions;
 
     /**
+     * @JMS\SerializedName("decodingErrorMode")
+     * @JMS\Type("string")
+     * @var StreamDecodingErrorMode $decodingErrorMode
+     */
+    private $decodingErrorMode;
+
+    /**
      * @JMS\SerializedName("mode")
      * @JMS\Type("string")
      * @var StreamMode $mode
@@ -115,6 +122,22 @@ class Stream extends AbstractModel
     public function setConditions($conditions)
     {
         $this->conditions = $conditions;
+    }
+
+    /**
+     * @return StreamDecodingErrorMode
+     */
+    public function getDecodingErrorMode()
+    {
+        return $this->decodingErrorMode;
+    }
+
+    /**
+     * @param StreamDecodingErrorMode $decodingErrorMode
+     */
+    public function setDecodingErrorMode($decodingErrorMode)
+    {
+        $this->decodingErrorMode = $decodingErrorMode;
     }
 
     /**
