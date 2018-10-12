@@ -32,6 +32,8 @@ final class ApiUrls
     const ENCODING_STOP_LIVE = "encoding/encodings/{encoding_id}/live/stop";
     const ENCODING_STATUS = "encoding/encodings/{encoding_id}/status";
 
+    const ENCODING_KEYFRAMES = "encoding/encodings/{encoding_id}/keyframes"; 
+    
     const ENCODING_STREAMS = "encoding/encodings/{encoding_id}/streams";
 
     const ENCODING_STREAMS_SPRITES = "encoding/encodings/{encoding_id}/streams/{stream_id}/sprites";
