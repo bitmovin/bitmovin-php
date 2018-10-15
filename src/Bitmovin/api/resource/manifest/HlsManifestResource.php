@@ -82,7 +82,34 @@ class HlsManifestResource extends AbstractResource
         return parent::postResource($vttMedia, $vttMediaBaseUri, VttMedia::class);
     }
 
+    /**
+     * @param HlsManifest $manifest
+     * @param StreamInfo  $streamInfo
+     * @param CustomTag $customTag
+     * @return CustomTag
+     */
+    public function addCustomTagToStreamInfo(HlsManifest $manifest, StreamInfo $streamInfo, CustomTag $customTag)
+    {
+        $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_STREAM_ID => $streamInfo->getId());
+        $streamInfoCustomTagBaseUri = RouteHelper::buildURI(ApiUrls::MANIFEST_HLS_VTT_MEDIA, $routeReplacementMap);
 
+        return parent::postResource($customTag, $streamInfoCustomTagBaseUri, CustomTag::class);
+    }
+
+    /**
+     * @param HlsManifest $manifest
+     * @param MediaInfo  $mediaInfo
+     * @param CustomTag $customTag
+     * @return CustomTag
+     */
+    public function addCustomTagToMediaInfo(HlsManifest $manifest, MediaInfo $mediaInfo, CustomTag $customTag)
+    {
+        $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_MEDIA_ID => $mediaInfo->getId());
+        $mediaInfoCustomTagBaseUri = RouteHelper::buildURI(ApiUrls::MANIFEST_HLS_VTT_MEDIA, $routeReplacementMap);
+
+        return parent::postResource($customTag, $mediaInfoCustomTagBaseUri, CustomTag::class);
+    }
+    
     public function start(HlsManifest $manifest)
     {
         $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId());
