@@ -21,8 +21,8 @@ class Keyframe extends AbstractModel
 
     /**
      * Keyframe constructor.
-     * @param float $width
-     * @param boolean $height
+     * @param float $time
+     * @param boolean $segmentCut
      */
     public function __construct($time, $segmentCut)
     {
