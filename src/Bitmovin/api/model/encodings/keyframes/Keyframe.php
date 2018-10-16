@@ -41,7 +41,7 @@ class Keyframe extends AbstractModel
     /**
      * @param float $time
      */
-    public function setName($time)
+    public function setTime($time)
     {
         $this->time = $time;
     }

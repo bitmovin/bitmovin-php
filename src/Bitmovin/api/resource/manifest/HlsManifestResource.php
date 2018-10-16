@@ -3,6 +3,7 @@
 namespace Bitmovin\api\resource\manifest;
 
 
+use Bitmovin\api\model\manifests\hls\CustomTag;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
@@ -91,7 +92,7 @@ class HlsManifestResource extends AbstractResource
     public function addCustomTagToStreamInfo(HlsManifest $manifest, StreamInfo $streamInfo, CustomTag $customTag)
     {
         $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_STREAM_ID => $streamInfo->getId());
-        $streamInfoCustomTagBaseUri = RouteHelper::buildURI(ApiUrls::MANIFEST_HLS_VTT_MEDIA, $routeReplacementMap);
+        $streamInfoCustomTagBaseUri = RouteHelper::buildURI(ApiUrls::MANIFEST_HLS_STREAMINFO_CUSTOM_TAG, $routeReplacementMap);
 
         return parent::postResource($customTag, $streamInfoCustomTagBaseUri, CustomTag::class);
     }
@@ -105,7 +106,7 @@ class HlsManifestResource extends AbstractResource
     public function addCustomTagToMediaInfo(HlsManifest $manifest, MediaInfo $mediaInfo, CustomTag $customTag)
     {
         $routeReplacementMap = array(ApiUrls::PH_MANIFEST_ID => $manifest->getId(), ApiUrls::PH_MEDIA_ID => $mediaInfo->getId());
-        $mediaInfoCustomTagBaseUri = RouteHelper::buildURI(ApiUrls::MANIFEST_HLS_VTT_MEDIA, $routeReplacementMap);
+        $mediaInfoCustomTagBaseUri = RouteHelper::buildURI(ApiUrls::MANIFEST_HLS_MEDIAINFO_CUSTOM_TAG, $routeReplacementMap);
 
         return parent::postResource($customTag, $mediaInfoCustomTagBaseUri, CustomTag::class);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bitmovin\api\resource\encodings\keyframes;
+namespace Bitmovin\api\resource;
 
 use Bitmovin\api\model\encodings\Encoding;
 use Bitmovin\api\model\encodings\keyframes\Keyframe;
