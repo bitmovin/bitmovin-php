@@ -28,7 +28,7 @@ class CustomTag extends AbstractModel
     private $time;
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("integer")
      * @var  Integer
      */
     private $segment;
