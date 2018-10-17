@@ -7,6 +7,7 @@ final class ApiUrls
     const PH_ENCODING_ID = "{encoding_id}";
     const PH_CONFIGURATION_ID = "{configuration_id}";
     const PH_STREAM_ID = "{stream_id}";
+    const PH_MEDIA_ID = "{media_id}";
     const PH_THUMBNAIL_ID = "{thumbnail_id}";
     const PH_MUXING_ID = "{muxing_id}";
     const PH_MANIFEST_ID = "{manifest_id}";
@@ -32,6 +33,8 @@ final class ApiUrls
     const ENCODING_STOP_LIVE = "encoding/encodings/{encoding_id}/live/stop";
     const ENCODING_STATUS = "encoding/encodings/{encoding_id}/status";
 
+    const ENCODING_KEYFRAMES = "encoding/encodings/{encoding_id}/keyframes"; 
+    
     const ENCODING_STREAMS = "encoding/encodings/{encoding_id}/streams";
 
     const ENCODING_STREAMS_SPRITES = "encoding/encodings/{encoding_id}/streams/{stream_id}/sprites";
@@ -114,6 +117,8 @@ final class ApiUrls
     const MANIFEST_HLS = "encoding/manifests/hls";
     const MANIFEST_HLS_MEDIA = "encoding/manifests/hls/{manifest_id}/media";
     const MANIFEST_HLS_VTT_MEDIA = "encoding/manifests/hls/{manifest_id}/media/vtt";
+    const MANIFEST_HLS_STREAMINFO_CUSTOM_TAG = "encoding/manifests/hls/{manifest_id}/streams/{stream_id}/custom-tags";
+    const MANIFEST_HLS_MEDIAINFO_CUSTOM_TAG = "encoding/manifests/hls/{manifest_id}/streams/{media_id}/custom-tags";
     const MANIFEST_HLS_STREAMS = "encoding/manifests/hls/{manifest_id}/streams";
     const MANIFEST_HLS_START = "encoding/manifests/hls/{manifest_id}/start";
     const MANIFEST_HLS_STOP = "encoding/manifests/hls/{manifest_id}/stop";

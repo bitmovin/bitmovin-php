@@ -38,6 +38,15 @@ class EncodingResource extends AbstractResource
 
     /**
      * @param Encoding $encoding
+     * @return KeyframeResource
+     */
+    public function keyframes(Encoding $encoding)
+    {
+        return new KeyframeResource($encoding, parent::getApiKey());
+    }
+
+    /**
+     * @param Encoding $encoding
      *
      * @return MuxingContainer
      */
