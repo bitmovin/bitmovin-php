@@ -118,7 +118,7 @@ final class ApiUrls
     const MANIFEST_HLS_MEDIA = "encoding/manifests/hls/{manifest_id}/media";
     const MANIFEST_HLS_VTT_MEDIA = "encoding/manifests/hls/{manifest_id}/media/vtt";
     const MANIFEST_HLS_STREAMINFO_CUSTOM_TAG = "encoding/manifests/hls/{manifest_id}/streams/{stream_id}/custom-tags";
-    const MANIFEST_HLS_MEDIAINFO_CUSTOM_TAG = "encoding/manifests/hls/{manifest_id}/streams/{media_id}/custom-tags";
+    const MANIFEST_HLS_MEDIAINFO_CUSTOM_TAG = "encoding/manifests/hls/{manifest_id}/media/{media_id}/custom-tags";
     const MANIFEST_HLS_STREAMS = "encoding/manifests/hls/{manifest_id}/streams";
     const MANIFEST_HLS_START = "encoding/manifests/hls/{manifest_id}/start";
     const MANIFEST_HLS_STOP = "encoding/manifests/hls/{manifest_id}/stop";
