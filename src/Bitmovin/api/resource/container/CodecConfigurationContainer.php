@@ -4,10 +4,12 @@ namespace Bitmovin\api\resource\container;
 
 use Bitmovin\api\enum\codecConfigurations\CodecConfigType;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
+use Bitmovin\api\model\codecConfigurations\AC3AudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H265VideoCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\VP9VideoCodecConfiguration;
 use Bitmovin\api\resource\codecConfigurations\AACAudioCodecConfigurationResource;
+use Bitmovin\api\resource\codecConfigurations\AC3AudioCodecConfigurationResource;
 use Bitmovin\api\resource\codecConfigurations\H264VideoCodecConfigurationResource;
 use Bitmovin\api\resource\codecConfigurations\H265VideoCodecConfigurationResource;
 use Bitmovin\api\resource\codecConfigurations\TypeConfigurationResource;
@@ -24,6 +26,10 @@ class CodecConfigurationContainer
     private $videoVP9;
     /** @var AACAudioCodecConfigurationResource */
     private $audioAAC;
+    /** @var AC3AudioCodecConfigurationResource */
+    private $audioAC3;
+    /** @var AC3AudioCodecConfigurationResource */
+    private $audioEAC3;
     /** @var TypeConfigurationResource */
     private $type;
 
@@ -55,6 +61,18 @@ class CodecConfigurationContainer
         $this->audioAAC = new AACAudioCodecConfigurationResource(
             ApiUrls::CODEC_CONFIGURATION_AAC,
             AACAudioCodecConfiguration::class,
+            $apiKey
+        );
+
+        $this->audioAC3 = new AC3AudioCodecConfigurationResource(
+            ApiUrls::CODEC_CONFIGURATION_AC3,
+            AC3AudioCodecConfiguration::class,
+            $apiKey
+        );
+
+        $this->audioEAC3 = new AC3AudioCodecConfigurationResource(
+            ApiUrls::CODEC_CONFIGURATION_EAC3,
+            AC3AudioCodecConfiguration::class,
             $apiKey
         );
 
@@ -91,6 +109,22 @@ class CodecConfigurationContainer
     public function audioAAC()
     {
         return $this->audioAAC;
+    }
+
+    /**
+     * @return AC3AudioCodecConfigurationResource
+     */
+    public function audioAC3()
+    {
+        return $this->audioAC3;
+    }
+
+    /**
+     * @return EAC3AudioCodecConfigurationResource
+     */
+    public function audioEAC3()
+    {
+        return $this->audioEAC3;
     }
 
     /**
