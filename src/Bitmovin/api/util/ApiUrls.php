@@ -97,6 +97,8 @@ final class ApiUrls
     const CODEC_CONFIGURATION_H265 = "encoding/configurations/video/h265";
     const CODEC_CONFIGURATION_VP9 = "encoding/configurations/video/vp9";
     const CODEC_CONFIGURATION_AAC = "encoding/configurations/audio/aac";
+    const CODEC_CONFIGURATION_AC3 = "encoding/configurations/audio/ac3";
+    const CODEC_CONFIGURATION_EAC3 = "encoding/configurations/audio/eac3";
 
     const MANIFEST_DASH = "encoding/manifests/dash";
     const MANIFEST_DASH_PERIODS = "encoding/manifests/dash/{manifest_id}/periods";
