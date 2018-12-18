@@ -21,6 +21,11 @@ class CencDrm extends AbstractDrm
      */
     private $kid;
     /**
+     * @JMS\Type("string")
+     * @var  string  CENCIVSize
+     */
+    private $ivSize;
+    /**
      * @JMS\Type("Bitmovin\api\model\encodings\drms\cencSystems\CencWidevine")
      * @var  CencWidevine
      */
@@ -80,6 +85,22 @@ class CencDrm extends AbstractDrm
     public function setKid($kid)
     {
         $this->kid = $kid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIVSize()
+    {
+        return $this->ivSize;
+    }
+
+    /**
+     * @param string $ivSize
+     */
+    public function setIVSize($ivSize)
+    {
+        $this->ivSize = $ivSize;
     }
 
     /**
