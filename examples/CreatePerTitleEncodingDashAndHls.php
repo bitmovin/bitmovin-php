@@ -8,6 +8,7 @@ use Bitmovin\api\enum\SelectionMode;
 use Bitmovin\api\enum\Status;
 use Bitmovin\api\enum\manifests\dash\DashMuxingType;
 use Bitmovin\api\enum\manifests\hls\MediaInfoType;
+use Bitmovin\api\enum\codecConfigurations\CodecConfigType;
 use Bitmovin\api\exceptions\BitmovinException;
 use Bitmovin\api\model\codecConfigurations\AACAudioCodecConfiguration;
 use Bitmovin\api\model\codecConfigurations\H264VideoCodecConfiguration;
@@ -35,8 +36,6 @@ use Bitmovin\api\model\manifests\dash\VideoAdaptationSet;
 use Bitmovin\api\model\manifests\hls\HlsManifest;
 use Bitmovin\api\model\manifests\hls\MediaInfo;
 use Bitmovin\api\model\manifests\hls\StreamInfo;
-
-use Ramsey\Uuid\Uuid;
 
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -86,7 +85,7 @@ try
     $videoInputStream = new InputStream($s3Input, INPUT_PATH , SelectionMode::AUTO);
 
     $audioStream = createAudioStream($apiClient, $encoding, $audioInputStream);
-    $videoStream = createPerTitleVideoStream($apiClient, $encoding, $videoInputStream);
+    $videoStream = createH264PerTitleVideoStream($apiClient, $encoding, $videoInputStream);
 
     $audiofMp4Muxing = createfMp4Muxing($apiClient, $encoding, $s3Output, $audioStream, "audio/dash/128kbps/");
     $videofMp4Muxing = createfMp4Muxing($apiClient, $encoding, $s3Output, $videoStream, "video/dash/{width}_{bitrate}_{uuid}/");
@@ -142,7 +141,7 @@ function createAudioStream($apiClient, $encoding, $audioInputStream)
  * @return Stream The created Per-Title template video stream. This will be used later for the MP4 muxing
  * @throws BitmovinException
  */
-function createPerTitleVideoStream($apiClient, $encoding, $videoInputStream)
+function createH264PerTitleVideoStream($apiClient, $encoding, $videoInputStream)
 {
     $videoSCodecConfiguration = new H264VideoCodecConfiguration('H264 Configuration', H264Profile::HIGH, null, null);
     $videoSCodecConfiguration = $apiClient->codecConfigurations()->videoH264()->create($videoSCodecConfiguration);
@@ -220,12 +219,11 @@ function createTSMuxing($apiClient, $encoding, $s3Output, $stream, $outputPathSu
 
 
 /**
- * The encoding will be started with the per title object and the auto representations set. If the auto
- * representation is set, stream configurations will be automatically added to the Per-Title profile. In that case
- * at least one PER_TITLE_TEMPLATE stream configuration must be available. All other configurations will be
- * automatically chosen by the Per-Title algorithm. All relevant settings for streams and muxings will be taken from
- * the closest PER_TITLE_TEMPLATE stream defined. The closest stream will be chosen based on the resolution
- * specified in the codec configuration.
+ * The encoding will be started with the per title object. Stream configurations will be automatically added to
+ * the Per-Title profile. In that case at least one PER_TITLE_TEMPLATE stream configuration must be available.
+ * All other configurations will be automatically chosen by the Per-Title algorithm. All relevant settings for
+ * streams and muxings will be taken from the closest PER_TITLE_TEMPLATE stream defined. The closest stream will
+ * be chosen based on the resolution specified in the codec configuration.
  *
  * @param ApiClient $apiClient The Bitmovin api-client
  * @param Encoding $encoding The reference of the encoding
@@ -304,18 +302,23 @@ function generateManifests($apiClient, $encoding, $s3Output, $audioStream, $audi
     $fmp4Muxings = $apiClient->encodings()->muxings($encoding)->fmp4Muxing()->listPage();
 
     foreach ($fmp4Muxings as $fmp4Muxing) {
-        $segmentPath = $fmp4Muxing->getOutputs()[0]->getOutputPath();
+        $streamDetails = $apiClient->encodings()->streams($encoding)->getById($fmp4Muxing->getStreams()[0]->getStreamId());
+        $codecConfigType = $apiClient->codecConfigurations()->type()->getTypeById($streamDetails->getCodecConfigId());
 
-        if (strpos($segmentPath, 'audio') !== false) {
+        $streamMode = $streamDetails->getMode();
+        $isAudioMuxing = in_array($codecConfigType->getType(), array(CodecConfigType::AAC));
+
+        if ($isAudioMuxing) {
             # we ignore the audio muxing
             continue;
         }
 
-        if (strpos($segmentPath, '{uuid}') !== false) {
-            # we ignore any muxing with placeholders in the path - they are the template muxings, not the result muxings
+        if ($streamMode != StreamMode::PER_TITLE_RESULT) {
+            # we ignore template streams
             continue;
         }
 
+        $segmentPath = $fmp4Muxing->getOutputs()[0]->getOutputPath();
         $segmentPath = getSegmentOutputPath(OUTPUT_BASE_PATH, $segmentPath);
 
         $videoRepresentation_1080p = new DashRepresentation();
@@ -353,23 +356,28 @@ function generateManifests($apiClient, $encoding, $s3Output, $audioStream, $audi
 
     $tsMuxings = $apiClient->encodings()->muxings($encoding)->tsMuxing()->listPage();
 
-    foreach ($tsMuxings as $tsMuxing) {
-        $segmentPath = $tsMuxing->getOutputs()[0]->getOutputPath();
+    foreach ($tsMuxings as $index=>$tsMuxing) {
+        $streamDetails = $apiClient->encodings()->streams($encoding)->getById($tsMuxing->getStreams()[0]->getStreamId());
+        $codecConfigType = $apiClient->codecConfigurations()->type()->getTypeById($streamDetails->getCodecConfigId());
 
-        if (strpos($segmentPath, 'audio') !== false) {
+        $streamMode = $streamDetails->getMode();
+        $isAudioMuxing = in_array($codecConfigType->getType(), array(CodecConfigType::AAC));
+
+        if ($isAudioMuxing) {
             # we ignore the audio muxing
             continue;
         }
 
-        if (strpos($segmentPath, '{uuid}') !== false) {
-            # we ignore any muxing with placeholders in the path - they are the template muxings, not the result muxings
+        if ($streamMode != StreamMode::PER_TITLE_RESULT) {
+            # we ignore template streams
             continue;
         }
 
+        $segmentPath = $tsMuxing->getOutputs()[0]->getOutputPath();
         $segmentPath = getSegmentOutputPath(OUTPUT_BASE_PATH, $segmentPath);
 
         $streamInfo = new StreamInfo();
-        $streamInfo->setUri('video_' . Uuid::uuid4() . '.m3u8');
+        $streamInfo->setUri('video_' . $index . '.m3u8');
         $streamInfo->setEncodingId($encoding->getId());
         $streamInfo->setStreamId($tsMuxing->getStreams()[0]->getStreamId());
         $streamInfo->setMuxingId($tsMuxing->getId());
