@@ -5,7 +5,7 @@ namespace Bitmovin\api\model\encodings\drms\cencSystems;
 
 use JMS\Serializer\Annotation as JMS;
 
-class CencFairplay
+class CencFairPlay
 {
     /**
      * @JMS\Type("string")
