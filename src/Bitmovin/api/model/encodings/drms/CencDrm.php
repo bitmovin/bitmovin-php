@@ -3,6 +3,7 @@
 
 namespace Bitmovin\api\model\encodings\drms;
 
+use Bitmovin\api\model\encodings\drms\cencSystems\CencFairplay;
 use Bitmovin\api\model\encodings\drms\cencSystems\CencMarlin;
 use Bitmovin\api\model\encodings\drms\cencSystems\CencPlayReady;
 use Bitmovin\api\model\encodings\drms\cencSystems\CencWidevine;
@@ -40,6 +41,12 @@ class CencDrm extends AbstractDrm
      * @var  CencMarlin
      */
     private $marlin;
+
+    /**
+     * @JMS\Type("Bitmovin\api\model\encodings\drms\cencSystems\CencFairplay")
+     * @var  CencFairplay
+     */
+    private $fairPlay;
 
     /**
      * CencDrm constructor.
@@ -151,4 +158,19 @@ class CencDrm extends AbstractDrm
         $this->marlin = $marlin;
     }
 
+    /**
+     * @return CencFairplay
+     */
+    public function getFairplay()
+    {
+        return $this->fairPlay;
+    }
+
+    /**
+     * @param CencFairplay $fairPlay
+     */
+    public function setFairplay($fairPlay)
+    {
+        $this->fairPlay = $fairPlay;
+    }
 }
