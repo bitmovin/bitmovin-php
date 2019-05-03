@@ -18,6 +18,5 @@ class H264SubMe extends AbstractEnum
     const RD_REF_IP = 'RD_REF_IP';
     const RD_REF_ALL = 'RD_REF_ALL';
     const QPRD = 'QPRD';
-    const FULL_RD = 'FULL_RD';
 
 }
