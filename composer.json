@@ -1,5 +1,10 @@
 {
   "name": "bitmovin/bitmovin-php",
+  "config": {
+    "platform": {
+        "php": "5.6.0"
+    }
+  },
   "description": "PHP-Client which enables you to seamlessly integrate the Bitmovin API into your existing projects",
   "version": "v1.5.25",
   "homepage": "https://bitmovin.com/docs",
