@@ -102,7 +102,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
         $apiClient = $this->getApiClient();
         $resourceId = "NON-EXISTING-H264VideoCodecConfiguration-ID";
 
-        $this->setExpectedException(BitmovinException::class, '', 404);
+        $this->expectException(BitmovinException::class, '', 404);
         $apiClient->codecConfigurations()->audioAAC()->getById($resourceId);
     }
 
@@ -177,7 +177,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
         $apiClient = $this->getApiClient();
         $resourceId = "NON-EXISTING-H264VideoCodecConfiguration-ID";
 
-        $this->setExpectedException(BitmovinException::class, '', 404);
+        $this->expectException(BitmovinException::class, '', 404);
         $apiClient->codecConfigurations()->videoH264()->getById($resourceId);
     }
 
@@ -270,7 +270,7 @@ class CodecConfigurationResourceTest extends AbstractBitmovinApiTest
         $apiClient = $this->getApiClient();
         $resourceId = "NON-EXISTING-H265VideoCodecConfiguration-ID";
 
-        $this->setExpectedException(BitmovinException::class, '', 404);
+        $this->expectException(BitmovinException::class, '', 404);
         $apiClient->codecConfigurations()->videoH265()->getById($resourceId);
     }
 

@@ -92,7 +92,7 @@ class EncodingResourceTest extends AbstractBitmovinApiTest
         $apiClient = $this->getApiClient();
         $encodingId = "NON-EXISTING-ENCODING-ID";
 
-        $this->setExpectedException(BitmovinException::class, '', 404);
+        $this->expectException(BitmovinException::class, '', 404);
         $apiClient->encodings()->getById($encodingId);
     }
 
