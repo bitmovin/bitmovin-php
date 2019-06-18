@@ -9,6 +9,7 @@ use Bitmovin\api\model\encodings\StartEncodingRequest;
 use Bitmovin\api\model\encodings\StartLiveEncodingRequest;
 use Bitmovin\api\model\Status;
 use Bitmovin\api\resource\encodings\streams\muxings\MuxingContainer;
+use Bitmovin\api\resource\container\EncodingWebhookContainer;
 use Bitmovin\api\util\ApiUrls;
 use Bitmovin\api\util\RouteHelper;
 use JMS\Serializer\SerializerBuilder;
@@ -54,7 +55,17 @@ class EncodingResource extends AbstractResource
     {
         return new MuxingContainer($encoding, parent::getApiKey());
     }
-
+    
+    /**
+     * @param Encoding $encoding
+     *
+     * @return EncodingWebhookContainer
+     */
+    public function webhooks(Encoding $encoding)
+    {
+        return new EncodingWebhookContainer($encoding, parent::getApiKey());
+    }
+    
     /**
      * @param Encoding $encoding
      */

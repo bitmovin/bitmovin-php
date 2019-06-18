@@ -139,5 +139,9 @@ final class ApiUrls
     const WEBHOOK_ENCODING_ERROR = "notifications/webhooks/encoding/encodings/error";
     const WEBHOOK_TRANSFER_FINISHED = "notifications/webhooks/encoding/transfers/finished";
     const WEBHOOK_TRANSFER_ERROR = "notifications/webhooks/encoding/transfers/error";
-
+    
+    const SPECIFIC_WEBHOOK_ENCODING_FINISHED = "notifications/webhooks/encoding/encodings/{encoding_id}/finished";
+    const SPECIFIC_WEBHOOK_ENCODING_ERROR = "notifications/webhooks/encoding/encodings/{encoding_id}/error";
+    const SPECIFIC_WEBHOOK_TRANSFER_FINISHED = "notifications/webhooks/encoding/transfers/{encoding_id}/finished";
+    const SPECIFIC_WEBHOOK_TRANSFER_ERROR = "notifications/webhooks/encoding/transfers/{encoding_id}/error";
 }

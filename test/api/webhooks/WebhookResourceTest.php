@@ -309,5 +309,18 @@ class WebhookResourceTest extends AbstractBitmovinApiTest
         $createdWebhooks = $this->apiClient->webhooks()->transferError()->listPage(0, 100);
         $this->assertTrue(sizeof($createdWebhooks) > 0);
     }
+    
+    /**
+     * @param Encoding $encoding
+     *
+     * @return Encoding
+     * @throws BitmovinException
+     */
+    private function createEncoding(Encoding $encoding)
+    {
+        $apiClient = $this->getApiClient();
+        
+        return $apiClient->encodings()->create($encoding);
+    }
 
 }
