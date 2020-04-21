@@ -2,7 +2,7 @@
 
 # New API Client (Recommended)
 
-`bitmovin-php` is the legacy Bitmovin API client for Java. 
+`bitmovin-php` is the legacy Bitmovin API client for PHP. 
 
 We recommend using the new client, which you can find at [bitmovin-api-sdk-php](https://github.com/bitmovin/bitmovin-api-sdk-php). Using the new client guarantees 100% specification conformity at any given time and access to all features of the API as soon as they are released.
 
