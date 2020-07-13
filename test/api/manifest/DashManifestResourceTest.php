@@ -381,7 +381,7 @@ class DashManifestResourceTest extends AbstractBitmovinApiTest
     {
         $dashId = "NON-EXISTING-DASH-ID";
 
-        $this->setExpectedException(BitmovinException::class, '', 404);
+        $this->expectException(BitmovinException::class, '', 404);
         $this->getResource()->getById($dashId);
     }
 }

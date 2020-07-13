@@ -5,7 +5,6 @@ namespace Bitmovin\test\api;
 use Bitmovin\api\ApiClient;
 use Bitmovin\test\AbstractBitmovinApiTest;
 
-require_once __DIR__ . '/../vendor/autoload.php';
 
 class ApiClientTest extends AbstractBitmovinApiTest
 {
@@ -21,7 +20,7 @@ class ApiClientTest extends AbstractBitmovinApiTest
      */
     public function testApiClientInit()
     {
-        static::assertInstanceOf('Bitmovin\ApiClient', self::$apiClient);
+        static::assertInstanceOf("Bitmovin\api\ApiClient", self::$apiClient);
     }
 
     public static function tearDownAfterClass()

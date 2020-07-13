@@ -101,7 +101,7 @@ abstract class AbstractOutputResourceTest extends AbstractBitmovinApiTest
         $this->markTestSkipped('Server responds invalid 404 message.');
         $outputId = "NON-EXISTING-Output-ID";
 
-        $this->setExpectedException(BitmovinException::class, '', 404);
+        $this->expectException(BitmovinException::class, '', 404);
         $this->getResource()->getById($outputId);
     }
 
